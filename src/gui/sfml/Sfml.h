@@ -7,7 +7,7 @@
 class Sfml: public AGui
 {
     public:
-      Sfml(int map_size_y, int map_size_x);
+      Sfml(const Map& m);
       virtual ~Sfml();
       
       // Getters

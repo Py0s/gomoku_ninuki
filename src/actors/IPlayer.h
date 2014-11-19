@@ -5,5 +5,5 @@ class IPlayer
 public:
     virtual ~IPlayer();
 
-    virtual bool    play() = 0;
+    virtual bool    plays() = 0;
 };

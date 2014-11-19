@@ -11,7 +11,4 @@ public:
     bool check();
     
 private:
-    std::list<int>  _winningSquares;
-    std::list<int>  _futurTakenSquares;
-    std::list<int>  _doubleThreeSquares;
 };

@@ -1,7 +1,7 @@
 #include "Sfml.h"
 
-Sfml::Sfml(int map_size_y, int map_size_x)
-: AGui(map_size_y, map_size_x) {
+Sfml::Sfml(const Map& m)
+: AGui(m.sizeY(), m.sizeX()) {
     this->_mainWindow.create(sf::VideoMode(1920, 1080, 32), "Gomoku");
     this->_mainWindow.setVerticalSyncEnabled(true);
     this->_mainWindow.clear(sf::Color::Black);

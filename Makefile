@@ -19,7 +19,7 @@ TARGET := ./gomoku
 SRC_ROOTDIR := src
 
 # Add folder here
-SRC_SUBDIRS := game gui gui/ncurses gui/sfml exceptions player referee
+SRC_SUBDIRS := game gui gui/sfml exceptions actors
 
 SRC_ALLDIRS := $(SRC_ROOTDIR) $(foreach sub_dir, $(SRC_SUBDIRS), $(SRC_ROOTDIR)/$(sub_dir))
 
