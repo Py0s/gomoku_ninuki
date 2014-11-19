@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "NCurses.h"
 #include "Sfml.h"
 #include "AGui.h"
 #include <iostream>
@@ -15,8 +14,8 @@ Game::~Game() {
 
 // Members
 int Game::start() {
-//    this->_gui->drawMap(this->_map.displayMap());
     while (this->_core.quit() == false)
+//    this->_gui->drawMap(this->_map.displayMap());
     {
         this->_gui->refresh();
         this->_gui->getInput(this->_core.eventManager());

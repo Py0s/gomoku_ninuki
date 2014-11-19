@@ -7,10 +7,10 @@ Map::~Map() {
 }
 
 // Getters
-int Map::sizeX() {
+int Map::sizeX() const {
     return this->_MAPSIZE_X;
 }
 
-int Map::sizeY() {
+int Map::sizeY() const {
     return this->_MAPSIZE_Y;
 }

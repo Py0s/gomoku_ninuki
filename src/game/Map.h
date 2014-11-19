@@ -6,8 +6,8 @@ public:
     virtual ~Map();
     
     // Getters
-    int sizeX();
-    int sizeY();
+    int sizeX() const;
+    int sizeY() const;
 
 private:
     static const int _MAPSIZE_X = 19; // For now

@@ -2,17 +2,11 @@
 #include "Exceptions.h"
 #include <iostream>
 
-int main(int ac, char * av[]) {
+int main(int argc, char * argv[]) {
     try
     {
-        if (ac == 1) {
-            Game current(true);
-            current.start();
-        }
-        else {
-            Game current(false);
-            current.start();
-        }
+        Game current;
+        current.start();
     }
     catch (Exceptions& ex)
     {

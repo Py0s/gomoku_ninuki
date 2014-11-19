@@ -84,25 +84,25 @@ bool Sfml::drawMap(const char* map) {
 
 bool Sfml::cursorUp(const Map& m) {
     AGui::cursorUp(m);
-    this->drawMap(m.displayMap());
+//    this->drawMap(m.displayMap());
     return true;
 }
 
 bool Sfml::cursorDown(const Map& m) {
     AGui::cursorDown(m);
-    this->drawMap(m.displayMap());
+//    this->drawMap(m.displayMap());
     return true;
 }
 
 bool Sfml::cursorLeft(const Map& m) {
     AGui::cursorLeft(m);
-    this->drawMap(m.displayMap());
+//    this->drawMap(m.displayMap());
     return true;
 }
 
 bool Sfml::cursorRight(const Map& m) {
     AGui::cursorRight(m);
-    this->drawMap(m.displayMap());
+//    this->drawMap(m.displayMap());
     return true;
 }
 
