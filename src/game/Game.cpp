@@ -1,11 +1,11 @@
 #include "Game.h"
 #include "Sfml.h"
 #include "AGui.h"
+#include "Human.h"
 #include <iostream>
 
 Game::Game()
-: _map(), _core(_map) {
-    this->_gui = new Sfml(this->_map);
+: _map(), _core(_map), _gui(new Sfml(this->_map)), _playing(NULL) {
 }
 
 Game::~Game() {
@@ -14,6 +14,10 @@ Game::~Game() {
 
 // Members
 int Game::start() {
+    Human player1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
+    Human player2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
+    this->_playing = &player1;
+
     this->_gui->drawMap(this->_map.displayMap());
     while (this->_core.quit() == false)
     {
@@ -39,7 +43,13 @@ int Game::start() {
                 break;
             case EventManager::E_KEYS::ACCEPT:
                 this->_core.eventManager().disposeLastKey();
-                this->_map.placeStone(Stone(this->_gui->getCursor().Y, this->_gui->getCursor().X, Stone::E_COLOR::WHITE));
+
+                // This is the call to all rules. player.Plays() will return the stone which need to be placed.
+                // Should return True if it's valid
+                // bool valid = Referee.check(this->currentPlayer.plays())
+                //if (nextPlayer is AI): AI.plays())
+
+                this->_map.placeStone(this->_playing->plays());
                 this->_gui->drawMap(this->_map.displayMap());
                 break;
             default:

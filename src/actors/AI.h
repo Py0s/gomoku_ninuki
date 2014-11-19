@@ -8,5 +8,5 @@ public:
     AI();
     ~AI();
 
-    bool    plays();
+    virtual Stone    plays();
 };
