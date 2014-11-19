@@ -14,11 +14,12 @@ Game::~Game() {
 
 // Members
 int Game::start() {
+    this->_gui->drawMap(this->_map.displayMap());
     while (this->_core.quit() == false)
-//    this->_gui->drawMap(this->_map.displayMap());
     {
         this->_gui->refresh();
         this->_gui->getInput(this->_core.eventManager());
+
         switch (this->_core.eventManager().getLastKey()) {
             case EventManager::E_KEYS::UP:
                 this->_core.eventManager().disposeLastKey();
@@ -38,7 +39,8 @@ int Game::start() {
                 break;
             case EventManager::E_KEYS::ACCEPT:
                 this->_core.eventManager().disposeLastKey();
-//                this->_gui->drawMap(this->_map.displayMap());
+                this->_map.placeStone(Stone(this->_gui->getCursor().Y, this->_gui->getCursor().X, Stone::E_COLOR::WHITE));
+                this->_gui->drawMap(this->_map.displayMap());
                 break;
             default:
                 break;

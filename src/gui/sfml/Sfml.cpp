@@ -55,18 +55,18 @@ bool Sfml::drawFrame(char c, const Rectangle& rect) {
     return false;
 }
 
-bool Sfml::drawMap(const char* map) {
-    char c;
+bool Sfml::drawMap(const Stone::E_COLOR* map) {
+    Stone::E_COLOR c;
     std::list<sf::Sprite> stones;
 
     for (int y = 0; y < this->_map_size_y; ++y) {
         for (int x = 0; x < this->_map_size_x; ++x) {
             c = map[(y * this->_map_size_x) + x];
-            if (c == '*')
+            if (c == Stone::E_COLOR::NONE)
                 continue;
             stones.push_back(sf::Sprite());
             stones.back().setTexture(this->_stone_tx);
-            if (c == 'X')
+            if (c == Stone::E_COLOR::BLACK)
                 stones.back().setColor(sf::Color(75, 75, 75));
             stones.back().setPosition(Sfml::OFFSET_X + (x * 50), Sfml::OFFSET_Y + (y * 50));
         }
@@ -84,25 +84,25 @@ bool Sfml::drawMap(const char* map) {
 
 bool Sfml::cursorUp(const Map& m) {
     AGui::cursorUp(m);
-//    this->drawMap(m.displayMap());
+    this->drawMap(m.displayMap());
     return true;
 }
 
 bool Sfml::cursorDown(const Map& m) {
     AGui::cursorDown(m);
-//    this->drawMap(m.displayMap());
+    this->drawMap(m.displayMap());
     return true;
 }
 
 bool Sfml::cursorLeft(const Map& m) {
     AGui::cursorLeft(m);
-//    this->drawMap(m.displayMap());
+    this->drawMap(m.displayMap());
     return true;
 }
 
 bool Sfml::cursorRight(const Map& m) {
     AGui::cursorRight(m);
-//    this->drawMap(m.displayMap());
+    this->drawMap(m.displayMap());
     return true;
 }
 

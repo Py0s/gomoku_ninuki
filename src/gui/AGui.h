@@ -5,6 +5,7 @@
 #include "Rectangle.h"
 #include "Map.h"
 #include "Cursor.h"
+#include "Stone.h"
 #include <string>
 
 class AGui {
@@ -19,7 +20,7 @@ class AGui {
     // Members
     virtual bool refresh() = 0;
     virtual bool drawFrame(char c, const Rectangle& rect) = 0; // Could change with sfml introd
-    virtual bool drawMap(const char* map) = 0;
+    virtual bool drawMap(const Stone::E_COLOR* map) = 0;
     
     virtual bool cursorUp(const Map& m);
     virtual bool cursorDown(const Map& m);
