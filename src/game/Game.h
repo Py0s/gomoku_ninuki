@@ -17,6 +17,10 @@ private:
     Map _map;
     Core _core;
     AGui* _gui;
-    IPlayer * _playing;
+    IPlayer * _currentPlayer;
+    IPlayer * _players[2];
+    int _player_nb;
+    
+    inline void nextPlayer();
 };
 

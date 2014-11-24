@@ -5,19 +5,21 @@
 #include <iostream>
 
 Game::Game()
-: _map(), _core(_map), _gui(new Sfml(this->_map)), _playing(NULL) {
+: _map(), _core(_map), _gui(new Sfml(this->_map)), _currentPlayer(NULL), _player_nb(0) {
+    this->_players[0] = new Human(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
+    this->_players[1] = new Human(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
 }
 
 Game::~Game() {
+    delete this->_players[0];
+    delete this->_players[1];
     delete this->_gui;
 }
 
 // Members
 int Game::start() {
-    Human player1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
-    Human player2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
-    this->_playing = &player1;
 
+    this->_currentPlayer = this->_players[0];
     this->_gui->drawMap(this->_map.displayMap());
     while (this->_core.quit() == false)
     {
@@ -48,13 +50,20 @@ int Game::start() {
                 // Should return True if it's valid
                 // bool valid = Referee.check(this->currentPlayer.plays())
                 //if (nextPlayer is AI): AI.plays())
+                // Continue
 
-                this->_map.placeStone(this->_playing->plays());
+                this->_map.placeStone(this->_currentPlayer->plays());
                 this->_gui->drawMap(this->_map.displayMap());
+                this->nextPlayer();
                 break;
             default:
                 break;
         }
     }
     return 0;
+}
+
+inline void Game::nextPlayer() {
+    this->_player_nb = (this->_player_nb + 1) % 2;
+    this->_currentPlayer = this->_players[this->_player_nb];
 }
