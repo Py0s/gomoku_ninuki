@@ -24,7 +24,7 @@ class Map {
 
     typedef Tile& (Map::*PTR) (Tile&);
     const PTR go[MAX] = { &Map::n, &Map::s, &Map::e, &Map::w,   \
-                          &Map::ne, &Map::nw, &Map::se, &Map::sw };
+                          &Map::ne, &Map::se, &Map::nw, &Map::sw, NULL };
     
     Map();
     virtual ~Map();
