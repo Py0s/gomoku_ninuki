@@ -1,6 +1,6 @@
 #include "Map.h"
 
-Map::Map() {
+Map::Map(): OP_DIR { S, N, W, E, SW, SE, NW, NE, NONE } {
     for (int y = 0; y < this->_MAPSIZE_Y; ++y) {
         for (int x = 0; x < this->_MAPSIZE_X; ++x) {
             this->_displayMap[y][x] = Stone::E_COLOR::NONE;
