@@ -24,9 +24,14 @@ const Stone::E_COLOR * Map::displayMap() const {
     return (Stone::E_COLOR*)(this->_displayMap);
 }
 
+std::array<std::array<Tile, 19>, 19>& Map::getMap() {
+    return (_map);
+}
+
 // Members
 void Map::placeStone(const Stone& s) {
     this->_displayMap[s.y()][s.x()] = s.color();
+    this->_map[s.y()][s.x()].color(s.color());
 }
 
 void Map::removeStone(const Stone& s) {

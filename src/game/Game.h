@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "AGui.h"
 #include "IPlayer.h"
+#include "Referee.h"
 #include <map> 
 
 struct Config {
@@ -20,13 +21,14 @@ public:
     int start();
     
 private:
-    Map _map;
-    Core _core;
-    AGui* _gui;
-    IPlayer * _currentPlayer;
-    IPlayer * _players[2];
-    int _player_nb;
-    Config _conf;
+    Map         _map;
+    Core        _core;
+    AGui*       _gui;
+    IPlayer *   _currentPlayer;
+    IPlayer *   _players[2];
+    int         _player_nb;
+    Config      _conf;
+    Referee     _referee;
     
     inline void nextPlayer();
 };
