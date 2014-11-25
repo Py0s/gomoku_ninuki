@@ -32,10 +32,33 @@ std::array<std::array<Tile, 19>, 19>& Map::getMap() {
 
 // Members
 void Map::placeStone(const Stone& s) {
-    this->_displayMap[s.y()][s.x()] = s.color();
-    this->_map[s.y()][s.x()].color(s.color());
+    Tile tile = _map[s.y()][s.x()];
+    Stone::E_COLOR color = s.color();
+
+    this->_displayMap[s.y()][s.x()] = color;
+    tile.setColor(color);
+
+    for (int dir=0; dir < 8; ++dir)
+        updateTile(color, dir, tile.getValue(color, dir + 4 % 8), tile); // A CHANGER AVEC FONCTION DIRECTION OPPOSEE
 }
 
 void Map::removeStone(const Stone& s) {
-    this->_displayMap[s.y()][s.x()] = Stone::E_COLOR::NONE;
+    Tile tile = _map[s.y()][s.x()];
+    Stone::E_COLOR color = Stone::E_COLOR::NONE;
+
+    this->_displayMap[s.y()][s.x()] = color;
+    tile.setColor(color);
+
+    for (int dir=0; dir < 8; ++dir)
+        updateTile(color, dir, 0, tile); // A CHANGER AVEC FONCTION DIRECTION OPPOSEE    
+}
+
+
+void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile) {
+    tile.setValue(color, dir + 4 % 8, value);
+    if (tile.getColor() != Stone::E_COLOR::NONE)
+    {
+            Tile next_tile = tile;
+            updateTile(color, dir, ++value, next_tile);
+    }
 }

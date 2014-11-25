@@ -23,6 +23,8 @@ private:
     static const int _MAPSIZE_X = 19; // For now
     static const int _MAPSIZE_Y = _MAPSIZE_X;
 
-    Stone::E_COLOR                          _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
+    Stone::E_COLOR   _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
     std::array<std::array<Tile, 19>, 19>    _map;
+
+    void updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile);
 };
