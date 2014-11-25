@@ -4,6 +4,8 @@ Map::Map() {
     for (int y = 0; y < this->_MAPSIZE_Y; ++y) {
         for (int x = 0; x < this->_MAPSIZE_X; ++x) {
             this->_displayMap[y][x] = Stone::E_COLOR::NONE;
+            _map[y][x].Y = y;
+            _map[y][x].X = x;
         }
     }
 }

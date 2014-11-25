@@ -1,8 +1,7 @@
 #include "Tile.h"
 
-Tile::Tile() {
-    _color = Stone::NONE;
-
+Tile::Tile()
+: _color(Stone::E_COLOR::NONE) {
     for (int i=0; i < 8; ++i)
     {
         _values[Stone::BLACK][i] = 0;

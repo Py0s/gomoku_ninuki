@@ -3,6 +3,9 @@
 
 class Tile {
   public:
+    int Y;
+    int X;
+
     Tile();
     virtual ~Tile();
 

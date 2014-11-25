@@ -9,7 +9,7 @@ Referee::~Referee() {
 }
 
 bool Referee::check(const Stone& s, Map& map) const {
-    if (map.getMap()[s.y()][s.y()].getColor() != Stone::NONE)
+    if (map.getMap()[s.y()][s.x()].getColor() != Stone::E_COLOR::NONE)
         return false;
 
     map.placeStone(s);
