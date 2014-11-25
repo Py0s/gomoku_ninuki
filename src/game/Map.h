@@ -22,4 +22,3 @@ private:
 
     Stone::E_COLOR _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
 };
-

@@ -21,6 +21,7 @@ class AGui {
     virtual bool refresh() = 0;
     virtual bool drawFrame(char c, const Rectangle& rect) = 0; // Could change with sfml introd
     virtual bool drawMap(const Stone::E_COLOR* map) = 0;
+
     
     virtual bool cursorUp(const Map& m);
     virtual bool cursorDown(const Map& m);

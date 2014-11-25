@@ -6,21 +6,25 @@
 
 Game::Game()
 : _map(), _core(_map), _gui(new Sfml(this->_map)), _currentPlayer(NULL), _player_nb(0) {
-    this->_players[0] = new Human(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
-    this->_players[1] = new Human(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
+    this->_conf.fivebreak_rule = true;
+    this->_conf.doubletree_rule = true;
+    this->_conf.ai_player_pos = -1;
 }
 
 Game::~Game() {
-    delete this->_players[0];
-    delete this->_players[1];
     delete this->_gui;
 }
 
 // Members
 int Game::start() {
+    Human p1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
+    Human p2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
 
+    this->_players[0] = &p1;
+    this->_players[1] = &p2;
     this->_currentPlayer = this->_players[0];
     this->_gui->drawMap(this->_map.displayMap());
+
     while (this->_core.quit() == false)
     {
         this->_gui->refresh();
@@ -48,8 +52,9 @@ int Game::start() {
 
                 // This is the call to all rules. player.Plays() will return the stone which need to be placed.
                 // Should return True if it's valid
-                // bool valid = Referee.check(this->currentPlayer.plays())
-                //if (nextPlayer is AI): AI.plays())
+                // bool valid = Referee.check(this->currentPlayer.plays(), _map, _config)
+                //if (nextPlayer is AI):
+                // AI.plays()
                 // Continue
 
                 this->_map.placeStone(this->_currentPlayer->plays());
