@@ -2,6 +2,7 @@
 #include "Stone.h"
 #include "Cursor.h"
 #include "Tile.h"
+#include <array>
 
 class Map {
   public:
@@ -18,7 +19,7 @@ class Map {
         MAX,
     };
     
-    const enum E_DIR OP_DIR[MAX];
+    static const enum E_DIR OP_DIR[];
     
     Map();
     virtual ~Map();
@@ -27,16 +28,17 @@ class Map {
     int sizeX() const;
     int sizeY() const;
     const Stone::E_COLOR * displayMap() const;
+    std::array<std::array<Tile, 19>, 19>& getMap();
     
-    Tile& n(Tile);
-    Tile& s(Tile);
-    Tile& e(Tile);
-    Tile& w(Tile);
+    Tile& n(Tile t);
+    Tile& s(Tile t);
+    Tile& e(Tile t);
+    Tile& w(Tile t);
     
-    Tile& ne(Tile);
-    Tile& nw(Tile);
-    Tile& se(Tile);
-    Tile& sw(Tile);
+    Tile& ne(Tile t);
+    Tile& nw(Tile t);
+    Tile& se(Tile t);
+    Tile& sw(Tile t);
     
     // Members
     void placeStone(const Stone& s);
@@ -46,6 +48,7 @@ class Map {
   private:
     static const int _MAPSIZE_X = 19; // For now
     static const int _MAPSIZE_Y = _MAPSIZE_X;
-    
-    Stone::E_COLOR _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
+
+    Stone::E_COLOR                          _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
+    std::array<std::array<Tile, 19>, 19>    _map;
 };

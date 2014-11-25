@@ -56,10 +56,10 @@ int Game::start() {
                 //if (nextPlayer is AI):
                 // AI.plays()
                 // Continue
+                if (_referee.check(this->_currentPlayer->plays(), _map))
+                    this->nextPlayer();
 
-                this->_map.placeStone(this->_currentPlayer->plays());
                 this->_gui->drawMap(this->_map.displayMap());
-                this->nextPlayer();
                 break;
             default:
                 break;
