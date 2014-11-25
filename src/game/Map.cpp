@@ -33,49 +33,49 @@ std::array<std::array<Tile, 19>, 19>& Map::getMap() {
     return (_map);
 }
 
-Tile& Map::n(Tile t) {
+Tile& Map::n(Tile& t) {
     if (t.Y - 1 < 0)
         throw ExcOutOfBound();
     return this->_map[t.Y - 1][t.X];
 }
 
-Tile& Map::s(Tile t) {
+Tile& Map::s(Tile& t) {
     if (t.Y + 1 >= this->_MAPSIZE_Y)
         throw ExcOutOfBound();
     return this->_map[t.Y + 1][t.X];
 }
 
-Tile& Map::e(Tile t) {
+Tile& Map::e(Tile& t) {
     if (t.X + 1 >= this->_MAPSIZE_X)
         throw ExcOutOfBound();
     return this->_map[t.Y][t.X + 1];
 }
 
-Tile& Map::w(Tile t) {
+Tile& Map::w(Tile& t) {
     if (t.X - 1 < 0)
         throw ExcOutOfBound();
     return this->_map[t.Y][t.X - 1];
 }
 
-Tile& Map::ne(Tile t) {
+Tile& Map::ne(Tile& t) {
     if (t.Y - 1 < 0 || t.X + 1 >= this->_MAPSIZE_X)
         throw ExcOutOfBound();
     return this->_map[t.Y - 1][t.X + 1];
 }
 
-Tile& Map::nw(Tile t) {
+Tile& Map::nw(Tile& t) {
     if (t.Y - 1 < 0 || t.X - 1 < 0)
         throw ExcOutOfBound();
     return this->_map[t.Y - 1][t.X - 1];
 }
 
-Tile& Map::se(Tile t) {
+Tile& Map::se(Tile& t) {
     if (t.Y + 1 >= this->_MAPSIZE_Y || t.X + 1 >= this->_MAPSIZE_X)
         throw ExcOutOfBound();
     return this->_map[t.Y + 1][t.X + 1];
 }
 
-Tile& Map::sw(Tile t) {
+Tile& Map::sw(Tile& t) {
     if (t.Y + 1 >= this->_MAPSIZE_Y || t.X - 1 < 0)
         throw ExcOutOfBound();
     return this->_map[t.Y + 1][t.X - 1];

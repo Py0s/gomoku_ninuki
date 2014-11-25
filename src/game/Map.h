@@ -4,6 +4,7 @@
 #include "Tile.h"
 #include <array>
 
+
 class Map {
   public:
     enum E_DIR {
@@ -16,10 +17,14 @@ class Map {
         NW,
         SW,
         NONE,
-        MAX,
+        MAX, // Should NEVER be used
     };
     
     static const enum E_DIR OP_DIR[];
+
+    typedef Tile& (Map::*PTR) (Tile&);
+    const PTR go[MAX] = { &Map::n, &Map::s, &Map::e, &Map::w,   \
+                       &Map::ne, &Map::nw, &Map::se, &Map::sw };
     
     Map();
     virtual ~Map();
@@ -29,16 +34,16 @@ class Map {
     int sizeY() const;
     const Stone::E_COLOR * displayMap() const;
     std::array<std::array<Tile, 19>, 19>& getMap();
+        
+    Tile& n(Tile& t);
+    Tile& s(Tile& t);
+    Tile& e(Tile& t);
+    Tile& w(Tile& t);
     
-    Tile& n(Tile t);
-    Tile& s(Tile t);
-    Tile& e(Tile t);
-    Tile& w(Tile t);
-    
-    Tile& ne(Tile t);
-    Tile& nw(Tile t);
-    Tile& se(Tile t);
-    Tile& sw(Tile t);
+    Tile& ne(Tile& t);
+    Tile& nw(Tile& t);
+    Tile& se(Tile& t);
+    Tile& sw(Tile& t);
     
     // Members
     void placeStone(const Stone& s);
