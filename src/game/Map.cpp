@@ -33,6 +33,18 @@ std::array<std::array<Tile, 19>, 19>& Map::getMap() {
     return (_map);
 }
 
+
+// Members
+void Map::placeStone(const Stone& s) {
+    this->_displayMap[s.y()][s.x()] = s.color();
+    this->_map[s.y()][s.x()].color(s.color());
+}
+
+void Map::removeStone(const Stone& s) {
+    this->_displayMap[s.y()][s.x()] = Stone::E_COLOR::NONE;
+}
+
+// PRIVATE
 Tile& Map::n(Tile& t) {
     if (t.Y - 1 < 0)
         throw ExcOutOfBound();
@@ -79,14 +91,4 @@ Tile& Map::sw(Tile& t) {
     if (t.Y + 1 >= this->_MAPSIZE_Y || t.X - 1 < 0)
         throw ExcOutOfBound();
     return this->_map[t.Y + 1][t.X - 1];
-}
-
-// Members
-void Map::placeStone(const Stone& s) {
-    this->_displayMap[s.y()][s.x()] = s.color();
-    this->_map[s.y()][s.x()].color(s.color());
-}
-
-void Map::removeStone(const Stone& s) {
-    this->_displayMap[s.y()][s.x()] = Stone::E_COLOR::NONE;
 }
