@@ -8,14 +8,14 @@
 class Map {
   public:
     enum E_DIR {
-        N = 0,
-        S,
-        E,
-        W,
+        NW = 0,
+        N,
         NE,
+        E,
         SE,
-        NW,
+        S,
         SW,
+        W,
         NONE,
         MAX, // Should NEVER be used
     };
@@ -23,8 +23,8 @@ class Map {
     static const enum E_DIR OP_DIR[];
 
     typedef Tile& (Map::*PTR) (Tile&);
-    const PTR go[MAX] = { &Map::n, &Map::s, &Map::e, &Map::w,   \
-                          &Map::ne, &Map::se, &Map::nw, &Map::sw, NULL };
+    const PTR go[MAX] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
+                          &Map::se, &Map::s, &Map::sw, &Map::w, NULL };
     
     Map();
     virtual ~Map();
@@ -40,6 +40,8 @@ class Map {
     void placeStone(const Stone& s);
     void removeStone(const Stone& s);
   
+    // Debug
+    void displayDebug() const;
     
   private:
     static const int _MAPSIZE_X = 19; // For now
@@ -47,10 +49,8 @@ class Map {
 
     Stone::E_COLOR   _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
     std::array<std::array<Tile, 19>, 19>    _map;
-<<<<<<< HEAD
 
     void updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile);
-=======
     
     Tile& n(Tile& t);
     Tile& s(Tile& t);
@@ -61,5 +61,4 @@ class Map {
     Tile& nw(Tile& t);
     Tile& se(Tile& t);
     Tile& sw(Tile& t);
->>>>>>> c66a010ec3c5973709922b2263191e4e0d4be372
 };

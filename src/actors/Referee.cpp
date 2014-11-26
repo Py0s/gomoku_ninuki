@@ -13,6 +13,9 @@ bool Referee::check(const Stone& s, Map& map) const {
         return false;
 
     map.placeStone(s);
+
+    //map.displayDebug();
+
     // if RULE
     checkDoubleThree();
 
@@ -31,5 +34,5 @@ void Referee::checkCapture() const {
 }
 
 void Referee::checkAlign() const {
-
+// if RULE
 }

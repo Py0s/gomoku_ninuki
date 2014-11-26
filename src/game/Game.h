@@ -7,7 +7,7 @@
 #include <map> 
 
 struct Config {
-    bool doubletree_rule;
+    bool doublethree_rule;
     bool fivebreak_rule;
     int ai_player_pos; // Set -1 if no ai
 };

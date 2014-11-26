@@ -7,7 +7,7 @@
 Game::Game()
 : _map(), _core(_map), _gui(new Sfml(this->_map)), _currentPlayer(NULL), _player_nb(0) {
     this->_conf.fivebreak_rule = true;
-    this->_conf.doubletree_rule = true;
+    this->_conf.doublethree_rule = true;
     this->_conf.ai_player_pos = -1;
 }
 
