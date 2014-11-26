@@ -14,12 +14,12 @@ bool Referee::check(const Stone& s, Map& map) const {
 
     map.placeStone(s);
 
-    //map.displayDebug();
+    // map.displayDebug();
 
     // if RULE
     checkDoubleThree();
 
-    checkCapture();
+    checkCapture(map.getMap()[s.y()][s.x()], map);
 
     checkAlign();
     return true;
@@ -29,7 +29,7 @@ void Referee::checkDoubleThree() const {
 
 }
 
-void Referee::checkCapture() const {
+void Referee::checkCapture(Tile& , Map& ) const {
 
 }
 

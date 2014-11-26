@@ -16,7 +16,8 @@ class Map {
         S,
         SW,
         W,
-        NONE,
+        DIR_COUNT,// = number of elements in the enum
+//        NONE,
         MAX, // Should NEVER be used
     };
     

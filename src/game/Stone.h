@@ -1,6 +1,6 @@
 #pragma once
 
-class Stone {
+struct Stone {
   public:
     enum E_COLOR {
         BLACK = 0,

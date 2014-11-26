@@ -1,7 +1,7 @@
 #include "Map.h"
 #include "ExcOutOfBound.h"
 
-const enum Map::E_DIR Map::OP_DIR[] = { SE, S, SW, W, NW, N, NE, E, NONE };
+const enum Map::E_DIR Map::OP_DIR[] = { SE, S, SW, W, NW, N, NE, E };
 
 Map::Map() {
     for (int y = 0; y < this->_MAPSIZE_Y; ++y) {

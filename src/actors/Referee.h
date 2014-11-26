@@ -11,7 +11,7 @@ public:
 
     bool check(const Stone& s, Map& map) const;
     void checkDoubleThree() const;
-    void checkCapture() const;
+    void checkCapture(Tile& tile, Map& map) const;
     void checkAlign() const;
     
 private:
