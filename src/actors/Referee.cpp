@@ -48,7 +48,7 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
                 if (tile_for_capture.getColor() == color)
                 {
                     // std::cout << "Pierres capturees" << std::endl;
-                    player->capturedStones();
+                    player->captureStones();
 
                     Tile& first_captured_tile = (map.*ptr)(tile, 1);
                     Tile& second_captured_tile = (map.*ptr)(tile, 2);
