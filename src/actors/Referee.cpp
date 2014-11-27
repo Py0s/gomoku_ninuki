@@ -1,7 +1,7 @@
 
 #include "Stone.h"
-
 #include "Referee.h"
+#include "ExcOutOfBound.h"
 
 Referee::Referee() {
 
@@ -22,7 +22,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map) const {
     // if RULE
     checkDoubleThree();
 
-    checkCapture(map.getMap()[s.y()][s.x()], map);
+    checkCapture(map[s.y()][s.x()], map);
 
     E_STATE ret = checkAlign(map[s.y()][s.x()], map);
     return ret;
@@ -32,8 +32,32 @@ void Referee::checkDoubleThree() const {
 
 }
 
-void Referee::checkCapture(Tile& , Map& ) const {
+void Referee::checkCapture(Tile& tile, Map& map) const {
+    Stone::E_COLOR color = tile.getColor();
 
+    for (int dir = 0; dir < 8; ++dir)
+    {
+        if (map[tile.Y][tile.X].getValue(static_cast<Stone::E_COLOR>((color + 1) % 2), dir) == 2) // TODO: A CHANGER AVEC RECUPERER CORRESPONDANCE TABLEAU COULEUR OPPOSEE
+        {
+            try
+            {
+                Map::PTR ptr = map.go[dir];
+                Tile& tile_for_capture = (map.*ptr)(tile, 3);
+
+                if (tile_for_capture.getColor() == color)
+                {
+                    // Pierres capturées pour color
+                    Tile& first_captured_tile = (map.*ptr)(tile, 1);
+                    Tile& second_captured_tile = (map.*ptr)(tile, 2);
+
+                    map.removeStone(first_captured_tile);
+                    map.removeStone(second_captured_tile);
+                }
+            }
+            catch (const ExcOutOfBound& e) {
+            }
+        }
+    }
 }
 
 Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) const {

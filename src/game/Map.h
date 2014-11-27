@@ -23,7 +23,7 @@ class Map {
     
     static const enum E_DIR OP_DIR[];
 
-    typedef Tile& (Map::*PTR) (Tile&);
+    typedef Tile& (Map::*PTR) (Tile&, unsigned char);
     const PTR go[MAX] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
                           &Map::se, &Map::s, &Map::sw, &Map::w, NULL };
     
@@ -34,7 +34,7 @@ class Map {
     int sizeX() const;
     int sizeY() const;
     const Stone::E_COLOR * displayMap() const;
-    std::array<std::array<Tile, 19>, 19>& getMap();
+
 
     // Operator
     std::array<Tile, 19>& operator[](size_t idx);
@@ -42,7 +42,7 @@ class Map {
     
     // Members
     void placeStone(const Stone& s);
-    void removeStone(const Stone& s);
+    void removeStone(Tile& tile);
   
     // Debug
     void displayDebug() const;
@@ -56,13 +56,13 @@ class Map {
 
     void updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile);
     
-    Tile& n(Tile& t);
-    Tile& s(Tile& t);
-    Tile& e(Tile& t);
-    Tile& w(Tile& t);
+    Tile& n(Tile& t, unsigned char len);
+    Tile& s(Tile& t, unsigned char len);
+    Tile& e(Tile& t, unsigned char len);
+    Tile& w(Tile& t, unsigned char len);
     
-    Tile& ne(Tile& t);
-    Tile& nw(Tile& t);
-    Tile& se(Tile& t);
-    Tile& sw(Tile& t);
+    Tile& ne(Tile& t, unsigned char len);
+    Tile& nw(Tile& t, unsigned char len);
+    Tile& se(Tile& t, unsigned char len);
+    Tile& sw(Tile& t, unsigned char len);
 };
