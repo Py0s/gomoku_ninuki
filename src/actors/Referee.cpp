@@ -11,20 +11,20 @@ Referee::~Referee() {
 
 }
 
-Referee::E_STATE Referee::check(const Stone& s, Map& map) const {
+Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) const {
     if (map[s.y()][s.x()].getColor() != Stone::E_COLOR::NONE)
         return INVALID;
 
     map.placeStone(s);
 
-    // map.displayDebug();
-
     // if RULE
     checkDoubleThree();
 
-    checkCapture(map[s.y()][s.x()], map);
+    checkCapture(map[s.y()][s.x()], map, player);
 
     E_STATE ret = checkAlign(map[s.y()][s.x()], map);
+
+    // map.displayDebug();
     return ret;
 }
 
@@ -32,13 +32,14 @@ void Referee::checkDoubleThree() const {
 
 }
 
-void Referee::checkCapture(Tile& tile, Map& map) const {
+void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
     Stone::E_COLOR color = tile.getColor();
 
     for (int dir = 0; dir < 8; ++dir)
     {
         if (map[tile.Y][tile.X].getValue(static_cast<Stone::E_COLOR>((color + 1) % 2), dir) == 2) // TODO: A CHANGER AVEC RECUPERER CORRESPONDANCE TABLEAU COULEUR OPPOSEE
         {
+            // std::cout << "Alignement de deux pierres chez l'ennemi" << std::endl;
             try
             {
                 Map::PTR ptr = map.go[dir];
@@ -46,7 +47,9 @@ void Referee::checkCapture(Tile& tile, Map& map) const {
 
                 if (tile_for_capture.getColor() == color)
                 {
-                    // Pierres capturées pour color
+                    // std::cout << "Pierres capturees" << std::endl;
+                    player->capturedStones();
+
                     Tile& first_captured_tile = (map.*ptr)(tile, 1);
                     Tile& second_captured_tile = (map.*ptr)(tile, 2);
 

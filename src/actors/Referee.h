@@ -2,6 +2,7 @@
 
 #include "Stone.h"
 #include "Map.h"
+#include "APlayer.h"
 
 class Referee
 {
@@ -16,9 +17,9 @@ class Referee
     Referee();
     ~Referee();
     
-    E_STATE check(const Stone& s, Map& map) const;
+    E_STATE check(const Stone& s, Map& map, APlayer* player) const;
     void checkDoubleThree() const;
-    void checkCapture(Tile& tile, Map& map) const;
+    void checkCapture(Tile& tile, Map& map, APlayer* player) const;
     Referee::E_STATE checkAlign(Tile& t, Map& map) const;
     
   private:

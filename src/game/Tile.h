@@ -11,7 +11,7 @@ class Tile {
     virtual ~Tile();
 
     // Getters
-    const Stone::E_COLOR&  getColor() const;
+    const Stone::E_COLOR  getColor() const;
     const char getValue(Stone::E_COLOR color, int dir) const;
     const char getIntValue(Stone::E_COLOR color, int dir) const;
 

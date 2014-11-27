@@ -24,7 +24,7 @@ const char Tile::getIntValue(Stone::E_COLOR color, int dir) const {
     return this->_inter_values[color][dir];
 }
 
-const Stone::E_COLOR&  Tile::getColor() const {
+const Stone::E_COLOR  Tile::getColor() const {
     return _color;
 }
 

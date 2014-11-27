@@ -1,9 +1,9 @@
 #pragma once
 
-#include "IPlayer.h"
+#include "APlayer.h"
 #include "Cursor.h"
 
-class Human : public IPlayer
+class Human : public APlayer
 {
     public:
       Human(const Cursor& curs, Stone::E_COLOR color);

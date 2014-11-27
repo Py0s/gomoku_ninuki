@@ -1,8 +1,8 @@
 #pragma once
 
-#include "IPlayer.h"
+#include "APlayer.h"
 
-class AI : public IPlayer
+class AI : public APlayer
 {
 public:
     AI();

@@ -61,10 +61,10 @@ void Map::placeStone(const Stone& s) {
 }
 
 void Map::removeStone(Tile& tile) {
-    Stone::E_COLOR color = Stone::E_COLOR::NONE;
+    Stone::E_COLOR color = tile.getColor();
 
-    this->_displayMap[tile.Y][tile.X] = color;
-    tile.setColor(color);
+    this->_displayMap[tile.Y][tile.X] = Stone::E_COLOR::NONE;
+    tile.setColor(Stone::E_COLOR::NONE);
 
     for (int dir=0; dir < 8; ++dir)
     {
@@ -83,7 +83,7 @@ void Map::removeStone(Tile& tile) {
 void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile) {
     // std::cout << "Update Tile (" << color << ") dir:" << dir << std::endl;
     tile.setValue(color, (dir + 4) % 8, value); // TODO: Change modulo by opposite direction
-    if (tile.getColor() != Stone::E_COLOR::NONE)
+    if (tile.getColor() == color)
     {
         try
         {
@@ -101,9 +101,9 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile) {
 // Debug
 void Map::displayDebug() const
 {
-    for (int y=0; y < 5; ++y)
+    for (int y=0; y < 2; ++y)
     {
-        for (int x = 0; x < 2; ++x)
+        for (int x = 0; x < 8; ++x)
         {
             _map[y][x].Debug();
             std::cout << " ";

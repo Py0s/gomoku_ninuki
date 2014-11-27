@@ -2,7 +2,7 @@
 #include "Map.h"
 #include "Core.h"
 #include "AGui.h"
-#include "IPlayer.h"
+#include "APlayer.h"
 #include "Referee.h"
 #include <map> 
 
@@ -24,8 +24,8 @@ private:
     Map         _map;
     Core        _core;
     AGui*       _gui;
-    IPlayer *   _currentPlayer;
-    IPlayer *   _players[2];
+    APlayer *   _currentPlayer;
+    APlayer *   _players[2];
     int         _player_nb;
     Config      _conf;
     Referee     _referee;
