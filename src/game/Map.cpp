@@ -33,6 +33,9 @@ std::array<std::array<Tile, 19>, 19>& Map::getMap() {
     return (_map);
 }
 
+std::array<Tile, 19>& Map::operator[](size_t idx) {
+    return _map[idx];
+}
 
 // Members
 #define CALL_MEMBER_FN(object,ptrToMember)  ((object).*(ptrToMember))

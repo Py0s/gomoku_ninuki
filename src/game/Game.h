@@ -31,5 +31,6 @@ private:
     Referee     _referee;
     
     inline void nextPlayer();
+    void accept();
 };
 

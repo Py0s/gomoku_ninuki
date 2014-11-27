@@ -35,6 +35,9 @@ class Map {
     int sizeY() const;
     const Stone::E_COLOR * displayMap() const;
     std::array<std::array<Tile, 19>, 19>& getMap();
+
+    // Operator
+    std::array<Tile, 19>& operator[](size_t idx);
         
     
     // Members

@@ -49,17 +49,7 @@ int Game::start() {
                 break;
             case EventManager::E_KEYS::ACCEPT:
                 this->_core.eventManager().disposeLastKey();
-
-                // This is the call to all rules. player.Plays() will return the stone which need to be placed.
-                // Should return True if it's valid
-                // bool valid = Referee.check(this->currentPlayer.plays(), _map, _config)
-                //if (nextPlayer is AI):
-                // AI.plays()
-                // Continue
-                if (_referee.check(this->_currentPlayer->plays(), _map))
-                    this->nextPlayer();
-
-                this->_gui->drawMap(this->_map.displayMap());
+                this->accept();
                 break;
             default:
                 break;
@@ -71,4 +61,26 @@ int Game::start() {
 inline void Game::nextPlayer() {
     this->_player_nb = (this->_player_nb + 1) % 2;
     this->_currentPlayer = this->_players[this->_player_nb];
+}
+
+void Game::accept() {
+    Referee::E_STATE ret = _referee.check(this->_currentPlayer->plays(), _map);
+    switch (ret) {
+        case Referee::E_STATE::VALID:
+            this->nextPlayer();
+            this->_gui->drawMap(this->_map.displayMap());
+            //if (nextPlayer is AI):
+            // AI.plays()
+            break;
+        case Referee::E_STATE::INVALID:
+            break;
+        case Referee::E_STATE::END_BLACK:
+            // this->_gui.drawWining(player_white);
+            // this->_map.reset(); etc...
+            break;
+        case Referee::E_STATE::END_WHITE:
+            // this->_gui.drawWining(player_white);
+            // this->_map.reset(); etc...
+            break;
+    }
 }

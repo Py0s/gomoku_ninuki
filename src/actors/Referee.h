@@ -5,14 +5,23 @@
 
 class Referee
 {
-public:
+  public:
+    enum E_STATE {
+        VALID = 0,
+        INVALID,
+        END_BLACK,
+        END_WHITE,
+    };
+    
     Referee();
     ~Referee();
-
-    bool check(const Stone& s, Map& map) const;
+    
+    E_STATE check(const Stone& s, Map& map) const;
     void checkDoubleThree() const;
     void checkCapture(Tile& tile, Map& map) const;
-    void checkAlign() const;
+    Referee::E_STATE checkAlign(Tile& t, Map& map) const;
     
-private:
+  private:
+    
+    Referee::E_STATE winner(Stone::E_COLOR color);
 };
