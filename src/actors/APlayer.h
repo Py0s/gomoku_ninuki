@@ -17,7 +17,7 @@ class APlayer
     }
     
   protected:
-    //APlayer(): _color(Stone::E_COLOR::NONE) { };
+    APlayer(): _color(Stone::E_COLOR::NONE) { };
     APlayer(Stone::E_COLOR color): _color(color), _capturedStones(0) { };
     
     Stone::E_COLOR _color;

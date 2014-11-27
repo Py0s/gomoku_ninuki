@@ -31,7 +31,6 @@ const Stone::E_COLOR  Tile::getColor() const {
 
 // Setters
 void Tile::setValue(Stone::E_COLOR color, int dir, char value) {
-    // std::cout << "(" << Y << "," << X << ")" << "[" <<  color << "]" << "[" << dir << "]" << " = " << static_cast<char>(value + '0') << std::endl;
     _values[color][dir] = value;
 }
 

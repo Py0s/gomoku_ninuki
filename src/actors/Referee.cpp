@@ -3,6 +3,8 @@
 #include "Referee.h"
 #include "ExcOutOfBound.h"
 
+const enum Stone::E_COLOR Referee::OP_COLOR[] = { Stone::WHITE, Stone::BLACK };
+
 Referee::Referee() {
 
 }
@@ -37,9 +39,8 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
 
     for (int dir = 0; dir < 8; ++dir)
     {
-        if (map[tile.Y][tile.X].getValue(static_cast<Stone::E_COLOR>((color + 1) % 2), dir) == 2) // TODO: A CHANGER AVEC RECUPERER CORRESPONDANCE TABLEAU COULEUR OPPOSEE
+        if (map[tile.Y][tile.X].getValue(Referee::OP_COLOR[color], dir) == 2)
         {
-            // std::cout << "Alignement de deux pierres chez l'ennemi" << std::endl;
             try
             {
                 Map::PTR ptr = map.go[dir];
@@ -47,14 +48,13 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
 
                 if (tile_for_capture.getColor() == color)
                 {
-                    // std::cout << "Pierres capturees" << std::endl;
                     player->captureStones();
 
-                    Tile& first_captured_tile = (map.*ptr)(tile, 1);
-                    Tile& second_captured_tile = (map.*ptr)(tile, 2);
+                    Tile& first_captured_stone = (map.*ptr)(tile, 1);
+                    Tile& second_captured_stone = (map.*ptr)(tile, 2);
 
-                    map.removeStone(first_captured_tile);
-                    map.removeStone(second_captured_tile);
+                    map.removeStone(first_captured_stone);
+                    map.removeStone(second_captured_stone);
                 }
             }
             catch (const ExcOutOfBound& e) {

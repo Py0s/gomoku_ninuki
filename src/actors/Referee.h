@@ -13,6 +13,8 @@ class Referee
         END_BLACK,
         END_WHITE,
     };
+
+    static const enum Stone::E_COLOR OP_COLOR[];
     
     Referee();
     ~Referee();

@@ -37,7 +37,6 @@ std::array<Tile, 19>& Map::operator[](size_t idx) {
 
 
 // Members
-//#define CALL_MEMBER_FN(object,ptrToMember)  ((object)->*(ptrToMember))
 void Map::placeStone(const Stone& s) {
     Tile& tile = _map[s.y()][s.x()];
     Stone::E_COLOR color = s.color();
@@ -49,11 +48,9 @@ void Map::placeStone(const Stone& s) {
     {
         try
         {
-            //Tile& next_tile = (*this.go[dir])(tile);
-            //Tile& next_tile = CALL_MEMBER_FN(this, go[dir])(tile);
             PTR ptr = this->go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
-            updateTile(color, dir, tile.getValue(color, (dir + 4) % 8) + 1, next_tile); // TODO: Change modulo by opposite direction
+            updateTile(color, dir, tile.getValue(color, Map::OP_DIR[dir]) + 1, next_tile);
         }
         catch (const ExcOutOfBound& e) {
         }
@@ -72,7 +69,6 @@ void Map::removeStone(Tile& tile) {
         {
             PTR ptr = this->go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
-            //Tile& next_tile = CALL_MEMBER_FN(*this, go[dir])(tile);
             updateTile(color, dir, 0, next_tile);
         }
         catch (const ExcOutOfBound& e) {
@@ -81,15 +77,13 @@ void Map::removeStone(Tile& tile) {
 }
 
 void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile) {
-    // std::cout << "Update Tile (" << color << ") dir:" << dir << std::endl;
-    tile.setValue(color, (dir + 4) % 8, value); // TODO: Change modulo by opposite direction
+    tile.setValue(color, Map::OP_DIR[dir], value);
     if (tile.getColor() == color)
     {
         try
         {
             PTR ptr = this->go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
-            //Tile& next_tile = CALL_MEMBER_FN(*this, go[dir])(tile);
             updateTile(color, dir, ++value, next_tile);
         }
         catch (const ExcOutOfBound& e) {
