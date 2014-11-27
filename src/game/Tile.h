@@ -13,6 +13,7 @@ class Tile {
     // Getters
     const Stone::E_COLOR&  getColor() const;
     const char getValue(Stone::E_COLOR color, int dir) const;
+    const char getIntValue(Stone::E_COLOR color, int dir) const;
 
     // Setters
     void setColor(Stone::E_COLOR color);
@@ -24,5 +25,5 @@ class Tile {
   private:
     Stone::E_COLOR  _color;
     char            _values[2][8];
-    char            _interValues[2][8];
+    char            _inter_values[2][8];
 };

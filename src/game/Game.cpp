@@ -77,10 +77,12 @@ void Game::accept() {
         case Referee::E_STATE::END_BLACK:
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
+            std::cout << "Winner Black" << std::endl;
             break;
         case Referee::E_STATE::END_WHITE:
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
+            std::cout << "Winner White" << std::endl;
             break;
     }
 }

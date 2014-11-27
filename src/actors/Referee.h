@@ -23,5 +23,5 @@ class Referee
     
   private:
     
-    Referee::E_STATE winner(Stone::E_COLOR color);
+    Referee::E_STATE winner(const Stone::E_COLOR color) const;
 };

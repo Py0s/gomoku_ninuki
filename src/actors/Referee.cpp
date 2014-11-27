@@ -38,18 +38,23 @@ void Referee::checkCapture(Tile& , Map& ) const {
 
 Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) const {
     // TODO: need to make a function from E_Dir to direction
-    if (t.intervalue[t.color()][N] >= 5)
-        return this->winner(t.color());  //This->_break == list des cassaables
-    //if (t.intervalue[t.color()][W] >= 5
-    // && is_breakable(E, t, m, this->_break)); This->_break == list des cassaables
-    //if (t.intervalue[t.color()][NW] >= 5
-    // && is_breakable(NW, t, m, this->_break)); This->_break == list des cassaables
-    //if (t.intervalue[t.color()][NE] >= 5
-    // && is_breakable(NE, t, m, this->_break)); This->_break == list des cassaables
+
+    if (t.getIntValue(t.getColor(), Map::N) >= 5)
+        // Mets toi ici avec if (is_beakable() == true) put_in_list(t) else ...
+        return this->winner(t.getColor());
+    if (t.getIntValue(t.getColor(), Map::W) >= 5)
+        // Mets toi ici avec if (is_beakable() == true) put_in_list() else ...
+        return this->winner(t.getColor());
+    if (t.getIntValue(t.getColor(), Map::NW) >= 5)
+        // Mets toi ici avec if (is_beakable() == true) put_in_list() else ...
+        return this->winner(t.getColor());
+    if (t.getIntValue(t.getColor(), Map::NE) >= 5)
+        // Mets toi ici avec if (is_beakable() == true) put_in_list() else ...
+        return this->winner(t.getColor());
     return VALID;
 }
 
-inline Referee::E_STATE Referee::winner(Stone::E_COLOR color) {
+inline Referee::E_STATE Referee::winner(const Stone::E_COLOR color) const {
     if (color == Stone::BLACK)
         return END_BLACK;
     return END_WHITE;

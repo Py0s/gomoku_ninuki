@@ -6,8 +6,8 @@ Tile::Tile()
     {
         _values[Stone::BLACK][i] = 0;
         _values[Stone::WHITE][i] = 0;
-        _interValues[Stone::BLACK][i] = 0;
-        _interValues[Stone::WHITE][i] = 0;
+        _inter_values[Stone::BLACK][i] = 0;
+        _inter_values[Stone::WHITE][i] = 0;
     }
 }
 
@@ -18,6 +18,10 @@ Tile::~Tile() {
 // Getters
 const char Tile::getValue(Stone::E_COLOR color, int dir) const {
     return _values[color][dir];
+}
+
+const char Tile::getIntValue(Stone::E_COLOR color, int dir) const {
+    return this->_inter_values[color][dir];
 }
 
 const Stone::E_COLOR&  Tile::getColor() const {
