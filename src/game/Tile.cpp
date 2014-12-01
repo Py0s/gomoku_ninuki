@@ -30,25 +30,40 @@ const Stone::E_COLOR  Tile::getColor() const {
 
 
 // Setters
-void Tile::setValue(Stone::E_COLOR color, int dir, char value) {
-    _values[color][dir] = value;
-}
-
 void  Tile::setColor(Stone::E_COLOR color) {
     _color = color;
 }
 
+void Tile::setValue(Stone::E_COLOR color, int dir, char value) {
+    _values[color][dir] = value;
+}
+
+void Tile::AddToInterValue(Stone::E_COLOR color, int dir, char value) {
+    _inter_values[color][dir] += value;
+}
+
+
+
 
 // Debug
 void Tile::Debug() const {
-    std::cout << "B[" << _color << "]:";
-    for (int i = 0; i < 8; ++i)
+    std::cout << "B:";
+    /*for (int i = 0; i < 8; ++i)
     {
         std::cout << static_cast<char>(_values[Stone::WHITE][i] + '0');
     }
-    std::cout << "|N[" << _color << "]:";
+    std::cout << "|N:";
     for (int i = 0; i < 8; ++i)
     {
         std::cout << static_cast<char>(_values[Stone::BLACK][i] + '0');
+    }*/
+    for (int i = 0; i < 4; ++i)
+    {
+        std::cout << static_cast<char>(_inter_values[Stone::WHITE][i] + '0');
+    }
+    std::cout << "|N:";
+    for (int i = 0; i < 4; ++i)
+    {
+        std::cout << static_cast<char>(_inter_values[Stone::BLACK][i] + '0');
     }
 }

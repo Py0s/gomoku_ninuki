@@ -44,13 +44,19 @@ void Map::placeStone(const Stone& s) {
     this->_displayMap[s.y()][s.x()] = color;
     tile.setColor(color);
 
+    for (int dir_inter = 0; dir_inter < 4; ++dir_inter)
+    {
+        tile.AddToInterValue(color, dir_inter, 1);
+    }    
+
     for (int dir=0; dir < 8; ++dir)
     {
         try
         {
             PTR ptr = this->go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
-            updateTile(color, dir, tile.getValue(color, Map::OP_DIR[dir]) + 1, next_tile);
+            char value = tile.getValue(color, Map::OP_DIR[dir]) + 1;
+            updateTile(color, dir, value, next_tile, value);
         }
         catch (const ExcOutOfBound& e) {
         }
@@ -63,28 +69,34 @@ void Map::removeStone(Tile& tile) {
     this->_displayMap[tile.Y][tile.X] = Stone::E_COLOR::NONE;
     tile.setColor(Stone::E_COLOR::NONE);
 
+    for (int dir_inter = 0; dir_inter < 4; ++dir_inter)
+    {
+        tile.AddToInterValue(color, dir_inter, -1);
+    }
+
     for (int dir=0; dir < 8; ++dir)
     {
         try
         {
             PTR ptr = this->go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
-            updateTile(color, dir, 0, next_tile);
+            updateTile(color, dir, 0, next_tile, -(tile.getValue(color, Map::OP_DIR[dir]) + 1));
         }
         catch (const ExcOutOfBound& e) {
         }
     }
 }
 
-void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile) {
+void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char inter_value) {
     tile.setValue(color, Map::OP_DIR[dir], value);
+    tile.AddToInterValue(color, dir % 4, inter_value); // TODO : Changer le modulo par autre chose ?
     if (tile.getColor() == color)
     {
         try
         {
             PTR ptr = this->go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
-            updateTile(color, dir, ++value, next_tile);
+            updateTile(color, dir, ++value, next_tile, inter_value);
         }
         catch (const ExcOutOfBound& e) {
         }
@@ -95,9 +107,9 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile) {
 // Debug
 void Map::displayDebug() const
 {
-    for (int y=0; y < 2; ++y)
+    for (int y=0; y < 3; ++y)
     {
-        for (int x = 0; x < 8; ++x)
+        for (int x = 0; x < 9; ++x)
         {
             _map[y][x].Debug();
             std::cout << " ";
