@@ -81,12 +81,12 @@ Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) const {
     return VALID;
 }
 
-bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const
+bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const // TODO try catch
 {
     Tile    next = t;
-    int     count = 5;
+    int     count = 4;
 
-    while (next.getColor() == t.getColor() && count > 0)
+    while (count > 0 && next.getColor() == t.getColor())
     {
         if (isBreakable(next, m) == true)
             break;
@@ -95,7 +95,7 @@ bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const
     }
     dir = Map::OP_DIR[dir];
     next = (m.*(m.go[dir]))(t, 1);
-    while (next.getColor() == t.getColor() && count > 0)
+    while (count > 0 && next.getColor() == t.getColor())
     {
         if (isBreakable(next, m) == true)
             break;
