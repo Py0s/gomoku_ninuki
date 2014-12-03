@@ -2,6 +2,7 @@
 #include "ExcOutOfBound.h"
 
 const enum Map::E_DIR Map::OP_DIR[] = { SE, S, SW, W, NW, N, NE, E };
+const enum Map::E_DIR Map::OR_TO_DIR[] = {N, NE, E, SE};
 
 Map::Map() {
     for (int y = 0; y < this->_MAPSIZE_Y; ++y) {
@@ -47,7 +48,7 @@ void Map::placeStone(const Stone& s) {
     for (int dir_inter = 0; dir_inter < 4; ++dir_inter)
     {
         tile.AddToInterValue(color, dir_inter, 1);
-    }    
+    }
 
     for (int dir=0; dir < 8; ++dir)
     {

@@ -17,18 +17,22 @@ class Map {
         SW,
         W,
         DIR_COUNT,// = number of elements in the enum
-//        NONE,
-        MAX, // Should NEVER be used
     };
     
-    
+    enum E_OR {
+        NS = 0,
+        NESW,
+        EW,
+        SENW,
+        MAX,
+    };
     
     static const enum E_DIR OP_DIR[];
-    static const enum E_DIR FROM_DIR[4] = {N, W, NE, NW};
-    
+    static const enum E_DIR OR_TO_DIR[];
+        
     typedef Tile& (Map::*PTR) (Tile&, unsigned char);
-    const PTR go[MAX] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
-                          &Map::se, &Map::s, &Map::sw, &Map::w, NULL };
+    const PTR go[DIR_COUNT] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
+                          &Map::se, &Map::s, &Map::sw, &Map::w };
     
     Map();
     virtual ~Map();
