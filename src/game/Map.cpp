@@ -121,7 +121,7 @@ void Map::displayDebug() const
 }
 
 // PRIVATE
-Tile& Map::n(Tile& t, unsigned char len) {
+Tile& Map::n(const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X;
 
@@ -130,7 +130,7 @@ Tile& Map::n(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::s(Tile& t, unsigned char len) {
+Tile& Map::s(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X;
 
@@ -139,7 +139,7 @@ Tile& Map::s(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::e(Tile& t, unsigned char len) {
+Tile& Map::e(const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X + 1 * len;
 
@@ -148,7 +148,7 @@ Tile& Map::e(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::w(Tile& t, unsigned char len) {
+Tile& Map::w(const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X - 1 * len;
 
@@ -157,7 +157,7 @@ Tile& Map::w(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::ne(Tile& t, unsigned char len) {
+Tile& Map::ne(const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X + 1 * len;
 
@@ -166,7 +166,7 @@ Tile& Map::ne(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::nw(Tile& t, unsigned char len) {
+Tile& Map::nw(const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X - 1 * len;
 
@@ -175,7 +175,7 @@ Tile& Map::nw(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::se(Tile& t, unsigned char len) {
+Tile& Map::se(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X + 1 * len;
 
@@ -184,7 +184,7 @@ Tile& Map::se(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::sw(Tile& t, unsigned char len) {
+Tile& Map::sw(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X - 1 * len;
 

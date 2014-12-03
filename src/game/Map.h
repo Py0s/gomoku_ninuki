@@ -30,7 +30,7 @@ class Map {
     static const enum E_DIR OP_DIR[];
     static const enum E_DIR OR_TO_DIR[];
         
-    typedef Tile& (Map::*PTR) (Tile&, unsigned char);
+    typedef Tile& (Map::*PTR) (const Tile&, unsigned char);
     const PTR go[DIR_COUNT] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
                           &Map::se, &Map::s, &Map::sw, &Map::w };
     
@@ -63,13 +63,13 @@ class Map {
 
     void updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char inter_value);
     
-    Tile& n(Tile& t, unsigned char len);
-    Tile& s(Tile& t, unsigned char len);
-    Tile& e(Tile& t, unsigned char len);
-    Tile& w(Tile& t, unsigned char len);
+    Tile& n(const Tile& t, unsigned char len);
+    Tile& s(const Tile& t, unsigned char len);
+    Tile& e(const Tile& t, unsigned char len);
+    Tile& w(const Tile& t, unsigned char len);
     
-    Tile& ne(Tile& t, unsigned char len);
-    Tile& nw(Tile& t, unsigned char len);
-    Tile& se(Tile& t, unsigned char len);
-    Tile& sw(Tile& t, unsigned char len);
+    Tile& ne(const Tile& t, unsigned char len);
+    Tile& nw(const Tile& t, unsigned char len);
+    Tile& se(const Tile& t, unsigned char len);
+    Tile& sw(const Tile& t, unsigned char len);
 };
