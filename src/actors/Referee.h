@@ -26,10 +26,6 @@ class Referee
     
   private:
     
-    bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir);
-    Map::E_OR           isTileBreakable(const Tile &start, Map &m) const;
-    bool                isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const;
-
     // oui oui toutes les fonctions qui suivent c'est juste pour les double-trois ;)
     bool checkDoubleThreeFirstPart(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
     bool checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
@@ -43,5 +39,10 @@ class Referee
 
     bool XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
 
+    /* ALIGNEMENT FUNCTIONS */
+    bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir);
+    Map::E_OR           isTileBreakable(const Tile &start, Map &m) const;
+    bool                isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const;
+    
     Referee::E_STATE    winner(const Stone::E_COLOR color) const;
 };

@@ -235,6 +235,7 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
     }
 }
 
+/* ALIGNEMENT FUNCTIONS */
 Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) {
     for (int ori = Map::E_OR::NS; ori != Map::E_OR::MAX; ++ori)
     {
