@@ -51,6 +51,18 @@ int Game::start() {
                 this->_core.eventManager().disposeLastKey();
                 this->accept();
                 break;
+            case EventManager::E_KEYS::BLACK:
+                this->_core.eventManager().disposeLastKey();
+                if (this->_currentPlayer != &p1)
+                    this->nextPlayer();
+                this->accept();
+                break;
+            case EventManager::E_KEYS::WHITE:
+                this->_core.eventManager().disposeLastKey();
+                if (this->_currentPlayer != &p2)
+                    this->nextPlayer();
+                this->accept();
+                break;
             default:
                 break;
         }
