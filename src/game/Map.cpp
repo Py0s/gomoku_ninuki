@@ -2,6 +2,7 @@
 #include "ExcOutOfBound.h"
 
 const enum Map::E_DIR Map::OP_DIR[] = { SE, S, SW, W, NW, N, NE, E };
+const enum Map::E_DIR Map::OR_TO_DIR[] = {N, NE, E, SE};
 
 Map::Map() {
     for (int y = 0; y < this->_MAPSIZE_Y; ++y) {
@@ -47,7 +48,7 @@ void Map::placeStone(const Stone& s) {
     for (int dir_inter = 0; dir_inter < 4; ++dir_inter)
     {
         tile.AddToInterValue(color, dir_inter, 1);
-    }    
+    }
 
     for (int dir=0; dir < 8; ++dir)
     {
@@ -120,7 +121,7 @@ void Map::displayDebug() const
 }
 
 // PRIVATE
-Tile& Map::n(Tile& t, unsigned char len) {
+Tile& Map::n(const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X;
 
@@ -129,7 +130,7 @@ Tile& Map::n(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::s(Tile& t, unsigned char len) {
+Tile& Map::s(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X;
 
@@ -138,7 +139,7 @@ Tile& Map::s(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::e(Tile& t, unsigned char len) {
+Tile& Map::e(const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X + 1 * len;
 
@@ -147,7 +148,7 @@ Tile& Map::e(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::w(Tile& t, unsigned char len) {
+Tile& Map::w(const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X - 1 * len;
 
@@ -156,7 +157,7 @@ Tile& Map::w(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::ne(Tile& t, unsigned char len) {
+Tile& Map::ne(const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X + 1 * len;
 
@@ -165,7 +166,7 @@ Tile& Map::ne(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::nw(Tile& t, unsigned char len) {
+Tile& Map::nw(const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X - 1 * len;
 
@@ -174,7 +175,7 @@ Tile& Map::nw(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::se(Tile& t, unsigned char len) {
+Tile& Map::se(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X + 1 * len;
 
@@ -183,7 +184,7 @@ Tile& Map::se(Tile& t, unsigned char len) {
     return this->_map[y][x];
 }
 
-Tile& Map::sw(Tile& t, unsigned char len) {
+Tile& Map::sw(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X - 1 * len;
 

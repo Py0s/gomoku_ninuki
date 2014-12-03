@@ -238,19 +238,80 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
 Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) const {
     // TODO: need to make a function from E_Dir to direction
 
-    if (t.getIntValue(t.getColor(), Map::N) >= 5)
-        // Mets toi ici avec if (is_beakable() == true) put_in_list(t) else ...
+    if (t.getIntValue(t.getColor(), Map::N) >= 5
+            && isAlignBreakable(t, m, Map::N) == false)
         return this->winner(t.getColor());
-    if (t.getIntValue(t.getColor(), Map::W) >= 5)
-        // Mets toi ici avec if (is_beakable() == true) put_in_list() else ...
+    if (t.getIntValue(t.getColor(), Map::W) >= 5
+            && isAlignBreakable(t, m, Map::W) == false)
         return this->winner(t.getColor());
-    if (t.getIntValue(t.getColor(), Map::NW) >= 5)
-        // Mets toi ici avec if (is_beakable() == true) put_in_list() else ...
+    if (t.getIntValue(t.getColor(), Map::NW) >= 5
+            && isAlignBreakable(t, m, Map::NW) == false)
         return this->winner(t.getColor());
-    if (t.getIntValue(t.getColor(), Map::NE) >= 5)
-        // Mets toi ici avec if (is_beakable() == true) put_in_list() else ...
+    if (t.getIntValue(t.getColor(), Map::NE) >= 5
+            && isAlignBreakable(t, m, Map::NE) == false)
         return this->winner(t.getColor());
     return VALID;
+}
+
+bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const // TODO try catch
+{
+    Tile    next = t;
+    int     count = 4;
+
+    while (count > 0 && next.getColor() == t.getColor())
+    {
+        if (isBreakable(next, m) == true)
+            break;
+        next = (m.*(m.go[dir]))(next, 1);
+        count--;
+    }
+    dir = Map::OP_DIR[dir];
+    next = (m.*(m.go[dir]))(t, 1);
+    while (count > 0 && next.getColor() == t.getColor())
+    {
+        if (isBreakable(next, m) == true)
+            break;
+        next = (m.*(m.go[dir]))(next, 1);
+        count--;
+    }
+    if (count == 0)
+        return false;
+    return true;
+}
+
+bool Referee::isBreakable(const Tile &start, Map &m) const
+{
+    for (int ori = Map::E_OR::NS; ori != Map::E_OR::MAX; ++ori)
+    {
+        Tile check = start;
+        Map::E_DIR cdir = Map::OR_TO_DIR[ori];
+        int end = 0;
+
+        if (start.getIntValue(start.getColor(), cdir) == 2)
+        {
+            check = (m.*(m.go[cdir]))(check, 1);
+            if (check.getColor() == start.getColor())
+            {
+                check = (m.*(m.go[cdir]))(check, 1);
+                if (check.getColor() == Stone::NONE)
+                    end++;
+                check = (m.*(m.go[Map::OP_DIR[cdir]]))(check, 3);
+                if (check.getColor() == Stone::NONE)
+                    end++;
+            }
+            else
+            {
+                if (check.getColor() == Stone::NONE)
+                    end++;
+                check = (m.*(m.go[Map::OP_DIR[cdir]]))(check, 3);
+                if (check.getColor() == Stone::NONE)
+                    end++;
+            }
+            if (end == 1)
+                return true;
+        }
+    }
+    return false;
 }
 
 inline Referee::E_STATE Referee::winner(const Stone::E_COLOR color) const {

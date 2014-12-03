@@ -130,12 +130,18 @@ bool Sfml::handleKeys(const sf::Event& current, EventManager& events) {
         case (sf::Keyboard::Right):
             events.setKey(EventManager::E_KEYS::RIGHT);
             break;
-        case (sf::Keyboard::A):
         case (sf::Keyboard::Return):
             events.setKey(EventManager::E_KEYS::ACCEPT);
             break;
         case (sf::Keyboard::Escape):
             events.setKey(EventManager::E_KEYS::QUIT);
+            break;
+        case (sf::Keyboard::Z):
+        case (sf::Keyboard::W):
+            events.setKey(EventManager::E_KEYS::BLACK);
+            break;
+        case (sf::Keyboard::X):
+            events.setKey(EventManager::E_KEYS::WHITE);
             break;
         default:
             break;
