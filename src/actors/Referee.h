@@ -26,5 +26,7 @@ class Referee
     
   private:
     
-    Referee::E_STATE winner(const Stone::E_COLOR color) const;
+    bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const;
+    bool                isBreakable(const Tile &start, Map &m) const;
+    Referee::E_STATE    winner(const Stone::E_COLOR color) const;
 };
