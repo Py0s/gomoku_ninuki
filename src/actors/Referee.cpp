@@ -2,18 +2,26 @@
 #include "Stone.h"
 #include "Referee.h"
 #include "ExcOutOfBound.h"
+#include "Game.h"
+#include <assert.h>
 
 const enum Stone::E_COLOR Referee::OP_COLOR[] = { Stone::WHITE, Stone::BLACK };
 
-Referee::Referee() {
-
+Referee::Referee(): _conf(nullptr) {
 }
 
 Referee::~Referee() {
 
 }
 
+// Setters
+void Referee::setConf(Config const * conf) {
+    this->_conf = conf;
+}
+
+// Members
 Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) {
+    assert(this->_conf != nullptr);
     Tile& tile = map[s.y()][s.x()];
 
     if (tile.getColor() != Stone::E_COLOR::NONE)
@@ -31,12 +39,14 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) {
 
     checkCapture(tile, map, player);
 
-    E_STATE ret = checkAlign(tile, map);
-
+    std::cout << "Hello" << std::endl;
+    E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
+    std::cout << "Bye" << std::endl;
     // map.displayDebug();
     return ret;
 }
 
+/* DOUBLE THREE FUNCTIONS */
 bool Referee::alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     Map::PTR ptr = map.go[dir];
@@ -205,7 +215,7 @@ bool Referee::checkDoubleThree(Map& map, Tile& tile, Stone::E_COLOR color) const
     return false;
 }
 
-
+/* CAPTURE FUNCTIONS */
 void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
     Stone::E_COLOR color = tile.getColor();
 
@@ -236,12 +246,12 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
 }
 
 /* ALIGNEMENT FUNCTIONS */
-Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) {
+Referee::E_STATE Referee::checkAlign(Tile& t, Map& m, bool breakable) {
     for (int ori = Map::E_OR::NS; ori != Map::E_OR::MAX; ++ori)
     {
         Map::E_DIR d = Map::OR_TO_DIR[ori];
         if (t.getIntValue(t.getColor(), d) >= 5
-                && isAlignBreakable(t, m, d) == false)
+                && (breakable == false || isAlignBreakable(t, m, d) == false))
             return this->winner(t.getColor());
     }
     return VALID;
@@ -332,6 +342,7 @@ bool Referee::isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const
     return false;
 }
 
+/* MEMBERS */
 inline Referee::E_STATE Referee::winner(const Stone::E_COLOR color) const {
     if (color == Stone::BLACK)
         return END_BLACK;

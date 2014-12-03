@@ -5,10 +5,12 @@
 #include <iostream>
 
 Game::Game()
-: _map(), _core(_map), _gui(new Sfml(this->_map)), _currentPlayer(NULL), _player_nb(0) {
+: _map(), _core(_map), _gui(new Sfml(this->_map)), _currentPlayer(NULL),
+        _player_nb(0), _referee() {
     this->_conf.fivebreak_rule = true;
     this->_conf.doublethree_rule = true;
     this->_conf.ai_player_pos = -1;
+    this->_referee.setConf(&this->_conf);
 }
 
 Game::~Game() {
