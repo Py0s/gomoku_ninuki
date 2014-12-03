@@ -19,14 +19,15 @@ class Referee
     Referee();
     ~Referee();
     
-    E_STATE check(const Stone& s, Map& map, APlayer* player) const;
+    E_STATE check(const Stone& s, Map& map, APlayer* player);
     void checkDoubleThree() const;
     void checkCapture(Tile& tile, Map& map, APlayer* player) const;
-    Referee::E_STATE checkAlign(Tile& t, Map& map) const;
+    Referee::E_STATE checkAlign(Tile& t, Map& map);
     
   private:
     
-    bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const;
-    bool                isBreakable(const Tile &start, Map &m) const;
+    bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir);
+    Map::E_OR           isTileBreakable(const Tile &start, Map &m) const;
+    bool                isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const;
     Referee::E_STATE    winner(const Stone::E_COLOR color) const;
 };

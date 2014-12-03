@@ -13,7 +13,7 @@ Referee::~Referee() {
 
 }
 
-Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) const {
+Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) {
     if (map[s.y()][s.x()].getColor() != Stone::E_COLOR::NONE)
         return INVALID;
 
@@ -63,54 +63,72 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
     }
 }
 
-Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) const {
-    // TODO: need to make a function from E_Dir to direction
-
-    if (t.getIntValue(t.getColor(), Map::N) >= 5
-            && isAlignBreakable(t, m, Map::N) == false)
-        return this->winner(t.getColor());
-    if (t.getIntValue(t.getColor(), Map::W) >= 5
-            && isAlignBreakable(t, m, Map::W) == false)
-        return this->winner(t.getColor());
-    if (t.getIntValue(t.getColor(), Map::NW) >= 5
-            && isAlignBreakable(t, m, Map::NW) == false)
-        return this->winner(t.getColor());
-    if (t.getIntValue(t.getColor(), Map::NE) >= 5
-            && isAlignBreakable(t, m, Map::NE) == false)
-        return this->winner(t.getColor());
+Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) {
+    for (int ori = Map::E_OR::NS; ori != Map::E_OR::MAX; ++ori)
+    {
+        Map::E_DIR d = Map::OR_TO_DIR[ori];
+        if (t.getIntValue(t.getColor(), d) >= 5
+                && isAlignBreakable(t, m, d) == false)
+            return this->winner(t.getColor());
+    }
     return VALID;
 }
 
-bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const // TODO try catch
+bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir)
 {
     Tile    next = t;
-    int     count = 4;
+    int     count = 5;
+    Map::E_OR ori = Map::E_OR::MAX;
 
-    while (count > 0 && next.getColor() == t.getColor())
-    {
-        if (isBreakable(next, m) == true)
-            break;
-        next = (m.*(m.go[dir]))(next, 1);
-        count--;
+    try {
+        while (count > 0 && next.getColor() == t.getColor())
+        {
+            if ((ori = isTileBreakable(next, m)) != Map::E_OR::MAX)
+                break;
+            next = (m.*(m.go[dir]))(next, 1);
+            count--;
+        }
     }
-    dir = Map::OP_DIR[dir];
-    next = (m.*(m.go[dir]))(t, 1);
-    while (count > 0 && next.getColor() == t.getColor())
-    {
-        if (isBreakable(next, m) == true)
-            break;
-        next = (m.*(m.go[dir]))(next, 1);
-        count--;
+    catch (const ExcOutOfBound& ex){
     }
+
+    try {
+        dir = Map::OP_DIR[dir];
+        next = (m.*(m.go[dir]))(t, 1);
+        while (count > 0 && next.getColor() == t.getColor())
+        {
+            if ((ori = isTileBreakable(next, m)) != Map::E_OR::MAX)
+                break;
+            next = (m.*(m.go[dir]))(next, 1);
+            count--;
+        }
+    }
+    catch (const ExcOutOfBound& ex){
+    }
+
     if (count == 0)
         return false;
     return true;
 }
 
-bool Referee::isBreakable(const Tile &start, Map &m) const
+Map::E_OR Referee::isTileBreakable(const Tile &start, Map &m) const
 {
-    for (int ori = Map::E_OR::NS; ori != Map::E_OR::MAX; ++ori)
+    for (int ori_int = Map::E_OR::NS; ori_int != Map::E_OR::MAX; ++ori_int)
     {
+        try {
+            Map::E_OR ori = static_cast<Map::E_OR>(ori_int);
+            if (this->isOrBreakable(start, m, ori) == true)
+                return ori;
+        }
+        catch (const ExcOutOfBound& ex){
+            continue;
+        }
+    }
+    return Map::E_OR::MAX;
+}
+
+bool Referee::isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const
+{
         Tile check = start;
         Map::E_DIR cdir = Map::OR_TO_DIR[ori];
         int end = 0;
@@ -138,7 +156,6 @@ bool Referee::isBreakable(const Tile &start, Map &m) const
             if (end == 1)
                 return true;
         }
-    }
     return false;
 }
 
