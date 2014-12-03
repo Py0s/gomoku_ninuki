@@ -75,11 +75,15 @@ void Game::accept() {
         case Referee::E_STATE::INVALID:
             break;
         case Referee::E_STATE::END_BLACK:
+            this->nextPlayer();
+            this->_gui->drawMap(this->_map.displayMap());
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
             std::cout << "Winner Black" << std::endl;
             break;
         case Referee::E_STATE::END_WHITE:
+            this->nextPlayer();
+            this->_gui->drawMap(this->_map.displayMap());
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
             std::cout << "Winner White" << std::endl;
