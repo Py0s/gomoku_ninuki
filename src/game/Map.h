@@ -21,8 +21,11 @@ class Map {
         MAX, // Should NEVER be used
     };
     
+    
+    
     static const enum E_DIR OP_DIR[];
-
+    static const enum E_DIR FROM_DIR[4] = {N, W, NE, NW};
+    
     typedef Tile& (Map::*PTR) (Tile&, unsigned char);
     const PTR go[MAX] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
                           &Map::se, &Map::s, &Map::sw, &Map::w, NULL };
