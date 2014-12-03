@@ -39,9 +39,8 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) {
 
     checkCapture(tile, map, player);
 
-    std::cout << "Hello" << std::endl;
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
-    std::cout << "Bye" << std::endl;
+    
     // map.displayDebug();
     return ret;
 }
@@ -66,9 +65,9 @@ bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir,
         return false;
 
     ptr = map.go[Map::OP_DIR[dir]];
-    inter_tile = (map.*ptr)(tile, second_value);
+    Tile& second_inter_tile = (map.*ptr)(tile, second_value);
 
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+    if (second_inter_tile.getColor() != Stone::E_COLOR::NONE)
         return false;
     return true;
 }
