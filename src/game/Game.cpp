@@ -23,6 +23,7 @@ int Game::start() {
     Human p1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
     //Human p2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
     AI p2(_map, _referee, Stone::E_COLOR::WHITE);
+    p2.setTimeLimit(10);
     p2.setOpponent(&p1);
 
     this->_players[0] = &p1;
