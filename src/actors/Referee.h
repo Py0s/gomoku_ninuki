@@ -36,19 +36,22 @@ class Referee
     bool checkDoubleThreeFirstPart(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
     bool checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
     bool checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool extremOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool extremTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool extremThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
 
+    bool alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+    bool alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+    bool alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+
+    // bool extremOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+    // bool extremTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+    // bool extremThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
     bool XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
 
-    bool parcoursOne(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
-    bool parcoursTwo(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
-    bool parcoursThree(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
-    bool alignParcour(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
+    bool alignParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
+
+    // bool parcoursOne(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
+    // bool parcoursTwo(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
+    // bool parcoursThree(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
+    bool XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
 
     /* CAPTURE FUNCTIONS */
     void checkCapture(Tile& tile, Map& map, APlayer* player) const;
