@@ -23,6 +23,7 @@ int Game::start() {
     Human p1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
     //Human p2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
     AI p2(_map, _referee, Stone::E_COLOR::WHITE);
+    p2.setOpponent(&p1);
 
     this->_players[0] = &p1;
     this->_players[1] = &p2;
@@ -80,7 +81,7 @@ inline void Game::nextPlayer() {
 }
 
 void Game::accept() {
-    Referee::E_STATE ret = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer);
+    Referee::E_STATE ret = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer->getCapturedStones());
     switch (ret) {
         case Referee::E_STATE::VALID:
             this->nextPlayer();

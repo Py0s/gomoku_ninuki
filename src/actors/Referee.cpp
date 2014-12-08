@@ -20,7 +20,7 @@ void Referee::setConf(Config const * conf) {
 }
 
 // Members
-Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) {
+Referee::E_STATE Referee::check(const Stone& s, Map& map, char& capturedStones) {
     assert(this->_conf != nullptr);
     Tile& tile = map[s.y()][s.x()];
 
@@ -37,7 +37,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) {
         return E_STATE::INVALID;
     }
 
-    checkCapture(tile, map, player);
+    checkCapture(tile, map, capturedStones);
 
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
     
@@ -320,7 +320,7 @@ bool Referee::checkDoubleThree(Map& map, Tile& tile, Stone::E_COLOR color) const
 }
 
 /* CAPTURE FUNCTIONS */
-void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
+void Referee::checkCapture(Tile& tile, Map& map, char& capturedStones) const {
     Stone::E_COLOR color = tile.getColor();
 
     for (int dir = 0; dir < 8; ++dir)
@@ -334,7 +334,7 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
 
                 if (tile_for_capture.getColor() == color)
                 {
-                    player->captureStones();
+                    capturedStones += 2;
 
                     Tile& first_captured_stone = (map.*ptr)(tile, 1);
                     Tile& second_captured_stone = (map.*ptr)(tile, 2);

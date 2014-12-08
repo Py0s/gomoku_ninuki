@@ -12,8 +12,10 @@ class APlayer
     virtual void    setColor(Stone::E_COLOR color) {
         this->_color = color;
     };
-    virtual void    captureStones(){
-        this->_capturedStones += 2;
+
+    //Getters
+    virtual char& getCapturedStones() {
+        return _capturedStones;
     }
     
   protected:

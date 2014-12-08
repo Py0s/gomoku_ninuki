@@ -13,9 +13,13 @@ class AI : public APlayer
 
         virtual Stone    plays();
 
+        // Setters
+        void setOpponent(APlayer * player);
+
     private:
         Map& _map;
         Referee& _referee;
+        APlayer * _opponent;
 
         //Fonction qui calcule le prochain coup
         Stone calc(int depth);
