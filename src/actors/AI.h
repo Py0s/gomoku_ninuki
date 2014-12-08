@@ -13,13 +13,15 @@ class AI : public APlayer
 
         virtual Stone    plays();
 
-        // limite en secondes
-        void setTimeLimit(float t);
+        // Setters
+        void setOpponent(APlayer * player);
+        void setTimeLimit(float t);// limite en secondes
 
     private:
-        Map&        _map;
-        Referee&    _referee;
-        float       _timeLimit;/* TODO : setter qqpart */
+        Map& _map;
+        Referee& _referee;
+        APlayer * _opponent;
+        float       _timeLimit;
 
         //Fonction qui calcule le prochain coup
         Stone calc(int depth, float t);

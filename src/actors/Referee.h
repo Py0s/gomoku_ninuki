@@ -25,7 +25,7 @@ class Referee
     void setConf(Config const * conf);
     
     // Members
-    E_STATE check(const Stone& s, Map& map, APlayer* player);
+    E_STATE check(const Stone& s, Map& map, char& capturedStones);
     
   private:
     Config const * _conf;
@@ -54,7 +54,7 @@ class Referee
     bool XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
 
     /* CAPTURE FUNCTIONS */
-    void checkCapture(Tile& tile, Map& map, APlayer* player) const;
+    void checkCapture(Tile& tile, Map& map, char& capturedStones) const;
 
     /* ALIGNEMENT FUNCTIONS */
     Referee::E_STATE    checkAlign(Tile& t, Map& map, bool breakable);

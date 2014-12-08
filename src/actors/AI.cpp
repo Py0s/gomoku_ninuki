@@ -60,7 +60,11 @@ void AI::setTimeLimit(float t)
     _timeLimit = t;
 }
 
-#include <stdlib.h>
+
+void AI::setOpponent(APlayer * player) {
+    _opponent = player;
+}
+
 int AI::eval(Map& map) {
     return (rand()%50);
 }
@@ -77,23 +81,26 @@ int AI::calcMax(Map& map, int depth) {
     // ??
  
     //On parcourt le plateau de jeu et on le joue si la case est vide
-    for (int y=1; y<3; ++y)
+    for (int y=0; y<19; ++y)
     {
-        for(int x=1; x<3; ++x)
+        for(int x=0; x<19; ++x)
         {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
-                //On joue le coup
-                map.placeStone(Stone(y, x, _color));
+                Map map_tmp = map;
+                char tmp_capturedStones = this->getCapturedStones();
 
-                tmp = calcMin(map, depth-1);
-
-                if (tmp > max)
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_capturedStones);
+                if (ret != Referee::E_STATE::INVALID)
                 {
-                    max = tmp;
+                    tmp = calcMin(map, depth-1);
+                    if (tmp > max)
+                    {
+                        max = tmp;
+                    }
                 }
-                //On annule le coup
-                map.removeStone(map[y][x]);
+                // //On annule le coup
+                // map.removeStone(map[y][x]);
             }
         }
     }
@@ -112,23 +119,26 @@ int AI::calcMin(Map& map, int depth) {
     // ??
  
     //On parcourt le plateau de jeu et on le joue si la case est vide
-    for (int y=1; y<3; ++y)
+    for (int y=0; y<19; ++y)
     {
-        for(int x=1; x<3; ++x)
+        for(int x=0; x<19; ++x)
         {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
-                //On joue le coup
-                map.placeStone(Stone(y, x, _color));
+                Map map_tmp = map;
+                char tmp_capturedStones = _opponent->getCapturedStones();
 
-                tmp = calcMax(map, depth-1);
-
-                if (tmp < min)
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_capturedStones);
+                if (ret != Referee::E_STATE::INVALID)
                 {
-                    min = tmp;
+                    tmp = calcMax(map, depth-1);
+                    if (tmp < min)
+                    {
+                        min = tmp;
+                    }
                 }
-                //On annule le coup
-                map.removeStone(map[y][x]);
+                // //On annule le coup
+                // map.removeStone(map[y][x]);
             }
         }
     }
@@ -139,9 +149,6 @@ Stone AI::calc(int depth, float t) {
     int tmp;
     int max = -1000;
     int max_y=-1,max_x=-1;
-
-
-    Map map_tmp = _map;
 
     //Si la profondeur est nulle ou la partie est finie,
     //on ne fait pas le calcul et on joue le coup maximal
@@ -154,16 +161,16 @@ Stone AI::calc(int depth, float t) {
                 throw Exceptions("AI timeLimitSec exceeded");/* TODO : throw exception ? */
             for (int x=0; x<19; ++x)
             {
-                //Si la case est vide
-                if (map_tmp[y][x].getColor() == Stone::E_COLOR::NONE)
+                // Copy de la map et du player
+                Map map_tmp = _map;
+                char tmp_capturedStones = this->getCapturedStones();
+
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_capturedStones);
+
+                //On appelle la fonction calcMin pour lancer l'IA
+                if (ret != Referee::E_STATE::INVALID)
                 {
-
-                    //On simule qu'on joue cette case
-                    map_tmp.placeStone(Stone(y, x, _color));
-
-                    //On appelle la fonction calcMin pour lancer l'IA
                     tmp = calcMin(map_tmp, depth - 1);
-
                     //Si ce score est plus grand
                     if (tmp > max)
                     {
@@ -172,11 +179,10 @@ Stone AI::calc(int depth, float t) {
                         max_y = y;
                         max_x = x;
                     }
-
-                    //On annule le coup
-                    map_tmp.removeStone(map_tmp[y][x]);
                 }
-            }
+                // //On annule le coup
+                // map_tmp.removeStone(map_tmp[y][x]);
+                }
         }
     }
     std::cout << "IA plays(" << max_y << ";" << max_x << ")" << std::endl;
