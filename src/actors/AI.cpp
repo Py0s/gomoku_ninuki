@@ -10,7 +10,7 @@ AI::~AI() {
 
 //Members
 Stone AI::plays() {
-    return calc(2);
+    return calc(3);
 }
 
 
@@ -18,17 +18,39 @@ void AI::setOpponent(APlayer * player) {
     _opponent = player;
 }
 
-int AI::eval(Map& map) {
-    return (rand()%50);
+int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured) {
+    int score = 0;
+
+    if (captured - _captured)
+    {
+        // std::cout << "Je vais capturer" << std::endl;
+        score += captured;
+    }
+    else if (opponentCaptured - _opponent->getCaptured())
+    {
+        // std::cout << "Je vais me faire bouffer" << std::endl;
+        score -= opponentCaptured;
+    }
+    if (ret == Referee::E_STATE::END_WHITE) // TODO : Gerer ca pas en dur
+    {
+        // std::cout << "Je vais gagner" << std::endl;
+        score += 500;
+    }
+    else if (ret == Referee::E_STATE::END_BLACK)
+    {
+        // std::cout << "Je vais perdre" << std::endl;
+        score -= 500;   
+    }
+    return (score);
 }
 
-int AI::calcMax(Map& map, int depth) {
+int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
     int tmp;
     int max = -1000;
  
     //Si on est à la profondeur voulue, on retourne l'évaluation
-    if (depth == 0)
-        return eval(map);
+    if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
+        return eval(map, ret, captured, opponentCaptured);
  
     //Si la partie est finie, on retourne l'évaluation de jeu
     // ??
@@ -41,16 +63,15 @@ int AI::calcMax(Map& map, int depth) {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
                 Map map_tmp = map;
-                char tmp_capturedStones = this->getCapturedStones();
+                char tmp_captured = captured;
+                char tmp_opponent_captured = opponentCaptured;
 
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_capturedStones);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_captured);
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    tmp = calcMin(map, depth-1);
+                    tmp = calcMin(map, depth-1, ret, tmp_captured, tmp_opponent_captured);
                     if (tmp > max)
-                    {
                         max = tmp;
-                    }
                 }
                 // //On annule le coup
                 // map.removeStone(map[y][x]);
@@ -60,13 +81,13 @@ int AI::calcMax(Map& map, int depth) {
     return max;
 }
 
-int AI::calcMin(Map& map, int depth) {
+int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
     int tmp;
     int min = 1000;
  
     //Si on est à la profondeur voulue, on retourne l'évaluation
-    if (depth == 0)
-        return eval(map);
+    if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
+        return eval(map, ret, captured, opponentCaptured);
  
     //Si la partie est finie, on retourne l'évaluation de jeu
     // ??
@@ -79,16 +100,15 @@ int AI::calcMin(Map& map, int depth) {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
                 Map map_tmp = map;
-                char tmp_capturedStones = _opponent->getCapturedStones();
+                char tmp_captured = captured;
+                char tmp_opponent_captured = opponentCaptured;
 
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_capturedStones);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, Referee::OP_COLOR[_color]), map_tmp, tmp_opponent_captured);
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    tmp = calcMax(map, depth-1);
+                    tmp = calcMax(map, depth-1, ret, tmp_captured, tmp_opponent_captured);
                     if (tmp < min)
-                    {
                         min = tmp;
-                    }
                 }
                 // //On annule le coup
                 // map.removeStone(map[y][x]);
@@ -114,14 +134,15 @@ Stone AI::calc(int depth) {
             {
                 // Copy de la map et du player
                 Map map_tmp = _map;
-                char tmp_capturedStones = this->getCapturedStones();
+                char tmp_captured = this->getCaptured();
+                char tmp_opponent_captured = _opponent->getCaptured();
 
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_capturedStones);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_captured);
 
                 //On appelle la fonction calcMin pour lancer l'IA
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    tmp = calcMin(map_tmp, depth - 1);
+                    tmp = calcMin(map_tmp, depth - 1, ret, tmp_captured, tmp_opponent_captured);
                     //Si ce score est plus grand
                     if (tmp > max)
                     {
@@ -136,6 +157,5 @@ Stone AI::calc(int depth) {
                 }
         }
     }
-    std::cout << "IA plays(" << max_y << ";" << max_x << ")" << std::endl;
     return Stone(max_y, max_x, _color);
 }

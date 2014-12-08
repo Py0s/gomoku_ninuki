@@ -81,7 +81,7 @@ inline void Game::nextPlayer() {
 }
 
 void Game::accept() {
-    Referee::E_STATE ret = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer->getCapturedStones());
+    Referee::E_STATE ret = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer->getCaptured());
     switch (ret) {
         case Referee::E_STATE::VALID:
             this->nextPlayer();

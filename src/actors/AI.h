@@ -25,9 +25,9 @@ class AI : public APlayer
         Stone calc(int depth);
  
         //Fonctions pour le calcul
-        int calcMin(Map& map, int depth);
-        int calcMax(Map& map, int depth);
+        int calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured);
+        int calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured);
  
         //Fonction qui évalue le jeu
-        int eval(Map& map);
+        int eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured);
 };

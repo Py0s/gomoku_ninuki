@@ -14,14 +14,14 @@ class APlayer
     };
 
     //Getters
-    virtual char& getCapturedStones() {
-        return _capturedStones;
+    virtual char& getCaptured() {
+        return _captured;
     }
     
   protected:
     APlayer(): _color(Stone::E_COLOR::NONE) { };
-    APlayer(Stone::E_COLOR color): _color(color), _capturedStones(0) { };
+    APlayer(Stone::E_COLOR color): _color(color), _captured(0) { };
     
     Stone::E_COLOR _color;
-    char _capturedStones;
+    char _captured;
 };
