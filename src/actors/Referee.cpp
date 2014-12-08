@@ -145,7 +145,7 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
                 if (alignOne(map, tile, color, dir)
                     && /*extremOne(map, tile, color, dir))*/  XFactorextrem(map, tile, color, dir, 4, 1))
                 {
-                    std::cout << "Cas 1 align" << std::endl;
+                    // std::cout << "Cas 1 align" << std::endl;
                     return true;
                 }
                 break;
@@ -153,7 +153,7 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
                 if (alignTwo(map, tile, color, dir)
                     && /*extremTwo(map, tile, color, dir))*/ XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 3, tile.getValue(color, Map::OP_DIR[dir]) + 1))
                 {
-                    std::cout << "Cas 2 align" << std::endl;
+                    // std::cout << "Cas 2 align" << std::endl;
                     return true;
                 }
                 break;
@@ -161,7 +161,7 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
                 if (alignThree(map, tile, color, dir)
                     && /*extremThree(map, tile, color, dir))*/ XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 1, tile.getValue(color, Map::OP_DIR[dir]) + 1)) // TODO : OPTI POUR NE PAS CHECKER DEUX FOIS LA MEME CHOSE
                 {
-                    std::cout << "Cas 3 align" << std::endl;
+                    // std::cout << "Cas 3 align" << std::endl;
                     return true;
                 }
                 break;
@@ -295,7 +295,7 @@ bool Referee::checkDoubleThreeFirstPart(Map& map, Tile& tile, Stone::E_COLOR col
 {
     if (checkFreeThreeConfig(map, tile, color, first_dir))
     {
-        std::cout << "Premier trois libre" << std::endl;
+        // std::cout << "Premier trois libre" << std::endl;
 
         if (alignParcours(map, tile, color, first_dir) == true)
             return true;

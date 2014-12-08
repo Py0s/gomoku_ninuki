@@ -2,6 +2,7 @@
 #include "Sfml.h"
 #include "AGui.h"
 #include "Human.h"
+#include "AI.h"
 #include <iostream>
 
 Game::Game()
@@ -20,7 +21,8 @@ Game::~Game() {
 // Members
 int Game::start() {
     Human p1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
-    Human p2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
+    //Human p2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
+    AI p2(_map, _referee, Stone::E_COLOR::WHITE);
 
     this->_players[0] = &p1;
     this->_players[1] = &p2;
