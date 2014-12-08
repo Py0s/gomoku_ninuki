@@ -1,4 +1,7 @@
 #include "AI.h"
+#include "Exceptions.h"
+#include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
+
 
 AI::AI(Map& map, Referee& referee, Stone::E_COLOR color): APlayer(color), _map(map), _referee(referee) {
 }
@@ -7,10 +10,54 @@ AI::~AI() {
 
 }
 
+// /* clock example: frequency of primes */
+// #include <stdio.h>      /* printf */
+// #include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
+// #include <math.h>       /* sqrt */
+
+// int frequency_of_primes (int n) {
+//   int i,j;
+//   int freq=n-1;
+//   for (i=2; i<=n; ++i) for (j=sqrt(i);j>1;--j) if (i%j==0) {--freq; break;}
+//   return freq;
+// }
+
+// int main ()
+// {
+//   clock_t t;
+//   int f;
+//   t = clock();
+//   printf ("Calculating...\n");
+//   f = frequency_of_primes (99999);
+//   printf ("The number of primes lower than 100,000 is: %d\n",f);
+//   t = clock() - t;
+//   printf ("It took me %d clicks (%f seconds).\n",t,((float)t)/CLOCKS_PER_SEC);
+//   return 0;
+// }
 
 //Members
 Stone AI::plays() {
-    return calc(2);
+    Stone stone(-1, -1, _color);
+    int depth = 0;
+
+    try
+    {
+        while (depth < 10)//TMP, plus tard boucle infinie
+            stone = calc(depth++, (float)clock());
+    }
+    catch (const Exceptions& e)
+    {
+    }
+
+    if (stone.x() == -1)
+        throw Exceptions("AI CAN'T PLAY :(");
+    std::cout << "AI depth " << depth-1 << " (starting from 0)" << std::endl;
+    return stone;
+}
+
+void AI::setTimeLimit(float t)
+{
+    _timeLimit = t;
 }
 
 #include <stdlib.h>
@@ -88,7 +135,7 @@ int AI::calcMin(Map& map, int depth) {
     return min;
 }
 
-Stone AI::calc(int depth) {
+Stone AI::calc(int depth, float t) {
     int tmp;
     int max = -1000;
     int max_y=-1,max_x=-1;
@@ -103,6 +150,8 @@ Stone AI::calc(int depth) {
         //On parcourt les cases du Goban
         for (int y=0; y<19; ++y)
         {
+            if (((float)clock() / CLOCKS_PER_SEC) - (t / CLOCKS_PER_SEC) > _timeLimit)
+                throw Exceptions("AI timeLimitSec exceeded");/* TODO : throw exception ? */
             for (int x=0; x<19; ++x)
             {
                 //Si la case est vide
