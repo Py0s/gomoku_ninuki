@@ -51,7 +51,7 @@ Stone AI::plays() {
 
     if (stone.x() == -1)
         throw Exceptions("AI CAN'T PLAY :(");
-    std::cout << "AI depth " << depth-1 << " (starting from 0)" << std::endl;
+    std::cout << "AI depth " << depth-2 << " (starting from 0)" << std::endl;
     return stone;
 }
 
