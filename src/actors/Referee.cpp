@@ -190,16 +190,102 @@ bool Referee::checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR co
     return false;
 }
 
+bool Referee::parcoursOne(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
+{
+    Map::PTR ptr = map.go[first_dir];
+
+    if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+        return true;
+
+    Tile& second_tile = (map.*ptr)(tile, 2);
+    if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
+        return true;
+
+    Tile& third_tile = (map.*ptr)(tile, 3);
+    if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
+        return true;
+
+    return false;
+}
+
+bool Referee::parcoursTwo(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
+{
+    Map::PTR ptr = map.go[first_dir];
+
+    if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+        return true;
+
+    Tile& second_tile = (map.*ptr)(tile, 1);
+    if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
+        return true;
+
+    Tile& third_tile = (map.*ptr)(tile, 3);
+    if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
+        return true;
+
+    return false;
+}
+
+bool Referee::parcoursThree(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
+{
+    Map::PTR ptr = map.go[first_dir];
+
+    if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+        return true;
+
+    Tile& second_tile = (map.*ptr)(tile, 1);
+    if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
+        return true;
+
+    Tile& third_tile = (map.*ptr)(tile, 2);
+    if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
+        return true;
+
+    return false;
+}
+
+bool Referee::alignParcour(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
+{
+    try
+    {
+        switch (tile.getIntValue(color, first_dir))
+        {
+            case 1:
+                if (parcoursOne(map, tile, color, first_dir) == true)
+                    return true;
+                break;
+            case 2:
+                if (parcoursTwo(map, tile, color, first_dir) == true)
+                    return true;
+                break;
+            case 3:
+                if (parcoursThree(map, tile, color, first_dir) == true)
+                    return true;
+                break;
+            default:
+                break;
+        }
+    }
+    catch (const ExcOutOfBound& e) {
+        return false;
+    }
+    return false;
+}
+
 bool Referee::checkDoubleThreeFirstPart(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
 {
     if (checkFreeThreeConfig(map, tile, color, first_dir))
     {
         std::cout << "Premier trois libre" << std::endl;
+
+        if (alignParcour(map, tile, color, first_dir) == true)
+            return true;
+
         // PARCOURIR TOUTES LES PIERRES DE L ALIGNEMENT
-        {
-            if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
-                return true;
-        }
+        // {
+        //     if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+        //         return true;
+        // }
     }
     return false;
 }

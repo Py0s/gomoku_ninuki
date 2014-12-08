@@ -143,7 +143,7 @@ Tile& Map::e(const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X + 1 * len;
 
-    if (x>= this->_MAPSIZE_X)
+    if (x >= this->_MAPSIZE_X)
         throw ExcOutOfBound();
     return this->_map[y][x];
 }
