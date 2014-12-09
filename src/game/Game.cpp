@@ -16,6 +16,8 @@ Game::Game()
 
 Game::~Game() {
     delete this->_gui;
+    delete this->_players[0];
+    delete this->_players[1];
 }
 
 void Game::initPlayers()
@@ -38,6 +40,15 @@ void Game::initPlayers()
     this->_currentPlayer = this->_players[0];
 }
 
+int Game::restart() {
+    delete this->_gui;
+    delete this->_players[0];
+    delete this->_players[1];
+    // TODO : clean tout ce qu'il faut entre 2 parties
+    // clean map, referee, conf ?
+    _gui = new Sfml(this->_map);
+    return start();
+}
 
 // Members
 int Game::start() {
