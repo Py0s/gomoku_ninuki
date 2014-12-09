@@ -10,7 +10,7 @@ Game::Game()
         _player_nb(0), _referee() {
     this->_conf.fivebreak_rule = true;
     this->_conf.doublethree_rule = true;
-    this->_conf.ai_player_pos = -1;
+    this->_conf.ai_player_pos = 1;
     this->_referee.setConf(&this->_conf);
 }
 
@@ -32,10 +32,10 @@ void Game::initPlayers()
     else
     {
         AI * p2 = new AI(_map, _referee, Stone::E_COLOR::WHITE);
-        p2->setTimeLimit(10);
+        p2->setTimeLimit(1);
         p2->setOpponent(p1);
         this->_players[this->_conf.ai_player_pos] = p2;
-        this->_players[this->_conf.ai_player_pos + 1 % 2] = p1;
+        this->_players[(this->_conf.ai_player_pos + 1) % 2] = p1;
     }
     this->_currentPlayer = this->_players[0];
 }
