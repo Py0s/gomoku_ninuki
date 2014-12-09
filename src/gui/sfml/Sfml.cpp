@@ -15,7 +15,7 @@ Sfml::Sfml(const Map& m)
 
     this->_goban_sp.setTexture(this->_goban_tile_tx);
     this->_goban_sp.setTextureRect(sf::IntRect(0, 0, 50 * (this->_map_size_x + 1), 50 * (this->_map_size_y + 1)));
-
+    
     this->_curs_sp.setTexture(this->_hand_tx);
     this->_curs_sp.setScale(0.3, 0.3);
 

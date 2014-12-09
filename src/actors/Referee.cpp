@@ -364,7 +364,7 @@ Referee::E_STATE Referee::checkAlign(Tile& t, Map& m, bool breakable) {
 bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir)
 {
     Tile    next = t;
-    int     count = 5;
+    int     count = 4;
     Map::E_OR ori = Map::E_OR::MAX;
 
     try {

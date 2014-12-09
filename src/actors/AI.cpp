@@ -43,8 +43,10 @@ Stone AI::plays() {
 
     try
     {
-        while (depth < 10)//TMP, plus tard boucle infinie
-            stone = calc(depth++, (float)clock());
+        /*while (depth < 10)//TMP, plus tard boucle infinie
+            stone = calc(depth++, (float)clock());*/
+
+        stone = calc(2, (float)clock());
     }
     catch (const Exceptions& e)
     {
@@ -71,6 +73,7 @@ int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCapture
 
     if (captured - _captured)
     {
+        //std::cout << "(c)";
         // std::cout << "Je vais capturer" << std::endl;
         score += captured;
     }
@@ -79,22 +82,24 @@ int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCapture
         // std::cout << "Je vais me faire bouffer" << std::endl;
         score -= opponentCaptured;
     }
-    if (ret == Referee::E_STATE::END_WHITE) // TODO : Gerer ca pas en dur
+    else if (ret == Referee::E_STATE::END_WHITE) // TODO : Gerer ca pas en dur
     {
+        //std::cout << "(v)";
         // std::cout << "Je vais gagner" << std::endl;
-        score += 500;
+        score = 1000;
     }
     else if (ret == Referee::E_STATE::END_BLACK)
     {
+        //std::cout << "(p)";
         // std::cout << "Je vais perdre" << std::endl;
-        score -= 500;   
+        score = -1000;
     }
     return (score);
 }
 
 int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
     int tmp;
-    int max = -1000;
+    int max = -100000;
  
     //Si on est à la profondeur voulue, on retourne l'évaluation
     if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
@@ -104,9 +109,9 @@ int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
     // ??
  
     //On parcourt le plateau de jeu et on le joue si la case est vide
-    for (int y=0; y<19; ++y)
+    for (int y=0; y<5; ++y)
     {
-        for(int x=0; x<19; ++x)
+        for(int x=0; x<10; ++x)
         {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
@@ -131,7 +136,7 @@ int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
 
 int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
     int tmp;
-    int min = 1000;
+    int min = 100000;
  
     //Si on est à la profondeur voulue, on retourne l'évaluation
     if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
@@ -141,9 +146,9 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
     // ??
  
     //On parcourt le plateau de jeu et on le joue si la case est vide
-    for (int y=0; y<19; ++y)
+    for (int y=0; y<5; ++y)
     {
-        for(int x=0; x<19; ++x)
+        for(int x=0; x<10; ++x)
         {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
@@ -152,6 +157,7 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
                 char tmp_opponent_captured = opponentCaptured;
 
                 Referee::E_STATE ret = _referee.check(Stone(y, x, Referee::OP_COLOR[_color]), map_tmp, tmp_opponent_captured);
+                //std::cout << "L'adv joue(" << ret << ")";
                 if (ret != Referee::E_STATE::INVALID)
                 {
                     tmp = calcMax(map, depth-1, ret, tmp_captured, tmp_opponent_captured);
@@ -168,7 +174,7 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
 
 Stone AI::calc(int depth, float t) {
     int tmp;
-    int max = -1000;
+    int max = -100000;
     int max_y=-1,max_x=-1;
 
     //Si la profondeur est nulle ou la partie est finie,
@@ -176,11 +182,11 @@ Stone AI::calc(int depth, float t) {
     if (depth > 0)
     {
         //On parcourt les cases du Goban
-        for (int y=0; y<19; ++y)
+        for (int y=0; y<5; ++y)
         {
             if (((float)clock() / CLOCKS_PER_SEC) - (t / CLOCKS_PER_SEC) > _timeLimit)
                 throw Exceptions("AI timeLimitSec exceeded");/* TODO : throw exception ? */
-            for (int x=0; x<19; ++x)
+            for (int x=0; x<10; ++x)
             {
                 // Copy de la map et du player
                 Map map_tmp = _map;
@@ -188,6 +194,7 @@ Stone AI::calc(int depth, float t) {
                 char tmp_opponent_captured = _opponent->getCaptured();
 
                 Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_captured);
+                //std::cout << "Je joue(" << ret << ")" << std::endl;
 
                 //On appelle la fonction calcMin pour lancer l'IA
                 if (ret != Referee::E_STATE::INVALID)
@@ -196,6 +203,7 @@ Stone AI::calc(int depth, float t) {
                     //Si ce score est plus grand
                     if (tmp > max)
                     {
+                        //std::cout << "[" << max << "->" << tmp << "]" << std::endl;
                         //On le choisit
                         max = tmp;
                         max_y = y;
