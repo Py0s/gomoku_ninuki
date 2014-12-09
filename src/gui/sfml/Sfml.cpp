@@ -58,7 +58,8 @@ bool Sfml::drawFrame(char c, const Rectangle& rect) {
 bool Sfml::drawMap(const Stone::E_COLOR* map) {
     Stone::E_COLOR c;
     std::list<sf::Sprite> stones;
-
+    
+    this->_mainWindow.clear(sf::Color::Black);
     for (int y = 0; y < this->_map_size_y; ++y) {
         for (int x = 0; x < this->_map_size_x; ++x) {
             c = map[(y * this->_map_size_x) + x];
