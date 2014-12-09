@@ -3,7 +3,8 @@
 #include <time.h>       /* clock_t, clock, CLOCKS_PER_SEC */
 
 
-AI::AI(Map& map, Referee& referee, Stone::E_COLOR color): APlayer(color), _map(map), _referee(referee) {
+AI::AI(Map& map, Referee& referee, Stone::E_COLOR color)
+    : APlayer(color, APlayer::AI), _map(map), _referee(referee) {
 }
 
 AI::~AI() {

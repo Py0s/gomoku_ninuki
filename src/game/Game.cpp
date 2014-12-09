@@ -16,19 +16,43 @@ Game::Game()
 
 Game::~Game() {
     delete this->_gui;
+    delete this->_players[0];
+    delete this->_players[1];
+}
+
+void Game::initPlayers()
+{
+    Human * p1 = new Human(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
+    if (this->_conf.ai_player_pos == -1)
+    {
+        Human * p2 = new Human(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
+        this->_players[0] = p1;
+        this->_players[1] = p2;
+    }
+    else
+    {
+        AI * p2 = new AI(_map, _referee, Stone::E_COLOR::WHITE);
+        p2->setTimeLimit(10);
+        p2->setOpponent(p1);
+        this->_players[this->_conf.ai_player_pos] = p2;
+        this->_players[this->_conf.ai_player_pos + 1 % 2] = p1;
+    }
+    this->_currentPlayer = this->_players[0];
+}
+
+int Game::restart() {
+    delete this->_gui;
+    delete this->_players[0];
+    delete this->_players[1];
+    // TODO : clean tout ce qu'il faut entre 2 parties
+    // clean map, referee, conf ?
+    _gui = new Sfml(this->_map);
+    return start();
 }
 
 // Members
 int Game::start() {
-    Human p1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
-    //Human p2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
-    AI p2(_map, _referee, Stone::E_COLOR::WHITE);
-    p2.setTimeLimit(10);
-    p2.setOpponent(&p1);
-
-    this->_players[0] = &p1;
-    this->_players[1] = &p2;
-    this->_currentPlayer = this->_players[0];
+    this->initPlayers();
     this->_gui->drawMap(this->_map.displayMap());
 
     while (this->_core.quit() == false)
@@ -59,13 +83,13 @@ int Game::start() {
                 break;
             case EventManager::E_KEYS::BLACK:
                 this->_core.eventManager().disposeLastKey();
-                if (this->_currentPlayer != &p1)
+                if (this->_currentPlayer != this->_players[0])
                     this->nextPlayer();
                 this->accept();
                 break;
             case EventManager::E_KEYS::WHITE:
                 this->_core.eventManager().disposeLastKey();
-                if (this->_currentPlayer != &p2)
+                if (this->_currentPlayer != this->_players[1])
                     this->nextPlayer();
                 this->accept();
                 break;
