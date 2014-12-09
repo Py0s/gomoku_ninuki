@@ -1,6 +1,7 @@
 #include "Human.h"
 
-Human::Human(const Cursor& curs, Stone::E_COLOR color): APlayer(color), _curs(&curs) {
+Human::Human(const Cursor& curs, Stone::E_COLOR color)
+    : APlayer(color, APlayer::HUMAN), _curs(&curs) {
 }
 
 Human::~Human() {
