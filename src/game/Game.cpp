@@ -1,21 +1,27 @@
 #include "Game.h"
 #include "Sfml.h"
+#include "Menu.h"
 #include "AGui.h"
 #include "Human.h"
 #include "AI.h"
 #include <iostream>
 
 Game::Game()
-: _map(), _core(_map), _gui(new Sfml(this->_map)), _currentPlayer(NULL),
+: _map(), _core(_map), _currentPlayer(NULL),
         _player_nb(0), _referee() {
     this->_conf.fivebreak_rule = true;
     this->_conf.doublethree_rule = true;
     this->_conf.ai_player_pos = 1;
     this->_referee.setConf(&this->_conf);
+
+    this->_guis[0] = new Menu((this->_init_sfml).getWindow());
+    this->_guis[1] = new Sfml(this->_map, this->_init_sfml.getWindow());
+    this->_gui = this->_guis[1];
 }
 
 Game::~Game() {
-    delete this->_gui;
+    delete this->_guis[0];
+    delete this->_guis[1];
     delete this->_players[0];
     delete this->_players[1];
 }
@@ -41,12 +47,10 @@ void Game::initPlayers()
 }
 
 int Game::restart() {
-    delete this->_gui;
     delete this->_players[0];
     delete this->_players[1];
     // TODO : clean tout ce qu'il faut entre 2 parties
     // clean map, referee, conf ?
-    _gui = new Sfml(this->_map);
     return start();
 }
 

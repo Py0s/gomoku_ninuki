@@ -10,12 +10,18 @@
 
 class AGui {
   public:
-    AGui(int map_size_y, int map_size_x);
+    enum E_SCENE {
+        MENU,
+        GAME,
+    };
+
+    AGui(int map_size_y, int map_size_x, enum E_SCENE scene);
     virtual ~AGui();
 
     // Getters
     virtual bool getInput(EventManager& events) = 0;
     virtual const Cursor& getCursor() const;
+    virtual enum E_SCENE getScene() const;
     
     // Members
     virtual bool refresh() = 0;
@@ -36,6 +42,7 @@ class AGui {
     int _map_size_y;
     int _map_size_x;
     Cursor _curs;
+    E_SCENE _scene;
     
 };
 

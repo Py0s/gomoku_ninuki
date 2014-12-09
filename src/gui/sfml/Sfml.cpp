@@ -1,9 +1,7 @@
 #include "Sfml.h"
 
-Sfml::Sfml(const Map& m)
-: AGui(m.sizeY(), m.sizeX()) {
-    this->_mainWindow.create(sf::VideoMode(1920, 1080, 32), "Gomoku");
-    this->_mainWindow.setVerticalSyncEnabled(true);
+Sfml::Sfml(const Map& m, sf::RenderWindow& mainWindow)
+: AGui(m.sizeY(), m.sizeX(), AGui::GAME), _m(m), _mainWindow(mainWindow) {
     this->_mainWindow.clear(sf::Color::Black);
 
     this->_goban_tile_tx.loadFromFile("./texture/goban_tile.png");
@@ -22,7 +20,6 @@ Sfml::Sfml(const Map& m)
 }
 
 Sfml::~Sfml() {
-    this->_mainWindow.close();
 }
 
 bool Sfml::getInput(EventManager& events) {
