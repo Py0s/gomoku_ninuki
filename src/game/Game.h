@@ -30,6 +30,7 @@ private:
     Config      _conf;
     Referee     _referee;
     
+    void initPlayers();
     inline void nextPlayer();
     void accept();
 };
