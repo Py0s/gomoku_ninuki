@@ -4,7 +4,7 @@
 const enum Map::E_DIR Map::OP_DIR[] = { SE, S, SW, W, NW, N, NE, E };
 const enum Map::E_DIR Map::OR_TO_DIR[] = {N, NE, E, SE};
 
-Map::Map() {
+Map::Map() : _played(0) {
     for (int y = 0; y < this->_MAPSIZE_Y; ++y) {
         for (int x = 0; x < this->_MAPSIZE_X; ++x) {
             this->_displayMap[y][x] = Stone::E_COLOR::NONE;
@@ -32,7 +32,7 @@ const Stone::E_COLOR * Map::displayMap() const {
 
 
 // Operators
-std::array<Tile, 19>& Map::operator[](size_t idx) {
+std::array<Tile, Map::_MAPSIZE_X>& Map::operator[](size_t idx) {
     return _map[idx];
 }
 

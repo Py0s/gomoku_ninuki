@@ -28,6 +28,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
         return INVALID;
 
     map.placeStone(s);
+    map.played();
 
     // if RULE
     if (checkDoubleThree(map, tile, s.color()))

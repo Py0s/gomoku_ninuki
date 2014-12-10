@@ -10,7 +10,7 @@ Game::Game()
         _player_nb(0), _referee() {
     this->_conf.fivebreak_rule = true;
     this->_conf.doublethree_rule = true;
-    this->_conf.ai_player_pos = -1;
+    this->_conf.ai_player_pos = 0;
     this->_referee.setConf(&this->_conf);
 }
 
@@ -59,6 +59,8 @@ int Game::start() {
     {
         this->_gui->refresh();
         this->_gui->getInput(this->_core.eventManager());
+        if (this->_currentPlayer->getType() == APlayer::AI)
+            this->_core.eventManager().setKey(EventManager::E_KEYS::ACCEPT);
 
         switch (this->_core.eventManager().getLastKey()) {
             case EventManager::E_KEYS::UP:
