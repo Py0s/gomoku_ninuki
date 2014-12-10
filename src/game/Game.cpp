@@ -38,7 +38,7 @@ void Game::initPlayers()
     else
     {
         AI * p2 = new AI(_map, _referee, Stone::E_COLOR::WHITE);
-        p2->setTimeLimit(1);
+        p2->setTimeLimit(20);
         p2->setOpponent(p1);
         this->_players[this->_conf.ai_player_pos] = p2;
         this->_players[(this->_conf.ai_player_pos + 1) % 2] = p1;

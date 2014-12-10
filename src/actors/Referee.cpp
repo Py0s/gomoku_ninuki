@@ -34,7 +34,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     if (checkDoubleThree(map, tile, s.color()))
     {
         map.removeStone(tile);
-        std::cout << "DOUBLE TROIS" << std::endl;
+        //std::cout << "DOUBLE TROIS" << std::endl;
         return E_STATE::INVALID;
     }
 
