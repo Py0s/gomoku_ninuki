@@ -4,6 +4,7 @@
 #include "AGui.h"
 #include "APlayer.h"
 #include "Referee.h"
+#include "InitSfml.h"
 #include <map> 
 
 struct Config {
@@ -24,7 +25,9 @@ public:
 private:
     Map         _map;
     Core        _core;
-    AGui*       _gui;
+    InitSfml    _init_sfml;
+    AGui*       _guis[2];
+    AGui*       _gui; // Current Gui
     APlayer *   _currentPlayer;
     APlayer *   _players[2];
     int         _player_nb;
