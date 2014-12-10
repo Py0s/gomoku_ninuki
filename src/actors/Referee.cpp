@@ -5,15 +5,12 @@
 
 const enum Stone::E_COLOR Referee::OP_COLOR[] = { Stone::WHITE, Stone::BLACK };
 
-Referee::Referee() {
-
-}
 
 Referee::~Referee() {
 
 }
 
-Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) const {
+Referee::E_STATE Referee::check(const Stone& s, Map& map, APlayer* player) {
     if (map[s.y()][s.x()].getColor() != Stone::E_COLOR::NONE)
         return INVALID;
 
@@ -63,7 +60,7 @@ void Referee::checkCapture(Tile& tile, Map& map, APlayer* player) const {
     }
 }
 
-Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) const {
+Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) {
     // TODO: need to make a function from E_Dir to direction
 
     if (t.getIntValue(t.getColor(), Map::N) >= 5
@@ -81,7 +78,24 @@ Referee::E_STATE Referee::checkAlign(Tile& t, Map& m) const {
     return VALID;
 }
 
-bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const
+void Referee::checkLbreakables(Map &map)
+{
+    for (std::list<std::pair<Tile, Map::E_DIR>>::iterator it = this->_breakables.begin(); it!= this->_breakables.end(); it++)
+    {
+        if (map[(*it).first.Y][(*it).first.X].getColor() == Stone::NONE)
+        {
+            map[(*it).first.Y][(*it).first.X]._breakable == false;
+            this->_breakables.erase(it);
+        }
+        else if (isBreakable((*it).first, map) == false)
+        {
+            map[(*it).first.Y][(*it).first.X]._breakable == false;
+            this->_breakables.erase(it);
+        }
+    }
+} //ToDo mettre dans meme if //ToDo implanter dans boucle //Todo new func with direction //Todo const?
+
+bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir)
 {
     Tile    next = t;
     int     count = 5;
@@ -107,7 +121,7 @@ bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir) const
     return true;
 }
 
-bool Referee::isBreakable(const Tile &start, Map &m) const
+bool Referee::isBreakable(const Tile &start, Map &m)
 {
     for (int ori = Map::E_OR::NS; ori != Map::E_OR::MAX; ++ori)
     {
@@ -136,10 +150,21 @@ bool Referee::isBreakable(const Tile &start, Map &m) const
                     end++;
             }
             if (end == 1)
+            {
+                if (start._breakable == false)
+                {
+                    m[start.Y][start.X]._breakable = true;
+                    this->_breakables.push_back(std::make_pair(start, cdir));
+                }
                 return true;
+            }
         }
     }
     return false;
+}
+
+Referee::Referee() {
+
 }
 
 inline Referee::E_STATE Referee::winner(const Stone::E_COLOR color) const {

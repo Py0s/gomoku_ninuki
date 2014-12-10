@@ -8,6 +8,7 @@ Tile::Tile()
         _values[Stone::WHITE][i] = 0;
         _inter_values[Stone::BLACK][i] = 0;
         _inter_values[Stone::WHITE][i] = 0;
+        _breakable = false;
     }
 }
 
@@ -67,3 +68,4 @@ void Tile::Debug() const {
         std::cout << static_cast<char>(_inter_values[Stone::BLACK][i] + '0');
     }
 }
+
