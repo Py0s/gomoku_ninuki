@@ -350,6 +350,23 @@ void Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
     }
 }
 
+void Referee::checkLbreakables(Map &map)
+{
+    for (std::list<std::pair<Tile, Map::E_DIR>>::iterator it = this->_breakables.begin(); it!= this->_breakables.end(); it++)
+    {
+        if (map[(*it).first.Y][(*it).first.X].getColor() == Stone::NONE)
+        {
+            map[(*it).first.Y][(*it).first.X]._breakable == false;
+            this->_breakables.erase(it);
+        }
+        else if (isTileBreakable((*it).first, map) == false)
+        {
+            map[(*it).first.Y][(*it).first.X]._breakable == false;
+            this->_breakables.erase(it);
+        }
+    }
+} //ToDo mettre dans meme if //ToDo implanter dans boucle //Todo new func with direction //Todo const?
+
 /* ALIGNEMENT FUNCTIONS */
 Referee::E_STATE Referee::checkAlign(Tile& t, Map& m, bool breakable) {
     for (int ori = Map::E_OR::NS; ori != Map::E_OR::MAX; ++ori)
@@ -399,7 +416,7 @@ bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir)
     return true;
 }
 
-Map::E_OR Referee::isTileBreakable(const Tile &start, Map &m) const
+Map::E_OR Referee::isTileBreakable(const Tile &start, Map &m)
 {
     for (int ori_int = Map::E_OR::NS; ori_int != Map::E_OR::MAX; ++ori_int)
     {
@@ -415,7 +432,7 @@ Map::E_OR Referee::isTileBreakable(const Tile &start, Map &m) const
     return Map::E_OR::MAX;
 }
 
-bool Referee::isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const
+bool Referee::isOrBreakable(const Tile &start, Map &m, Map::E_OR ori)
 {
         Tile check = start;
         Map::E_DIR cdir = Map::OR_TO_DIR[ori];
@@ -442,7 +459,14 @@ bool Referee::isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const
                     end++;
             }
             if (end == 1)
+            {
+                if (start._breakable == false)
+                {
+                    m[start.Y][start.X]._breakable = true;
+                    this->_breakables.push_back(std::make_pair(start, cdir));
+                }
                 return true;
+            }
         }
     return false;
 }

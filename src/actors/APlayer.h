@@ -20,7 +20,8 @@ class APlayer
     virtual TYPE const& getType() const { return _type; }
     
   protected:
-    APlayer(): _color(Stone::E_COLOR::NONE) { };
+//    APlayer(): _color(Stone::E_COLOR::NONE) { };
+    APlayer();
     APlayer(Stone::E_COLOR color, TYPE type): _color(color), _captured(0), _type(type) { };
     
     Stone::E_COLOR _color;

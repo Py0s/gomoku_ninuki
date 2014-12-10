@@ -3,6 +3,10 @@
 #include "Stone.h"
 #include "Map.h"
 #include "APlayer.h"
+#include "list"
+#include <list>
+#include <iostream>
+#include <utility>
 
 struct Config;
 
@@ -17,7 +21,7 @@ class Referee
     };
 
     static const enum Stone::E_COLOR OP_COLOR[];
-    
+
     Referee();
     ~Referee();
     
@@ -29,6 +33,8 @@ class Referee
     
   private:
     Config const * _conf;
+    std::list<std::pair<Tile, Map::E_DIR>>    _breakables;
+
     
     /* DOUBLE THREE FUNCTIONS */
     // oui oui toutes les fonctions qui suivent c'est juste pour les double-trois ;)
@@ -59,8 +65,9 @@ class Referee
     /* ALIGNEMENT FUNCTIONS */
     Referee::E_STATE    checkAlign(Tile& t, Map& map, bool breakable);
     bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir);
-    Map::E_OR           isTileBreakable(const Tile &start, Map &m) const;
-    bool                isOrBreakable(const Tile &start, Map &m, Map::E_OR ori) const;
+    Map::E_OR           isTileBreakable(const Tile &start, Map &m);
+    bool                isOrBreakable(const Tile &start, Map &m, Map::E_OR ori);
+    void                checkLbreakables(Map& map);
     
     /* MEMBERS */
     Referee::E_STATE    winner(const Stone::E_COLOR color) const;
