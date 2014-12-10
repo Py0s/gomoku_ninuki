@@ -52,9 +52,10 @@ bool Sfml::drawFrame(char c, const Rectangle& rect) {
     return false;
 }
 
-bool Sfml::drawMap(const Stone::E_COLOR* map) {
+bool Sfml::drawAll() {
     Stone::E_COLOR c;
     std::list<sf::Sprite> stones;
+    const Stone::E_COLOR* map = this->_m.displayMap();
     
     this->_mainWindow.clear(sf::Color::Black);
     for (int y = 0; y < this->_map_size_y; ++y) {
@@ -80,27 +81,35 @@ bool Sfml::drawMap(const Stone::E_COLOR* map) {
     return true;
 }
 
-bool Sfml::cursorUp(const Map& m) {
-    AGui::cursorUp(m);
-    this->drawMap(m.displayMap());
+bool Sfml::cursorUp() {
+    this->_curs.Y--;
+    if (this->_curs.Y < 0)
+        this->_curs.Y = this->_map_size_y - 1;
+    this->drawAll();
     return true;
 }
 
-bool Sfml::cursorDown(const Map& m) {
-    AGui::cursorDown(m);
-    this->drawMap(m.displayMap());
+bool Sfml::cursorDown() {
+    this->_curs.Y++;
+    if (this->_curs.Y >= this->_map_size_y)
+        this->_curs.Y = 0;
+    this->drawAll();
     return true;
 }
 
-bool Sfml::cursorLeft(const Map& m) {
-    AGui::cursorLeft(m);
-    this->drawMap(m.displayMap());
+bool Sfml::cursorLeft() {
+    this->_curs.X--;
+    if (this->_curs.X < 0)
+        this->_curs.X = this->_map_size_x - 1;
+    this->drawAll();
     return true;
 }
 
-bool Sfml::cursorRight(const Map& m) {
-    AGui::cursorRight(m);
-    this->drawMap(m.displayMap());
+bool Sfml::cursorRight() {
+    this->_curs.X++;
+    if (this->_curs.X >= this->_map_size_x)
+        this->_curs.X = 0;
+    this->drawAll();
     return true;
 }
 

@@ -57,7 +57,7 @@ int Game::restart() {
 // Members
 int Game::start() {
     this->initPlayers();
-    this->_gui->drawMap(this->_map.displayMap());
+    this->_gui->drawAll();
 
     while (this->_core.quit() == false)
     {
@@ -69,19 +69,19 @@ int Game::start() {
         switch (this->_core.eventManager().getLastKey()) {
             case EventManager::E_KEYS::UP:
                 this->_core.eventManager().disposeLastKey();
-                this->_gui->cursorUp(this->_map);
+                this->_gui->cursorUp();
                 break;
             case EventManager::E_KEYS::DOWN:
                 this->_core.eventManager().disposeLastKey();
-                this->_gui->cursorDown(this->_map);
+                this->_gui->cursorDown();
                 break;
             case EventManager::E_KEYS::LEFT:
                 this->_core.eventManager().disposeLastKey();
-                this->_gui->cursorLeft(this->_map);
+                this->_gui->cursorLeft();
                 break;
             case EventManager::E_KEYS::RIGHT:
                 this->_core.eventManager().disposeLastKey();
-                this->_gui->cursorRight(this->_map);
+                this->_gui->cursorRight();
                 break;
             case EventManager::E_KEYS::ACCEPT:
                 this->_core.eventManager().disposeLastKey();
@@ -116,25 +116,23 @@ void Game::accept() {
     switch (ret) {
         case Referee::E_STATE::VALID:
             this->nextPlayer();
-            this->_gui->drawMap(this->_map.displayMap());
-            //if (nextPlayer is AI):
-            // AI.plays()
+            this->_gui->drawAll();
             break;
         case Referee::E_STATE::INVALID:
             break;
         case Referee::E_STATE::END_BLACK:
             this->nextPlayer();
-            this->_gui->drawMap(this->_map.displayMap());
+            this->_gui->drawAll();
+            std::cout << "Winner Black" << std::endl;
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
-            std::cout << "Winner Black" << std::endl;
             break;
         case Referee::E_STATE::END_WHITE:
             this->nextPlayer();
-            this->_gui->drawMap(this->_map.displayMap());
+            this->_gui->drawAll();
+            std::cout << "Winner White" << std::endl;
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
-            std::cout << "Winner White" << std::endl;
             break;
     }
 }

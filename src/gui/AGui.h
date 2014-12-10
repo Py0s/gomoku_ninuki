@@ -26,13 +26,12 @@ class AGui {
     // Members
     virtual bool refresh() = 0;
     virtual bool drawFrame(char c, const Rectangle& rect) = 0; // Could change with sfml introd
-    virtual bool drawMap(const Stone::E_COLOR* map) = 0;
-
+    virtual bool drawAll() = 0;
     
-    virtual bool cursorUp(const Map& m);
-    virtual bool cursorDown(const Map& m);
-    virtual bool cursorLeft(const Map& m);
-    virtual bool cursorRight(const Map& m);
+    virtual bool cursorUp() = 0;
+    virtual bool cursorDown() = 0;
+    virtual bool cursorLeft() = 0;
+    virtual bool cursorRight() = 0;
     virtual bool cursorMouse(int pos_x, int pos_y) = 0; // Prototype could change with sfml
     
     // Naïve implementation of simple menu msgs such as Winner and Loser status

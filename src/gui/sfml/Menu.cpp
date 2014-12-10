@@ -38,32 +38,24 @@ bool Menu::drawFrame(char c, const Rectangle& rect) { // Not used
     return false;
 }
 
-bool Menu::drawMap(const Stone::E_COLOR* map) { // This is general drawing func
+bool Menu::drawAll() { // This is general drawing func
     return false;
 }
 
-bool Menu::cursorUp(const Map& m) {
-    AGui::cursorUp(m);
-    this->drawMap(m.displayMap());
-    return true;
+bool Menu::cursorUp() {
+    return false;
 }
 
-bool Menu::cursorDown(const Map& m) {
-    AGui::cursorDown(m);
-    this->drawMap(m.displayMap());
-    return true;
+bool Menu::cursorDown() {
+    return false;
 }
 
-bool Menu::cursorLeft(const Map& m) {
-    AGui::cursorLeft(m);
-    this->drawMap(m.displayMap());
-    return true;
+bool Menu::cursorLeft() {
+    return false;
 }
 
-bool Menu::cursorRight(const Map& m) {
-    AGui::cursorRight(m);
-    this->drawMap(m.displayMap());
-    return true;
+bool Menu::cursorRight() {
+    return false;
 }
 
 bool Menu::cursorMouse(int pos_x, int pos_y) {

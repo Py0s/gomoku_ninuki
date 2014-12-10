@@ -16,12 +16,12 @@ class Sfml: public AGui
       // Members
       virtual bool refresh();
       virtual bool drawFrame(char c, const Rectangle& rect);
-      virtual bool drawMap(const Stone::E_COLOR* map);
+      virtual bool drawAll();
       
-      virtual bool cursorUp(const Map& m);
-      virtual bool cursorDown(const Map& m);
-      virtual bool cursorLeft(const Map& m);
-      virtual bool cursorRight(const Map& m);
+      virtual bool cursorUp();
+      virtual bool cursorDown();
+      virtual bool cursorLeft();
+      virtual bool cursorRight();
       virtual bool cursorMouse(int pos_x, int pos_y);
       
       virtual bool newWindow(const Rectangle& rect, const std::string& msg);
