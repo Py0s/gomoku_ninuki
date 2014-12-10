@@ -4,11 +4,11 @@
 #include <SFML/Graphics.hpp>
 #include <list>
 
-class Sfml: public AGui
+class Menu: public AGui
 {
    public:
-      Sfml(const Map& m, sf::RenderWindow& mainWindow);
-      virtual ~Sfml();
+      Menu(sf::RenderWindow& mainWindow);
+      virtual ~Menu();
       
       // Getters
       virtual bool getInput(EventManager& events);
@@ -27,18 +27,7 @@ class Sfml: public AGui
       virtual bool newWindow(const Rectangle& rect, const std::string& msg);
       
     private:
-      const Map& _m;
-      
-      sf::RenderWindow& _mainWindow;
-      sf::Texture _goban_tile_tx;
-      sf::Texture _stone_tx;
-      sf::Texture _hand_tx;
-
-      sf::Sprite _goban_sp;
-      sf::Sprite _curs_sp;
-      
-      static const int OFFSET_Y = 38;
-      static const int OFFSET_X = 38;
+        sf::RenderWindow& _mainWindow;
       
       bool handleKeys(const sf::Event& current, EventManager& events);
 };

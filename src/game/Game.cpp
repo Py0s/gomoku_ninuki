@@ -1,28 +1,62 @@
 #include "Game.h"
 #include "Sfml.h"
+#include "Menu.h"
 #include "AGui.h"
 #include "Human.h"
+#include "AI.h"
 #include <iostream>
 
 Game::Game()
-: _map(), _core(_map), _gui(new Sfml(this->_map)), _currentPlayer(NULL), _player_nb(0) {
+: _map(), _core(_map), _currentPlayer(NULL),
+        _player_nb(0), _referee() {
     this->_conf.fivebreak_rule = true;
     this->_conf.doublethree_rule = true;
-    this->_conf.ai_player_pos = -1;
+    this->_conf.ai_player_pos = 1;
+    this->_referee.setConf(&this->_conf);
+
+    this->_guis[0] = new Menu((this->_init_sfml).getWindow());
+    this->_guis[1] = new Sfml(this->_map, this->_init_sfml.getWindow());
+    this->_gui = this->_guis[1];
 }
 
 Game::~Game() {
-    delete this->_gui;
+    delete this->_guis[0];
+    delete this->_guis[1];
+    delete this->_players[0];
+    delete this->_players[1];
+}
+
+void Game::initPlayers()
+{
+    Human * p1 = new Human(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
+    if (this->_conf.ai_player_pos == -1)
+    {
+        Human * p2 = new Human(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
+        this->_players[0] = p1;
+        this->_players[1] = p2;
+    }
+    else
+    {
+        AI * p2 = new AI(_map, _referee, Stone::E_COLOR::WHITE);
+        p2->setTimeLimit(1);
+        p2->setOpponent(p1);
+        this->_players[this->_conf.ai_player_pos] = p2;
+        this->_players[(this->_conf.ai_player_pos + 1) % 2] = p1;
+    }
+    this->_currentPlayer = this->_players[0];
+}
+
+int Game::restart() {
+    delete this->_players[0];
+    delete this->_players[1];
+    // TODO : clean tout ce qu'il faut entre 2 parties
+    // clean map, referee, conf ?
+    return start();
 }
 
 // Members
 int Game::start() {
-    Human p1(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
-    Human p2(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
-
-    this->_players[0] = &p1;
-    this->_players[1] = &p2;
-    this->_currentPlayer = this->_players[0];
+    this->initPlayers();
     this->_gui->drawMap(this->_map.displayMap());
 
     while (this->_core.quit() == false)
@@ -51,6 +85,18 @@ int Game::start() {
                 this->_core.eventManager().disposeLastKey();
                 this->accept();
                 break;
+            case EventManager::E_KEYS::BLACK:
+                this->_core.eventManager().disposeLastKey();
+                if (this->_currentPlayer != this->_players[0])
+                    this->nextPlayer();
+                this->accept();
+                break;
+            case EventManager::E_KEYS::WHITE:
+                this->_core.eventManager().disposeLastKey();
+                if (this->_currentPlayer != this->_players[1])
+                    this->nextPlayer();
+                this->accept();
+                break;
             default:
                 break;
         }
@@ -64,7 +110,7 @@ inline void Game::nextPlayer() {
 }
 
 void Game::accept() {
-    Referee::E_STATE ret = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer);
+    Referee::E_STATE ret = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer->getCaptured());
     switch (ret) {
         case Referee::E_STATE::VALID:
             this->nextPlayer();

@@ -4,6 +4,8 @@
 class APlayer
 {
   public:
+    enum TYPE { HUMAN, AI };
+
     virtual ~APlayer() {};
 
 
@@ -12,14 +14,17 @@ class APlayer
     virtual void    setColor(Stone::E_COLOR color) {
         this->_color = color;
     };
-    virtual void    captureStones(){
-        this->_capturedStones += 2;
-    }
+
+    //Getters
+    virtual char& getCaptured() { return _captured; }
+    virtual TYPE const& getType() const { return _type; }
     
   protected:
-    APlayer(): _color(Stone::E_COLOR::NONE) { };
-    APlayer(Stone::E_COLOR color): _color(color), _capturedStones(0) { };
+//    APlayer(): _color(Stone::E_COLOR::NONE) { };
+    APlayer();
+    APlayer(Stone::E_COLOR color, TYPE type): _color(color), _captured(0), _type(type) { };
     
     Stone::E_COLOR _color;
-    char _capturedStones;
+    char    _captured;
+    TYPE    _type;
 };

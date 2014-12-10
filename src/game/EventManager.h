@@ -1,18 +1,20 @@
 #pragma once
 
 class EventManager {
-public:
-  typedef enum e_keys
-  {
-    NONE = 0,
-    QUIT,
-    UP,
-    DOWN,
-    LEFT,
-    RIGHT,
-    ACCEPT,
-    MAX
-  } E_KEYS;
+  public:
+    typedef enum e_keys
+    {
+        NONE = 0,
+        QUIT,
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT,
+        ACCEPT,
+        BLACK,
+        WHITE,
+        MAX
+    } E_KEYS;
 
   EventManager();
   ~EventManager();

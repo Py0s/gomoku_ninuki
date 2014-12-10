@@ -1,9 +1,7 @@
 #include "Sfml.h"
 
-Sfml::Sfml(const Map& m)
-: AGui(m.sizeY(), m.sizeX()) {
-    this->_mainWindow.create(sf::VideoMode(1920, 1080, 32), "Gomoku");
-    this->_mainWindow.setVerticalSyncEnabled(true);
+Sfml::Sfml(const Map& m, sf::RenderWindow& mainWindow)
+: AGui(m.sizeY(), m.sizeX(), AGui::GAME), _m(m), _mainWindow(mainWindow) {
     this->_mainWindow.clear(sf::Color::Black);
 
     this->_goban_tile_tx.loadFromFile("./texture/goban_tile.png");
@@ -15,14 +13,13 @@ Sfml::Sfml(const Map& m)
 
     this->_goban_sp.setTexture(this->_goban_tile_tx);
     this->_goban_sp.setTextureRect(sf::IntRect(0, 0, 50 * (this->_map_size_x + 1), 50 * (this->_map_size_y + 1)));
-
+    
     this->_curs_sp.setTexture(this->_hand_tx);
     this->_curs_sp.setScale(0.3, 0.3);
 
 }
 
 Sfml::~Sfml() {
-    this->_mainWindow.close();
 }
 
 bool Sfml::getInput(EventManager& events) {
@@ -58,7 +55,8 @@ bool Sfml::drawFrame(char c, const Rectangle& rect) {
 bool Sfml::drawMap(const Stone::E_COLOR* map) {
     Stone::E_COLOR c;
     std::list<sf::Sprite> stones;
-
+    
+    this->_mainWindow.clear(sf::Color::Black);
     for (int y = 0; y < this->_map_size_y; ++y) {
         for (int x = 0; x < this->_map_size_x; ++x) {
             c = map[(y * this->_map_size_x) + x];
@@ -130,12 +128,18 @@ bool Sfml::handleKeys(const sf::Event& current, EventManager& events) {
         case (sf::Keyboard::Right):
             events.setKey(EventManager::E_KEYS::RIGHT);
             break;
-        case (sf::Keyboard::A):
         case (sf::Keyboard::Return):
             events.setKey(EventManager::E_KEYS::ACCEPT);
             break;
         case (sf::Keyboard::Escape):
             events.setKey(EventManager::E_KEYS::QUIT);
+            break;
+        case (sf::Keyboard::Z):
+        case (sf::Keyboard::W):
+            events.setKey(EventManager::E_KEYS::BLACK);
+            break;
+        case (sf::Keyboard::X):
+            events.setKey(EventManager::E_KEYS::WHITE);
             break;
         default:
             break;
