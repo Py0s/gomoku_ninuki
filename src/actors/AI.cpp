@@ -76,25 +76,24 @@ int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
     int tmp;
     //int max = -100000;
  
-    //Si on est à la profondeur voulue, on retourne l'évaluation
+    //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
     if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
         return eval(map, ret, captured, opponentCaptured);
  
-    //Si la partie est finie, on retourne l'évaluation de jeu
-    // ??
- 
-    //On parcourt le plateau de jeu et on le joue si la case est vide
+    //On parcourt le plateau de jeu et on joue si la case est vide
     for (int y=0; y<Map::_MAPSIZE_Y; ++y)
     {
         for(int x=0; x<Map::_MAPSIZE_X; ++x)
         {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
+                // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
                 char tmp_captured = captured;
                 char tmp_opponent_captured = opponentCaptured;
 
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_captured);
+                Stone stone = Stone(y, x, _color);
+                Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_captured);
                 if (ret != Referee::E_STATE::INVALID)
                 {
                     tmp = calcMin(map_tmp, depth-1, ret, tmp_captured, tmp_opponent_captured, alpha, beta);
@@ -103,8 +102,7 @@ int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
                     if (beta <= alpha)
                         return alpha;
                 }
-                // //On annule le coup
-                // map.removeStone(map[y][x]);
+                // On annule le coup
             }
         }
     }
@@ -115,25 +113,24 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
     int tmp;
     //int min = 100000;
  
-    //Si on est à la profondeur voulue, on retourne l'évaluation
+    //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
     if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
         return eval(map, ret, captured, opponentCaptured);
  
-    //Si la partie est finie, on retourne l'évaluation de jeu
-    // ??
- 
-    //On parcourt le plateau de jeu et on le joue si la case est vide
+    //On parcourt le plateau de jeu et on joue si la case est vide
     for (int y=0; y<Map::_MAPSIZE_Y; ++y)
     {
         for(int x=0; x<Map::_MAPSIZE_X; ++x)
         {
             if (map[y][x].getColor() == Stone::E_COLOR::NONE)
             {
+                // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
                 char tmp_captured = captured;
                 char tmp_opponent_captured = opponentCaptured;
 
-                Referee::E_STATE ret = _referee.check(Stone(y, x, Referee::OP_COLOR[_color]), map_tmp, tmp_opponent_captured);
+                Stone stone = Stone(y, x, Referee::OP_COLOR[_color]);
+                Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_opponent_captured);
                 //std::cout << "L'adv joue(" << ret << ")";
                 if (ret != Referee::E_STATE::INVALID)
                 {
@@ -143,8 +140,7 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
                     if (beta <= alpha)
                         return beta;
                 }
-                // //On annule le coup
-                // map.removeStone(map[y][x]);
+                // On annule le coup
             }
         }
     }
@@ -158,43 +154,39 @@ Stone AI::calc(int depth, float t) {
     int alpha = -100000;
     int beta = 100000;
 
-    //Si la profondeur est nulle ou la partie est finie,
-    //on ne fait pas le calcul et on joue le coup maximal
-    if (depth > 0)
+    //On parcourt les cases du Goban
+    for (int y=0; y<Map::_MAPSIZE_Y; ++y)
     {
-        //On parcourt les cases du Goban
-        for (int y=0; y<Map::_MAPSIZE_Y; ++y)
+        for (int x=0; x<Map::_MAPSIZE_X; ++x)
         {
-            for (int x=0; x<Map::_MAPSIZE_X; ++x)
+            if (((float)clock() / CLOCKS_PER_SEC) - (t / CLOCKS_PER_SEC) > _timeLimit)
+                throw Exceptions("AI timeLimitSec exceeded");
+
+            // Copy de la map et des nombres de pierres capturées
+            Map map_tmp = _map;
+            char tmp_captured = this->getCaptured();
+            char tmp_opponent_captured = _opponent->getCaptured();
+
+            Stone stone = Stone(y, x, _color);
+            Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_captured);
+            //std::cout << "Je joue(" << ret << ")" << std::endl;
+
+            //On appelle la fonction calcMin pour lancer l'IA
+            if (ret != Referee::E_STATE::INVALID)
             {
-                if (((float)clock() / CLOCKS_PER_SEC) - (t / CLOCKS_PER_SEC) > _timeLimit)
-                    throw Exceptions("AI timeLimitSec exceeded");
-                // Copy de la map et du player
-                Map map_tmp = _map;
-                char tmp_captured = this->getCaptured();
-                char tmp_opponent_captured = _opponent->getCaptured();
-
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_captured);
-                //std::cout << "Je joue(" << ret << ")" << std::endl;
-
-                //On appelle la fonction calcMin pour lancer l'IA
-                if (ret != Referee::E_STATE::INVALID)
+                tmp = calcMin(map_tmp, depth - 1, ret, tmp_captured, tmp_opponent_captured, alpha, beta);
+                //Si ce score est plus grand
+                if (tmp > max)
                 {
-                    tmp = calcMin(map_tmp, depth - 1, ret, tmp_captured, tmp_opponent_captured, alpha, beta);
-                    //Si ce score est plus grand
-                    if (tmp > max)
-                    {
-                        //std::cout << "[" << max << "->" << tmp << "]" << std::endl;
-                        //On le choisit
-                        max = tmp;
-                        max_y = y;
-                        max_x = x;
-                    }
+                    //std::cout << "[" << max << "->" << tmp << "]" << std::endl;
+                    //On le choisit
+                    max = tmp;
+                    max_y = y;
+                    max_x = x;
                 }
-                // //On annule le coup
-                // map_tmp.removeStone(map_tmp[y][x]);
-                }
-        }
+            }
+            // On annule le coup
+            }
     }
     return Stone(max_y, max_x, _color);
 }

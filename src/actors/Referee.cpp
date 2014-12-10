@@ -42,6 +42,9 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
 
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
     
+    // Recheck des alignements potentiellement gagnants mais cassables
+    // checkLbreakables(map);
+
     // map.displayDebug();
     return ret;
 }
