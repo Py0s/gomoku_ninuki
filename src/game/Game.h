@@ -8,9 +8,12 @@
 #include <map> 
 
 struct Config {
-    bool doublethree_rule;
+    bool human_player_1;
+    bool human_player_2;
     bool fivebreak_rule;
-    int ai_player_pos; // Set -1 if no ai
+    bool doublethree_rule;
+    float ai_time;
+//    int ai_player_pos; // Set -1 if no ai
 };
 
 class Game {
