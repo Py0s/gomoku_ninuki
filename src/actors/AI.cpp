@@ -46,28 +46,31 @@ void AI::setOpponent(APlayer * player) {
 int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured) {
     int score = 0;
 
-    if (captured - _captured)
+    int takenStones = captured - _captured;
+    int opponentTakenStones = opponentCaptured - _opponent->getCaptured();
+    char stonesPlayed = map.getPlayed();
+    if (takenStones)
     {
         //std::cout << "(c)";
         // std::cout << "Je vais capturer" << std::endl;
-        score = 500 - map.getPlayed();
+        score = (100 * takenStones - stonesPlayed);
     }
-    else if (opponentCaptured - _opponent->getCaptured())
+    else if (opponentTakenStones)
     {
         // std::cout << "Je vais me faire bouffer" << std::endl;
-        score = -500 + map.getPlayed();
+        score = (-100 * opponentTakenStones + stonesPlayed);
     }
-    else if (ret == Referee::E_STATE::END_WHITE) // TODO : Gerer ca pas en dur
+    if (ret == Referee::E_STATE::END_WHITE) // TODO : Gerer ca pas en dur
     {
         //std::cout << "(v)";
         // std::cout << "Je vais gagner" << std::endl;
-        score = 1000 - map.getPlayed();
+        score += (1000 - stonesPlayed);
     }
     else if (ret == Referee::E_STATE::END_BLACK)
     {
         //std::cout << "(p)";
         // std::cout << "Je vais perdre" << std::endl;
-        score = -1000 + map.getPlayed();
+        score += (-1000 + stonesPlayed);
     }
     return (score);
 }
