@@ -1,11 +1,67 @@
 #include "Menu.h"
+#include "Exceptions.h"
+#include "Game.h"
+#include "Options.h"
 
-Menu::Menu(sf::RenderWindow& mainWindow)
-: AGui(0, 0, AGui::GAME), _mainWindow(mainWindow) {
+Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
+    : AGui(0, 0, AGui::GAME), _mainWindow(mainWindow), _selected(0),
+    _config({true, true, true, true, 1})
+{
+    if (!_font.loadFromFile("./font/arial.ttf"))
+        throw Exceptions("Can't load arial font");//TODO : don't forget to catch it !!
+    _title = new GText(title, &_font, GText::TITLE);
 
+    std::vector<std::string> playerV;
+    playerV.push_back("AI");
+    playerV.push_back("HUMAN");
+    std::vector<bool> boolV;
+    boolV.push_back(true);
+    boolV.push_back(false);
+    std::vector<float> timeV;
+    timeV.push_back(1);
+    timeV.push_back(2);
+    timeV.push_back(5);
+    timeV.push_back(10);
+    timeV.push_back(20);
+    timeV.push_back(30);
+    timeV.push_back(60);
+
+    _options.push_back(new Options("Player1 (Black)", _mainWindow, &_font));
+    _options[0]->addValues<std::string>(playerV);
+    _options.push_back(new Options("Player2 (White)", _mainWindow, &_font));
+    _options[1]->addValues<std::string>(playerV);
+    _options.push_back(new Options("Five-Break", _mainWindow, &_font));
+    _options[2]->addValues<bool>(boolV);
+    _options.push_back(new Options("Double-Three", _mainWindow, &_font));
+    _options[3]->addValues<bool>(boolV);
+    _options.push_back(new Options("AI Time", _mainWindow, &_font));
+    _options[4]->addValues<float>(timeV);
+
+    //if debug : push + d'options
+
+    int i = 1;
+    std::for_each(_options.begin(), _options.end(), [&](Options * option){
+        option->setY(_mainWindow.getSize().y * i++ / (_options.size() + 1));
+    });
 }
 
 Menu::~Menu() {
+    delete _title;
+    _options.clear();
+}
+
+Config const&        Menu::config() {
+    saveConfig();
+    return _config;
+}
+void Menu::saveConfig()
+{
+    assert(_options.size() == 5);
+    _config.human_player_1 = (_options[0]->validatedValue<std::string>() == "HUMAN");
+    _config.human_player_2 = (_options[1]->validatedValue<std::string>() == "HUMAN");
+    _config.fivebreak_rule = _options[2]->validatedValue<bool>();
+    _config.doublethree_rule = _options[3]->validatedValue<bool>();
+    _config.ai_time = _options[4]->validatedValue<float>();
 }
 
 bool Menu::getInput(EventManager& events) {
@@ -39,27 +95,49 @@ bool Menu::drawFrame(char c, const Rectangle& rect) { // Not used
 }
 
 bool Menu::drawAll() { // This is general drawing func
-    return false;
+    _mainWindow.draw(*_title);
+    for (std::vector<Options *>::iterator it = _options.begin(); it < _options.end(); ++it)
+        (*it)->draw();
+    return true;
 }
 
 bool Menu::cursorUp() {
-    return false;
+    std::cout << "up" << std::endl;
+    selectUp();
+    drawAll();
+    return true;
 }
 
 bool Menu::cursorDown() {
-    return false;
+    std::cout << "down" << std::endl;
+    selectDown();
+    drawAll();
+    return true;
 }
 
 bool Menu::cursorLeft() {
-    return false;
+    std::cout << "left" << std::endl;
+    selectLeft();
+    drawAll();
+    return true;
 }
 
 bool Menu::cursorRight() {
-    return false;
+    std::cout << "right" << std::endl;
+    selectRight();
+    drawAll();
+    return true;
 }
 
 bool Menu::cursorMouse(int pos_x, int pos_y) {
+    // la fleeemmmmeeee
     return false;
+}
+
+bool Menu::chooseOptionValue() {
+    validate();
+    drawAll();
+    return true;
 }
 
 bool Menu::newWindow(const Rectangle& rect, const std::string& msg) {
@@ -100,3 +178,39 @@ bool Menu::handleKeys(const sf::Event& current, EventManager& events) {
     }
     return true;
 }
+
+void    Menu::setSelected(unsigned int i)
+{
+    if (i >= 0 && i < _options.size())
+    {
+        _options[_selected]->unfocus();
+        _selected = i;
+        _options[_selected]->focus();
+    }
+}
+void    Menu::selectUp()
+{
+    setSelected(_selected - 1);
+}
+void    Menu::selectDown()
+{
+    setSelected(_selected + 1);
+}
+void    Menu::selectLeft()
+{
+    selectedOption()->selectLeft();
+}
+void    Menu::selectRight()
+{
+    selectedOption()->selectRight();
+}
+void    Menu::validate()
+{
+    selectedOption()->validate();
+}
+Options*     Menu::selectedOption() const {
+    assert(_options.size() > 0);
+    assert(_selected >= 0 && _selected < _options.size());
+    return _options[_selected];
+}
+

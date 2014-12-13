@@ -18,7 +18,7 @@ Game::Game()
 
     this->_guis[0] = new Menu((this->_init_sfml).getWindow());
     this->_guis[1] = new Sfml(this->_map, this->_init_sfml.getWindow());
-    this->_gui = this->_guis[1];
+    this->_gui = this->_guis[0];
 }
 
 Game::~Game() {
@@ -123,6 +123,44 @@ int Game::start() {
                 break;
         }
     }
+    return 0;
+}
+int Game::menu() {
+    this->_gui->drawAll();
+
+    while (this->_core.quit() == false)
+    {
+        this->_gui->refresh();
+        this->_gui->getInput(this->_core.eventManager());
+
+        switch (this->_core.eventManager().getLastKey()) {
+            case EventManager::E_KEYS::UP:
+                this->_core.eventManager().disposeLastKey();
+                this->_gui->cursorUp();
+                break;
+            case EventManager::E_KEYS::DOWN:
+                this->_core.eventManager().disposeLastKey();
+                this->_gui->cursorDown();
+                break;
+            case EventManager::E_KEYS::LEFT:
+                this->_core.eventManager().disposeLastKey();
+                this->_gui->cursorLeft();
+                break;
+            case EventManager::E_KEYS::RIGHT:
+                this->_core.eventManager().disposeLastKey();
+                this->_gui->cursorRight();
+                break;
+            case EventManager::E_KEYS::ACCEPT:
+                this->_core.eventManager().disposeLastKey();
+                (dynamic_cast<Menu *>(this->_gui))->chooseOptionValue();
+                break;
+            default:
+                break;
+        }
+    }
+    this->_core.eventManager().disposeLastKey();
+    this->_conf = (dynamic_cast<Menu *>(this->_gui))->config();
+    this->_gui = this->_guis[1];
     return 0;
 }
 

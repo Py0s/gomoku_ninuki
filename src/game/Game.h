@@ -5,16 +5,8 @@
 #include "APlayer.h"
 #include "Referee.h"
 #include "InitSfml.h"
+#include "Config.h"
 #include <map> 
-
-struct Config {
-    bool human_player_1;
-    bool human_player_2;
-    bool fivebreak_rule;
-    bool doublethree_rule;
-    float ai_time;
-//    int ai_player_pos; // Set -1 if no ai
-};
 
 class Game {
 public:
@@ -22,6 +14,7 @@ public:
     virtual ~Game();
     
     // Members
+    int menu();
     int start();
     int restart();
 
