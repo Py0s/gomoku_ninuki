@@ -7,6 +7,7 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     : AGui(0, 0, AGui::GAME), _mainWindow(mainWindow), _selected(0),
     _config({true, true, true, true, 1})
 {
+    _mainWindow.clear(sf::Color::Black);
     if (!_font.loadFromFile("./font/arial.ttf"))
         throw Exceptions("Can't load arial font");//TODO : don't forget to catch it !!
     _title = new GText(title, &_font, GText::TITLE);
@@ -95,6 +96,7 @@ bool Menu::drawFrame(char c, const Rectangle& rect) { // Not used
 }
 
 bool Menu::drawAll() { // This is general drawing func
+    this->_mainWindow.clear(sf::Color::Black);
     _mainWindow.draw(*_title);
     for (std::vector<Options *>::iterator it = _options.begin(); it < _options.end(); ++it)
         (*it)->draw();
