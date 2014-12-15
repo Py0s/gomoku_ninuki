@@ -24,21 +24,27 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     assert(this->_conf != nullptr);
     Tile& tile = map[s.y()][s.x()];
 
+    // TODO : mettre ça avant l'appel a check
     if (tile.getColor() != Stone::E_COLOR::NONE)
         return INVALID;
 
     map.placeStone(s);
-    map.played();
+    map.played();// TODO : pourquoi c'est pas direct dans placeStones ?
 
     // if RULE
     if (checkDoubleThree(map, tile, s.color()))
     {
         map.removeStone(tile);
-        //std::cout << "DOUBLE TROIS" << std::endl;
-        return E_STATE::INVALID;
+        //TODO : ya pas de played-- ?
+        return INVALID;
     }
 
-    checkCapture(tile, map, captured);
+    if (checkCapture(tile, map, captured))
+    {
+        if (tile.getColor() == Stone::E_COLOR::BLACK)
+            return END_BLACK;
+        return END_WHITE;
+    }
 
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
     
@@ -46,6 +52,10 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     // checkLbreakables(map);
 
     // map.displayDebug();
+
+    if (map.getPlayed() == MAX_STONE_PLAYED)
+        return END_DRAW;
+
     return ret;
 }
 
@@ -76,22 +86,6 @@ bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir,
     return true;
 }
 
-/*bool Referee::extremOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
-{
-    Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, 4);
-
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
-        return false;
-
-    ptr = map.go[Map::OP_DIR[dir]];
-    inter_tile = (map.*ptr)(tile, 1);
-
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
-        return false;
-    return true;
-}
-*/
 bool Referee::alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     Map::PTR ptr = map.go[dir];
@@ -102,43 +96,11 @@ bool Referee::alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) cons
     return false;
 }
 
-/*bool Referee::extremTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
-{
-    Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 3);
-
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
-        return false;
-
-    ptr = map.go[Map::OP_DIR[dir]];
-    inter_tile = (map.*ptr)(tile, tile.getValue(color, Map::OP_DIR[dir]) + 1);
-
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
-        return false;
-    return true;
-}
-*/
 bool Referee::alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     return true;
 }
 
-/*bool Referee::extremThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
-{
-    Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 1);
-
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
-        return false;
-
-    ptr = map.go[Map::OP_DIR[dir]];
-    inter_tile = (map.*ptr)(tile, tile.getValue(color, Map::OP_DIR[dir]) + 1);
-
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
-        return false;
-    return true;
-}
-*/
 bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     try
@@ -194,60 +156,6 @@ bool Referee::checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR co
     return false;
 }
 
-
-// bool Referee::parcoursOne(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
-// {
-//     Map::PTR ptr = map.go[first_dir];
-//
-//     if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
-//         return true;
-//
-//     Tile& second_tile = (map.*ptr)(tile, 2);
-//     if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
-//         return true;
-//
-//     Tile& third_tile = (map.*ptr)(tile, 3);
-//     if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
-//         return true;
-//
-//     return false;
-// }
-
-// bool Referee::parcoursTwo(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
-// {
-//     Map::PTR ptr = map.go[first_dir];
-//
-//     if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
-//         return true;
-//
-//     Tile& second_tile = (map.*ptr)(tile, 1);
-//     if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
-//         return true;
-//
-//     Tile& third_tile = (map.*ptr)(tile, 3);
-//     if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
-//         return true;
-//
-//     return false;
-// }
-
-// bool Referee::parcoursThree(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
-// {
-//     Map::PTR ptr = map.go[first_dir];
-//
-//     if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
-//         return true;
-//
-//     Tile& second_tile = (map.*ptr)(tile, 1);
-//     if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
-//         return true;
-//
-//     Tile& third_tile = (map.*ptr)(tile, 2);
-//     if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
-//         return true;
-//
-//     return false;
-// }
 
 bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir, int first_value, int second_value) const
 {
@@ -324,7 +232,7 @@ bool Referee::checkDoubleThree(Map& map, Tile& tile, Stone::E_COLOR color) const
 }
 
 /* CAPTURE FUNCTIONS */
-void Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
+bool Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
     Stone::E_COLOR color = tile.getColor();
 
     for (int dir = 0; dir < 8; ++dir)
@@ -338,19 +246,24 @@ void Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
 
                 if (tile_for_capture.getColor() == color)
                 {
-                    captured += 2;
-
                     Tile& first_captured_stone = (map.*ptr)(tile, 1);
                     Tile& second_captured_stone = (map.*ptr)(tile, 2);
 
                     map.removeStone(first_captured_stone);
                     map.removeStone(second_captured_stone);
+
+                    if (captured == 8)
+                        return true;//TODO : est-ce necessaire de faire le += 2 ici aussi ?
+
+                    captured += 2;
                 }
             }
             catch (const ExcOutOfBound& e) {
             }
         }
     }
+
+    return false;
 }
 
 void Referee::checkLbreakables(Map &map)
@@ -480,3 +393,111 @@ inline Referee::E_STATE Referee::winner(const Stone::E_COLOR color) const {
         return END_BLACK;
     return END_WHITE;
 }
+
+
+/* OLD */
+
+// bool Referee::parcoursOne(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
+// {
+//     Map::PTR ptr = map.go[first_dir];
+//
+//     if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+//         return true;
+//
+//     Tile& second_tile = (map.*ptr)(tile, 2);
+//     if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
+//         return true;
+//
+//     Tile& third_tile = (map.*ptr)(tile, 3);
+//     if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
+//         return true;
+//
+//     return false;
+// }
+
+// bool Referee::parcoursTwo(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
+// {
+//     Map::PTR ptr = map.go[first_dir];
+//
+//     if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+//         return true;
+//
+//     Tile& second_tile = (map.*ptr)(tile, 1);
+//     if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
+//         return true;
+//
+//     Tile& third_tile = (map.*ptr)(tile, 3);
+//     if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
+//         return true;
+//
+//     return false;
+// }
+
+// bool Referee::parcoursThree(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
+// {
+//     Map::PTR ptr = map.go[first_dir];
+//
+//     if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+//         return true;
+//
+//     Tile& second_tile = (map.*ptr)(tile, 1);
+//     if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
+//         return true;
+//
+//     Tile& third_tile = (map.*ptr)(tile, 2);
+//     if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
+//         return true;
+//
+//     return false;
+// }
+
+/*bool Referee::extremOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+{
+    Map::PTR ptr = map.go[dir];
+    Tile& inter_tile = (map.*ptr)(tile, 4);
+
+    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+        return false;
+
+    ptr = map.go[Map::OP_DIR[dir]];
+    inter_tile = (map.*ptr)(tile, 1);
+
+    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+        return false;
+    return true;
+}
+*/
+
+/*bool Referee::extremTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+{
+    Map::PTR ptr = map.go[dir];
+    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 3);
+
+    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+        return false;
+
+    ptr = map.go[Map::OP_DIR[dir]];
+    inter_tile = (map.*ptr)(tile, tile.getValue(color, Map::OP_DIR[dir]) + 1);
+
+    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+        return false;
+    return true;
+}
+*/
+
+/*bool Referee::extremThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+{
+    Map::PTR ptr = map.go[dir];
+    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 1);
+
+    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+        return false;
+
+    ptr = map.go[Map::OP_DIR[dir]];
+    inter_tile = (map.*ptr)(tile, tile.getValue(color, Map::OP_DIR[dir]) + 1);
+
+    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+        return false;
+    return true;
+}
+*/

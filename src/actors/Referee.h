@@ -10,6 +10,8 @@
 
 struct Config;
 
+#define MAX_STONE_PLAYED    60
+
 class Referee
 {
   public:
@@ -61,7 +63,7 @@ class Referee
     bool XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
 
     /* CAPTURE FUNCTIONS */
-    void checkCapture(Tile& tile, Map& map, char& captured) const;
+    bool checkCapture(Tile& tile, Map& map, char& captured) const;
 
     /* ALIGNEMENT FUNCTIONS */
     Referee::E_STATE    checkAlign(Tile& t, Map& map, bool breakable);
