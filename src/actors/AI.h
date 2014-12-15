@@ -18,18 +18,20 @@ class AI : public APlayer
         void setTimeLimit(float t);// limite en secondes
 
     private:
-        Map& _map;
-        Referee& _referee;
-        APlayer * _opponent;
+        Map&        _map;
+        Referee&    _referee;
+        APlayer *   _opponent;
         float       _timeLimit;
 
         //Fonction qui calcule le prochain coup
         Stone calc(int depth, float t);
  
         //Fonctions pour le calcul
-        int calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured, int alpha, int beta);
-        int calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured, int alpha, int beta);
+        int calcMinMax(Map& map, int depth, float t, Referee::E_STATE ret, Stone::E_COLOR color, int alpha, int beta);
+        int calcMin(Map& map, int depth, float t, Referee::E_STATE ret, char& captured, char& opponentCaptured);
+        int calcMax(Map& map, int depth, float t, Referee::E_STATE ret, char& captured, char& opponentCaptured);
  
         //Fonction qui évalue le jeu
+        int eval(Map& map, Referee::E_STATE ret);
         int eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured);
 };

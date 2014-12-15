@@ -1,10 +1,11 @@
 #include "Map.h"
 #include "ExcOutOfBound.h"
+#include "Referee.h"
 
 const enum Map::E_DIR Map::OP_DIR[] = { SE, S, SW, W, NW, N, NE, E };
 const enum Map::E_DIR Map::OR_TO_DIR[] = {N, NE, E, SE};
 
-Map::Map() : _played(0) {
+Map::Map() : _stonesPlayed(0) {
     for (int y = 0; y < this->_MAPSIZE_Y; ++y) {
         for (int x = 0; x < this->_MAPSIZE_X; ++x) {
             this->_displayMap[y][x] = Stone::E_COLOR::NONE;
@@ -43,6 +44,7 @@ void Map::placeStone(const Stone& s) {
     Stone::E_COLOR color = s.color();
 
     this->_displayMap[s.y()][s.x()] = color;
+    _played[color]++;
     tile.setColor(color);
 
     for (int dir_inter = 0; dir_inter < 4; ++dir_inter)
@@ -68,6 +70,7 @@ void Map::removeStone(Tile& tile) {
     Stone::E_COLOR color = tile.getColor();
 
     this->_displayMap[tile.Y][tile.X] = Stone::E_COLOR::NONE;
+    _played[color]--;
     tile.setColor(Stone::E_COLOR::NONE);
 
     for (int dir_inter = 0; dir_inter < 4; ++dir_inter)
@@ -108,12 +111,11 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char
 // Debug
 void Map::displayDebug() const
 {
-    for (int y=0; y < 3; ++y)
+    for (int y=0; y < 5; ++y)
     {
         for (int x = 0; x < 9; ++x)
         {
-            _map[y][x].Debug();
-            std::cout << " ";
+            std::cout << _map[y][x].getColor() << "|";
         }
         std::cout << std::endl;
     }
