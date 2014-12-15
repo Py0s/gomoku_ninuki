@@ -5,7 +5,7 @@
 
 Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     : AGui(0, 0, AGui::GAME), _mainWindow(mainWindow), _selected(0),
-    _config({true, true, true, true, 1})
+    _config()
 {
     _mainWindow.clear(sf::Color::Black);
     if (!_font.loadFromFile("./font/arial.ttf"))
@@ -19,13 +19,13 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     boolV.push_back(true);
     boolV.push_back(false);
     std::vector<float> timeV;
-    timeV.push_back(1);
+    timeV.push_back(0.5);
     timeV.push_back(2);
     timeV.push_back(5);
     timeV.push_back(10);
     timeV.push_back(20);
     timeV.push_back(30);
-    timeV.push_back(60);
+    timeV.push_back(50);
 
     _options.push_back(new Options("Player1 (Black)", _mainWindow, &_font));
     _options[0]->addValues<std::string>(playerV);
@@ -37,6 +37,8 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     _options[3]->addValues<bool>(boolV);
     _options.push_back(new Options("AI Time", _mainWindow, &_font));
     _options[4]->addValues<float>(timeV);
+    _options.push_back(new Options("Continue ?", _mainWindow, &_font));
+    _options[5]->addValues<bool>(boolV);
 
     //if debug : push + d'options
 
@@ -183,12 +185,13 @@ Options*     Menu::selectedOption() const {
 }
 void Menu::saveConfig()
 {
-    assert(_options.size() == 5);
+    assert(_options.size() == 6);
     _config.human_player_1 = (_options[0]->validatedValue<std::string>() == "HUMAN");
     _config.human_player_2 = (_options[1]->validatedValue<std::string>() == "HUMAN");
     _config.fivebreak_rule = _options[2]->validatedValue<bool>();
     _config.doublethree_rule = _options[3]->validatedValue<bool>();
     _config.ai_time = _options[4]->validatedValue<float>();
+    _config.continue_game = _options[5]->validatedValue<float>();
 }
 
 bool Menu::handleKeys(const sf::Event& current, EventManager& events) {

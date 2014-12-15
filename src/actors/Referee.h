@@ -24,6 +24,12 @@ class Referee
     };
 
     static const enum Stone::E_COLOR OP_COLOR[];
+    inline static bool gameHasEnded(E_STATE const& ret) {
+        return (ret == Referee::END_BLACK
+            || ret == Referee::END_WHITE
+            || ret == Referee::END_DRAW);
+    }
+
 
     Referee();
     ~Referee();

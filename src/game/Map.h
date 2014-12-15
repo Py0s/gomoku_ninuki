@@ -30,11 +30,11 @@ class Map {
     static const enum E_DIR OP_DIR[];
     static const enum E_DIR OR_TO_DIR[];
 
-    // static const int _MAPSIZE_X = 19; // For now
-    // static const int _MAPSIZE_Y = _MAPSIZE_X;
+    static const int _MAPSIZE_X = 19;
+    static const int _MAPSIZE_Y = _MAPSIZE_X;
 
-    static const int _MAPSIZE_X = 9; // For now
-    static const int _MAPSIZE_Y = 5;
+    // static const int _MAPSIZE_X = 9; // For now
+    // static const int _MAPSIZE_Y = 5;
     
     typedef Tile& (Map::*PTR) (const Tile&, unsigned char);
     const PTR go[DIR_COUNT] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \

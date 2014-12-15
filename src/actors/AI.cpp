@@ -17,10 +17,15 @@ void AI::setTimeLimit(float t)
 {
     _timeLimit = t;
 }
-
-
 void AI::setOpponent(APlayer * player) {
     _opponent = player;
+}
+
+
+// On vérifie si on a pas dépassé le temps maximal
+inline void        AI::checkTime() {
+    if (((float)clock() / CLOCKS_PER_SEC) - (_playBeginTime / CLOCKS_PER_SEC) > _timeLimit)
+        throw Exceptions("AI timeLimitSec exceeded");
 }
 
 Stone AI::plays() {
@@ -31,8 +36,8 @@ Stone AI::plays() {
     {
         while (true)
         {
-
-            stone = calc(depth++, (float)clock());
+            _playBeginTime = (float)clock();
+            stone = calc(depth++);
         }
     }
     catch (const Exceptions& e)
@@ -64,26 +69,27 @@ int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCapture
 }
 
 
-int AI::calcMax(Map& map, int depth, float t, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
+int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
+
+    if (depth == 0 || Referee::gameHasEnded(ret))
+        return eval(map, ret, captured, opponentCaptured);
+
     int score;
-    int max = -100000;
- 
+    int max = -AI_INFINITY;
+
     //On parcourt les cases du Goban
     for (int y = 0; y < Map::_MAPSIZE_Y; ++y)
     {
         for (int x = 0; x < Map::_MAPSIZE_X; ++x)
         {
-            // On vérifie si on a pas dépassé le temps maximal
-            if (((float)clock() / CLOCKS_PER_SEC) - (t / CLOCKS_PER_SEC) > _timeLimit)
-                throw Exceptions("AI timeLimitSec exceeded");
+            checkTime();
 
-            // On joue seulement si une pierre n'est pas déja présente
-            if (map[y][x].getColor() == Stone::E_COLOR::NONE)
+            if (map[y][x].isEmpty())
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
                 char tmp_captured = captured;
-                char tmp_opponent_captured = opponentCaptured;
+                char tmp_opponentCaptured = opponentCaptured;
 
                 // On crée la pierre et on joue le coup
                 Stone stone = Stone(y, x, _color);
@@ -92,11 +98,7 @@ int AI::calcMax(Map& map, int depth, float t, Referee::E_STATE ret, char& captur
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
-                    if (depth == 1 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
-                        score = eval(map, ret, tmp_captured, tmp_opponent_captured);
-                    else
-                        score = calcMin(map_tmp, depth-1, t, ret, tmp_captured, tmp_opponent_captured);
+                    score = calcMin(map_tmp, depth-1, ret, tmp_captured, tmp_opponentCaptured);
 
                     // Si le score est plus petit on le sauvegarde
                     if (score > max)
@@ -109,39 +111,36 @@ int AI::calcMax(Map& map, int depth, float t, Referee::E_STATE ret, char& captur
     return max;
 }
 
-int AI::calcMin(Map& map, int depth, float t, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
+int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
+
+    if (depth == 0 || Referee::gameHasEnded(ret))
+        return eval(map, ret, captured, opponentCaptured);
+
     int score;
-    int min = 100000;
+    int min = AI_INFINITY;
 
     //On parcourt les cases du Goban
     for (int y = 0; y < Map::_MAPSIZE_Y; ++y)
     {
         for (int x = 0; x < Map::_MAPSIZE_X; ++x)
         {
-            // On vérifie si on a pas dépassé le temps maximal
-            if (((float)clock() / CLOCKS_PER_SEC) - (t / CLOCKS_PER_SEC) > _timeLimit)
-                throw Exceptions("AI timeLimitSec exceeded");
+            checkTime();
 
-            // On joue seulement si une pierre n'est pas déja présente
-            if (map[y][x].getColor() == Stone::E_COLOR::NONE)
+            if (map[y][x].isEmpty())
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
                 char tmp_captured = captured;
-                char tmp_opponent_captured = opponentCaptured;
+                char tmp_opponentCaptured = opponentCaptured;
 
                 // On crée la pierre et on joue le coup
                 Stone stone = Stone(y, x, Referee::OP_COLOR[_color]);
-                Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_opponent_captured);
+                Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_opponentCaptured);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
-                    if (depth == 1 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
-                        score = eval(map, ret, tmp_opponent_captured, tmp_opponent_captured);
-                    else
-                        score = calcMax(map_tmp, depth-1, t, ret, tmp_captured, tmp_opponent_captured);
+                    score = calcMax(map_tmp, depth-1, ret, tmp_captured, tmp_opponentCaptured);
 
                     // Si le score est plus petit on le sauvegarde
                     if (score < min)
@@ -154,27 +153,24 @@ int AI::calcMin(Map& map, int depth, float t, Referee::E_STATE ret, char& captur
     return min;
 }
 
-Stone AI::calc(int depth, float t) {
+Stone AI::calc(int depth) {
     int score;
     int max_y=-1,max_x=-1;
-    int max = -10000;
+    int max = -AI_INFINITY;
 
     //On parcourt les cases du Goban
     for (int y=0; y<Map::_MAPSIZE_Y; ++y)
     {
         for (int x=0; x<Map::_MAPSIZE_X; ++x)
         {
-            // On vérifie si on a pas dépassé le temps maximal
-            if (((float)clock() / CLOCKS_PER_SEC) - (t / CLOCKS_PER_SEC) > _timeLimit)
-                throw Exceptions("AI timeLimitSec exceeded");
+            checkTime();
 
-            // On joue seulement si une pierre n'est pas déja présente
-            if (_map[y][x].getColor() == Stone::E_COLOR::NONE)
+            if (_map[y][x].isEmpty())
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = _map;
                 char tmp_captured = this->getCaptured();
-                char tmp_opponent_captured = _opponent->getCaptured();
+                char tmp_opponentCaptured = _opponent->getCaptured();
 
                 // On crée la pierre et on joue le coup
                 Stone stone = Stone(y, x, _color);
@@ -183,12 +179,7 @@ Stone AI::calc(int depth, float t) {
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
-                    if (depth == 1 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
-                        score = eval(map_tmp, ret, tmp_captured, tmp_opponent_captured);
-                    // Sinon on continue
-                    else
-                        score = calcMin(map_tmp, depth - 1, t, ret, tmp_captured, tmp_opponent_captured);
+                    score = calcMin(map_tmp, depth - 1, ret, tmp_captured, tmp_opponentCaptured);
 
                     // Si ce score est plus grand
                     if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/

@@ -5,6 +5,8 @@
 #include "Map.h"
 #include "Referee.h"
 
+#define AI_INFINITY    100000
+
 class AI : public APlayer
 {
     public:
@@ -22,14 +24,17 @@ class AI : public APlayer
         Referee&    _referee;
         APlayer *   _opponent;
         float       _timeLimit;
+        float       _playBeginTime;
+
+        inline void        checkTime();
 
         //Fonction qui calcule le prochain coup
-        Stone calc(int depth, float t);
+        Stone calc(int depth);
  
         //Fonctions pour le calcul
-        int calcMinMax(Map& map, int depth, float t, Referee::E_STATE ret, Stone::E_COLOR color, int alpha, int beta);
-        int calcMin(Map& map, int depth, float t, Referee::E_STATE ret, char& captured, char& opponentCaptured);
-        int calcMax(Map& map, int depth, float t, Referee::E_STATE ret, char& captured, char& opponentCaptured);
+        int calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR color, int alpha, int beta);
+        int calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured);
+        int calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured);
  
         //Fonction qui évalue le jeu
         int eval(Map& map, Referee::E_STATE ret);

@@ -15,45 +15,33 @@ public:
     virtual ~Game();
     
     // Members
-    int mainLoop()
-    {
-        while (!(_core.quit()))
-        {
-            std::cout << "start of menu" << std::endl;
-            menu();
-            std::cout << "end of menu" << std::endl;
-            start();
-            std::cout << "end of game" << std::endl;
-            if (gameHasEnded())
-                cleanGame();
-        }
-        return 0;
-    }
+    int mainLoop();
 
 private:
     Map         _map;
-    Core        _core;
+    EventManager    _events;
+//    Core        _core;
     InitSfml    _init_sfml;
 //    AGui*       _guis[2];
     AGui*       _gui; // Current Gui
     Menu*       _menu;
     APlayer *   _currentPlayer;
-    APlayer *   _players[2];
+    APlayer *   _players[2] = {NULL, NULL};
     int         _player_nb;
     Config      _conf;
     Referee     _referee;
     Referee::E_STATE    _currentState;
     
+    inline bool quit() const {
+        return _events.getKey(EventManager::E_KEYS::QUIT);
+    }
+
     int menu();
     int start();
     int cleanGame();
     void initPlayers();
     inline void nextPlayer();
     void accept();
-    inline bool gameHasEnded() const {
-        return (_currentState == Referee::END_BLACK
-            || _currentState == Referee::END_WHITE
-            || _currentState == Referee::END_DRAW);
-    }
+    inline bool gameHasEnded() const { return Referee::gameHasEnded(_currentState); }
 };
 
