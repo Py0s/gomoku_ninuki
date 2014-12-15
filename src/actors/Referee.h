@@ -76,7 +76,7 @@ class Referee
     bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir);
     Map::E_OR           isTileBreakable(const Tile &start, Map &m);
     bool                isOrBreakable(const Tile &start, Map &m, Map::E_OR ori);
-    void                checkLbreakables(Map& map);
+    Referee::E_STATE    checkLbreakables(Map& map);
     
     /* MEMBERS */
     Referee::E_STATE    winner(const Stone::E_COLOR color) const;
