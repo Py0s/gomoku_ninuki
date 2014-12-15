@@ -23,6 +23,7 @@ class AI : public APlayer
         Map&        _map;
         Referee&    _referee;
         APlayer *   _opponent;
+        Stone::E_COLOR _opColor;
         float       _timeLimit;
         float       _playBeginTime;
 

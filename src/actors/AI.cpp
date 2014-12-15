@@ -19,6 +19,7 @@ void AI::setTimeLimit(float t)
 }
 void AI::setOpponent(APlayer * player) {
     _opponent = player;
+    _opColor = player->getColor();
 }
 
 
@@ -134,8 +135,7 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
                 char tmp_opponentCaptured = opponentCaptured;
 
                 // On crée la pierre et on joue le coup
-                Stone stone = Stone(y, x, Referee::OP_COLOR[_color]);
-                Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_opponentCaptured);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _opColor), map_tmp, tmp_opponentCaptured);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
@@ -173,8 +173,7 @@ Stone AI::calc(int depth) {
                 char tmp_opponentCaptured = _opponent->getCaptured();
 
                 // On crée la pierre et on joue le coup
-                Stone stone = Stone(y, x, _color);
-                Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_captured);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_captured);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
@@ -269,7 +268,7 @@ Stone AI::calc(int depth) {
 //             Referee::E_STATE ret = _referee.check(stone, map_tmp, fake_captured);
 //             if (ret != Referee::E_STATE::INVALID)
 //             {
-//                 int tmp = calcMinMax(map_tmp, depth - 1, t, ret, Referee::OP_COLOR[_color], beta, alpha);
+//                 int tmp = calcMinMax(map_tmp, depth - 1, t, ret, _opColor, beta, alpha);
 //                 if (tmp != 0 && tmp != 1 && tmp != -1)
 //                     std::cout << "tmp:"<<tmp << std::endl;
 //                 //Si ce score est plus grand
