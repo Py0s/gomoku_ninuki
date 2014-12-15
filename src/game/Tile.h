@@ -17,6 +17,7 @@ class Tile {
     const char  getIntValue(Stone::E_COLOR color, int dir) const;
 
     // Setters
+    void reset();
     void setColor(Stone::E_COLOR color);
     void setValue(Stone::E_COLOR color, int dir, char value);
     void AddToInterValue(Stone::E_COLOR color, int dir, char value);

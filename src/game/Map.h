@@ -54,6 +54,7 @@ class Map {
     void placeStone(const Stone& s);
     void removeStone(Tile& tile);
     void played() {_played++;}
+    void reset();
   
     // Debug
     void displayDebug() const;
@@ -64,6 +65,8 @@ class Map {
     Stone::E_COLOR   _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
     std::array<std::array<Tile, _MAPSIZE_X>, _MAPSIZE_Y>    _map;
 
+    inline Tile& getTile(int y, int x) { return _map[y][x]; }
+    inline Tile& getTile(Stone const& s) { return _map[s.y()][s.x()]; }
     void updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char inter_value);
     
     Tile& n(const Tile& t, unsigned char len);

@@ -31,6 +31,17 @@ const Stone::E_COLOR  Tile::getColor() const {
 
 
 // Setters
+void Tile::reset() {
+    for (int i=0; i < 8; ++i)
+    {
+        _values[Stone::BLACK][i] = 0;
+        _values[Stone::WHITE][i] = 0;
+        _inter_values[Stone::BLACK][i] = 0;
+        _inter_values[Stone::WHITE][i] = 0;
+        _breakable = false;
+    }
+}
+
 void  Tile::setColor(Stone::E_COLOR color) {
     _color = color;
 }

@@ -39,7 +39,7 @@ std::array<Tile, Map::_MAPSIZE_X>& Map::operator[](size_t idx) {
 
 // Members
 void Map::placeStone(const Stone& s) {
-    Tile& tile = _map[s.y()][s.x()];
+    Tile& tile = getTile(s);
     Stone::E_COLOR color = s.color();
 
     this->_displayMap[s.y()][s.x()] = color;
@@ -100,6 +100,18 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char
             updateTile(color, dir, ++value, next_tile, inter_value);
         }
         catch (const ExcOutOfBound& e) {
+        }
+    }
+}
+
+void Map::reset() {
+    _played = 0;
+    for (int y = 0; y < _MAPSIZE_Y; ++y)
+    {
+        for (int x = 0; x < _MAPSIZE_X; ++x)
+        {
+            getTile(y, x).reset();
+            _displayMap[y][x] = Stone::E_COLOR::NONE;
         }
     }
 }
