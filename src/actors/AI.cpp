@@ -19,7 +19,7 @@ Stone AI::plays() {
 
     try
     {
-        while (42)
+        while (true)
             stone = calc(depth++, (float)clock());
     }
     catch (const Exceptions& e)

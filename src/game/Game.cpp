@@ -184,6 +184,7 @@ void Game::accept() {
             std::cout << "Winner Black" << std::endl;
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
+            exit(0);
             break;
         case Referee::E_STATE::END_WHITE:
             this->nextPlayer();
@@ -191,6 +192,7 @@ void Game::accept() {
             std::cout << "Winner White" << std::endl;
             // this->_gui.drawWining(player_white);
             // this->_map.reset(); etc...
+            exit(0);
             break;
     }
 }
