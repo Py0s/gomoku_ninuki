@@ -256,6 +256,7 @@ bool Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
                         return true;//TODO : est-ce necessaire de faire le += 2 ici aussi ?
 
                     captured += 2;
+                    map.addCaptured(color, 2);
                 }
             }
             catch (const ExcOutOfBound& e) {

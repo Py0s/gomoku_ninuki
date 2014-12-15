@@ -52,6 +52,23 @@ Stone AI::plays() {
     return stone;
 }
 
+int AI::eval(Map& map, Referee::E_STATE ret) {
+    char stonesPlayed = map.getPlayed();
+
+    if (ret == Referee::E_STATE::END_WHITE)
+        return _color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+    if (ret == Referee::E_STATE::END_BLACK)
+        return _color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+
+    int takenStones = map.getCapturedBy(_color) - _captured;
+    int opponentTakenStones = map.getCapturedBy(_opColor) - _opponent->getCaptured();
+    if (takenStones)
+        return 100 * takenStones - stonesPlayed;
+    if (opponentTakenStones)
+        return -100 * opponentTakenStones + stonesPlayed;
+    return (0);
+}
+
 int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured) {
     char stonesPlayed = map.getPlayed();
 
@@ -70,13 +87,14 @@ int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCapture
 }
 
 
-int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
+int AI::calcMax(Map& map, int depth, Referee::E_STATE ret,/* char& captured, char& opponentCaptured,*/ int alpha, int beta) {
 
     if (depth == 0 || Referee::gameHasEnded(ret))
-        return eval(map, ret, captured, opponentCaptured);
+        return eval(map, ret);
+        //return eval(map, ret, captured, opponentCaptured);
 
     int score;
-    int max = -AI_INFINITY;
+    //int max = -AI_INFINITY;
 
     //On parcourt les cases du Goban
     for (int y = 0; y < Map::_MAPSIZE_Y; ++y)
@@ -89,36 +107,42 @@ int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
-                char tmp_captured = captured;
-                char tmp_opponentCaptured = opponentCaptured;
+                /*char tmp_captured = captured;
+                char tmp_opponentCaptured = opponentCaptured;*/
 
                 // On crée la pierre et on joue le coup
-                Stone stone = Stone(y, x, _color);
-                Referee::E_STATE ret = _referee.check(stone, map_tmp, tmp_captured);
+                char fake = 0;
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, /*tmp_captured*/fake);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    score = calcMin(map_tmp, depth-1, ret, tmp_captured, tmp_opponentCaptured);
+                    score = calcMin(map_tmp, depth-1, ret,/* tmp_captured, tmp_opponentCaptured,*/ alpha, beta);
 
                     // Si le score est plus petit on le sauvegarde
-                    if (score > max)
-                        max = score;
+                    /*if (score > max)
+                        max = score;*/
+                    if (score > alpha)
+                        alpha = score;
+                    if (alpha >= beta)
+                        return alpha;
                 }
                 // On annule le coup (Ici rien pour l'instant car copie de la Map et des éléments)
             }
         }
     }
-    return max;
+    //return max;
+    return alpha;
 }
 
-int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char& opponentCaptured) {
+int AI::calcMin(Map& map, int depth, Referee::E_STATE ret,/* char& captured, char& opponentCaptured,*/ int alpha, int beta) {
 
     if (depth == 0 || Referee::gameHasEnded(ret))
-        return eval(map, ret, captured, opponentCaptured);
+        return eval(map, ret);
+        //return eval(map, ret, captured, opponentCaptured);
 
     int score;
-    int min = AI_INFINITY;
+    //int min = AI_INFINITY;
 
     //On parcourt les cases du Goban
     for (int y = 0; y < Map::_MAPSIZE_Y; ++y)
@@ -131,32 +155,40 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, char& captured, char&
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
-                char tmp_captured = captured;
-                char tmp_opponentCaptured = opponentCaptured;
+                /*char tmp_captured = captured;
+                char tmp_opponentCaptured = opponentCaptured;*/
 
                 // On crée la pierre et on joue le coup
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _opColor), map_tmp, tmp_opponentCaptured);
+                char fake = 0;
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _opColor), map_tmp, /*tmp_opponentCaptured*/fake);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    score = calcMax(map_tmp, depth-1, ret, tmp_captured, tmp_opponentCaptured);
+                    score = calcMax(map_tmp, depth-1, ret, /*tmp_captured, tmp_opponentCaptured,*/ alpha, beta);
 
                     // Si le score est plus petit on le sauvegarde
-                    if (score < min)
-                        min = score;
+                    /*if (score < min)
+                        min = score;*/
+                    if (score < beta)
+                        beta = score;
+                    if (beta <= alpha)
+                        return beta;
                 }
                 // On annule le coup (Ici rien pour l'instant car copie de la Map et des éléments)
             }
         }
     }
-    return min;
+    //return min;
+    return beta;
 }
 
 Stone AI::calc(int depth) {
     int score;
     int max_y=-1,max_x=-1;
-    int max = -AI_INFINITY;
+    //int max = -AI_INFINITY;
+    int alpha = -AI_INFINITY;
+    int beta = AI_INFINITY;
 
     //On parcourt les cases du Goban
     for (int y=0; y<Map::_MAPSIZE_Y; ++y)
@@ -169,23 +201,26 @@ Stone AI::calc(int depth) {
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = _map;
-                char tmp_captured = this->getCaptured();
-                char tmp_opponentCaptured = _opponent->getCaptured();
+                /*char tmp_captured = this->getCaptured();
+                char tmp_opponentCaptured = _opponent->getCaptured();*/
 
                 // On crée la pierre et on joue le coup
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, tmp_captured);
+                char fake = 0;
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, /*tmp_captured*/fake);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    score = calcMin(map_tmp, depth - 1, ret, tmp_captured, tmp_opponentCaptured);
+                    score = calcMin(map_tmp, depth - 1, ret,/* tmp_captured, tmp_opponentCaptured,*/ alpha, beta);
 
                     // Si ce score est plus grand
-                    if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
+                    //if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
+                    if (score > alpha)
                     {
-                        std::cout << "depth:"<<depth<<"[" << max << "("<<max_y<<";"<<max_x<<")->" << score << "("<<y<<";"<<x<< ")]" << std::endl;
+                        std::cout << "depth:"<<depth<<"[" << alpha << "("<<max_y<<";"<<max_x<<")->" << score << "("<<y<<";"<<x<< ")]" << std::endl;
                         //On le choisit
-                        max = score;
+                        //max = score;
+                        alpha = score;
                         // On sauvegarde les coordonnées du coup optimum
                         max_y = y;
                         max_x = x;

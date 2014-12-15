@@ -49,6 +49,7 @@ class Map {
     const Stone::E_COLOR * displayMap() const;
     char getPlayed() {return _stonesPlayed;}
     char getPlayed(Stone::E_COLOR color) {return _played[color];}
+    char getCapturedBy(Stone::E_COLOR color) {return _captured[color];}
 
     // Operator
     std::array<Tile, _MAPSIZE_X>& operator[](size_t idx);
@@ -58,6 +59,7 @@ class Map {
     void placeStone(const Stone& s);
     void removeStone(Tile& tile);
     void played() {_stonesPlayed++;}
+    void addCaptured(Stone::E_COLOR color, char value) { _captured[color] += value;}
     void reset();
   
     // Debug
@@ -66,6 +68,7 @@ class Map {
   private:
     char _stonesPlayed;
     char _played[2] = {0,0};
+    char _captured[2] = {0,0};
 
     Stone::E_COLOR   _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
     std::array<std::array<Tile, _MAPSIZE_X>, _MAPSIZE_Y>    _map;
