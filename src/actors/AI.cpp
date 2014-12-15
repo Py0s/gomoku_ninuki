@@ -93,8 +93,8 @@ int AI::calcMax(Map& map, int depth, float t, Referee::E_STATE ret, char& captur
                 if (ret != Referee::E_STATE::INVALID)
                 {
                     //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
-                    if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
-                        score = eval(map, ret, captured, opponentCaptured);
+                    if (depth == 1 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
+                        score = eval(map, ret, tmp_captured, tmp_opponent_captured);
                     else
                         score = calcMin(map_tmp, depth-1, t, ret, tmp_captured, tmp_opponent_captured);
 
@@ -138,8 +138,8 @@ int AI::calcMin(Map& map, int depth, float t, Referee::E_STATE ret, char& captur
                 if (ret != Referee::E_STATE::INVALID)
                 {
                     //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
-                    if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
-                        score = eval(map, ret, captured, opponentCaptured);
+                    if (depth == 1 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
+                        score = eval(map, ret, tmp_opponent_captured, tmp_opponent_captured);
                     else
                         score = calcMax(map_tmp, depth-1, t, ret, tmp_captured, tmp_opponent_captured);
 
@@ -184,11 +184,11 @@ Stone AI::calc(int depth, float t) {
                 if (ret != Referee::E_STATE::INVALID)
                 {
                     //Si on est à la profondeur voulue ou que la partie est finie, on retourne l'évaluation
-                    if (depth == 0 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
+                    if (depth == 1 || ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
                         score = eval(map_tmp, ret, tmp_captured, tmp_opponent_captured);
                     // Sinon on continue
                     else
-                        score = calcMin(map_tmp, depth - 1, t, ret, tmp_captured, tmp_opponent_captured/*, alpha, beta*/);
+                        score = calcMin(map_tmp, depth - 1, t, ret, tmp_captured, tmp_opponent_captured);
 
                     // Si ce score est plus grand
                     if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
