@@ -17,17 +17,21 @@ Tile::~Tile() {
 
 
 // Getters
-const char Tile::getValue(Stone::E_COLOR color, int dir) const {
-    return _values[color][dir];
-}
+// inline bool Tile::isEmpty() const {
+//     return (_color == Stone::E_COLOR::NONE);
+// }
 
-const char Tile::getIntValue(Stone::E_COLOR color, int dir) const {
-    return this->_inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
-}
+// inline const char Tile::getValue(Stone::E_COLOR color, int dir) const {
+//     return _values[color][dir];
+// }
 
-const Stone::E_COLOR  Tile::getColor() const {
-    return _color;
-}
+// inline const char Tile::getIntValue(Stone::E_COLOR color, int dir) const {
+//     return this->_inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
+// }
+
+// inline const Stone::E_COLOR  Tile::getColor() const {
+//     return _color;
+// }
 
 
 // Setters

@@ -12,9 +12,18 @@ class Tile {
     virtual ~Tile();
 
     // Getters
-    const Stone::E_COLOR  getColor() const;
-    const char  getValue(Stone::E_COLOR color, int dir) const;
-    const char  getIntValue(Stone::E_COLOR color, int dir) const;
+    inline bool isEmpty() const {
+        return (_color == Stone::E_COLOR::NONE);
+    }
+    inline const Stone::E_COLOR  getColor() const {
+       return _color;
+    }
+    inline const char  getValue(Stone::E_COLOR color, int dir) const {
+        return _values[color][dir];
+    }
+    inline const char  getIntValue(Stone::E_COLOR color, int dir) const {
+        return _inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
+    }
 
     // Setters
     void reset();
