@@ -55,15 +55,17 @@ Config const&        Menu::config() {
     saveConfig();
     return _config;
 }
-void Menu::saveConfig()
-{
-    assert(_options.size() == 5);
-    _config.human_player_1 = (_options[0]->validatedValue<std::string>() == "HUMAN");
-    _config.human_player_2 = (_options[1]->validatedValue<std::string>() == "HUMAN");
-    _config.fivebreak_rule = _options[2]->validatedValue<bool>();
-    _config.doublethree_rule = _options[3]->validatedValue<bool>();
-    _config.ai_time = _options[4]->validatedValue<float>();
+bool Menu::chooseOptionValue() {
+    validate();
+    drawAll();
+    return true;
 }
+void    Menu::setTitle(std::string const& title) {
+    _title->setString(title);
+    drawAll();
+}
+
+/* Getters */
 
 bool Menu::getInput(EventManager& events) {
     sf::Event current;
@@ -85,7 +87,8 @@ bool Menu::getInput(EventManager& events) {
     return true;
 }
 
-// Members
+/* Members */
+
 bool Menu::refresh() {
     this->_mainWindow.display();
     return true;
@@ -136,17 +139,57 @@ bool Menu::cursorMouse(int pos_x, int pos_y) {
     return false;
 }
 
-bool Menu::chooseOptionValue() {
-    validate();
-    drawAll();
-    return true;
-}
 
 bool Menu::newWindow(const Rectangle& rect, const std::string& msg) {
     return false;
 }
 
 /* PRIVATES */
+
+void    Menu::setSelected(unsigned int i)
+{
+    if (i >= 0 && i < _options.size())
+    {
+        _options[_selected]->unfocus();
+        _selected = i;
+        _options[_selected]->focus();
+    }
+}
+void    Menu::selectUp()
+{
+    setSelected(_selected - 1);
+}
+void    Menu::selectDown()
+{
+    setSelected(_selected + 1);
+}
+void    Menu::selectLeft()
+{
+    selectedOption()->selectLeft();
+}
+void    Menu::selectRight()
+{
+    selectedOption()->selectRight();
+}
+void    Menu::validate()
+{
+    selectedOption()->validate();
+}
+
+Options*     Menu::selectedOption() const {
+    assert(_options.size() > 0);
+    assert(_selected >= 0 && _selected < _options.size());
+    return _options[_selected];
+}
+void Menu::saveConfig()
+{
+    assert(_options.size() == 5);
+    _config.human_player_1 = (_options[0]->validatedValue<std::string>() == "HUMAN");
+    _config.human_player_2 = (_options[1]->validatedValue<std::string>() == "HUMAN");
+    _config.fivebreak_rule = _options[2]->validatedValue<bool>();
+    _config.doublethree_rule = _options[3]->validatedValue<bool>();
+    _config.ai_time = _options[4]->validatedValue<float>();
+}
 
 bool Menu::handleKeys(const sf::Event& current, EventManager& events) {
     switch (current.key.code) {
@@ -180,39 +223,3 @@ bool Menu::handleKeys(const sf::Event& current, EventManager& events) {
     }
     return true;
 }
-
-void    Menu::setSelected(unsigned int i)
-{
-    if (i >= 0 && i < _options.size())
-    {
-        _options[_selected]->unfocus();
-        _selected = i;
-        _options[_selected]->focus();
-    }
-}
-void    Menu::selectUp()
-{
-    setSelected(_selected - 1);
-}
-void    Menu::selectDown()
-{
-    setSelected(_selected + 1);
-}
-void    Menu::selectLeft()
-{
-    selectedOption()->selectLeft();
-}
-void    Menu::selectRight()
-{
-    selectedOption()->selectRight();
-}
-void    Menu::validate()
-{
-    selectedOption()->validate();
-}
-Options*     Menu::selectedOption() const {
-    assert(_options.size() > 0);
-    assert(_selected >= 0 && _selected < _options.size());
-    return _options[_selected];
-}
-
