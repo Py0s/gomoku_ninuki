@@ -18,6 +18,7 @@ class Referee
         INVALID,
         END_BLACK,
         END_WHITE,
+        END_DRAW,
     };
 
     static const enum Stone::E_COLOR OP_COLOR[];

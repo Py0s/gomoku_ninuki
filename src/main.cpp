@@ -6,9 +6,7 @@ int main(int argc, char * argv[]) {
     try
     {
         Game current;
-        current.menu();
-        std::cout << "end of menu..." << std::endl;
-        current.start();
+        current.mainLoop();
     }
     catch (Exceptions& ex)
     {

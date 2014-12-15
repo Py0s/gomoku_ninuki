@@ -12,9 +12,13 @@ class Menu: public AGui
       Menu(sf::RenderWindow& mainWindow, std::string const& title = "Welcome");
       virtual ~Menu();
       
-        // Getters
-        Config const& config();
-        virtual bool getInput(EventManager& events);
+      // specific menu
+      Config const& config();
+      bool chooseOptionValue();
+      void setTitle(std::string const& title);
+      
+      // Getters
+      virtual bool getInput(EventManager& events);
        
       // Members
       virtual bool refresh();
@@ -27,15 +31,13 @@ class Menu: public AGui
       virtual bool cursorRight();
       virtual bool cursorMouse(int pos_x, int pos_y);
 
-      virtual bool chooseOptionValue();
-      //TODO : mettre ça aussi dans AGui pour ne pas caster dans Game::menu() ?
       
       virtual bool newWindow(const Rectangle& rect, const std::string& msg);
-      
+
     private:
         sf::RenderWindow&   _mainWindow;
         sf::Font            _font;
-        sf::Text*           _title;
+        GText*              _title;
         std::vector<Options*>    _options;
         unsigned int        _selected;
         Config        _config;
