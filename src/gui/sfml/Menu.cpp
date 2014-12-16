@@ -3,6 +3,10 @@
 #include "Game.h"
 #include "Options.h"
 
+static int selected_boolean(bool field) {
+    return (field) ? 2 : 1;
+}
+
 Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     : AGui(0, 0, AGui::GAME), _mainWindow(mainWindow), _selected(0),
     _config()
@@ -29,18 +33,18 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     timeV.push_back(50);
     timeV.push_back(60);
 
-    _options.push_back(new Options("Player1 (Black)", _mainWindow, &_font, _config.human_player_1 + 1));
+    _options.push_back(new Options("Player1 (Black)", _mainWindow, &_font, selected_boolean(_config.human_player_1)));
     _options[0]->addValues<std::string>(playerV);
-    _options.push_back(new Options("Player2 (White)", _mainWindow, &_font, _config.human_player_1 + 1));
+    _options.push_back(new Options("Player2 (White)", _mainWindow, &_font, selected_boolean(_config.human_player_2)));
     _options[1]->addValues<std::string>(playerV);
-    _options.push_back(new Options("Five-Break", _mainWindow, &_font, _config.fivebreak_rule + 1));
+    _options.push_back(new Options("Five-Break", _mainWindow, &_font, selected_boolean(_config.fivebreak_rule)));
     _options[2]->addValues<bool>(boolV);
-    _options.push_back(new Options("Double-Three", _mainWindow, &_font, _config.doublethree_rule + 1));
+    _options.push_back(new Options("Double-Three", _mainWindow, &_font, selected_boolean(_config.doublethree_rule)));
     _options[3]->addValues<bool>(boolV);
     int pos = find(timeV.begin(), timeV.end(), _config.ai_time) - timeV.begin();
     _options.push_back(new Options("AI Time", _mainWindow, &_font, pos + 1));
     _options[4]->addValues<float>(timeV);
-    _options.push_back(new Options("Continue ?", _mainWindow, &_font, _config.continue_game + 1));
+    _options.push_back(new Options("Continue ?", _mainWindow, &_font, selected_boolean(_config.continue_game)));
     _options[5]->addValues<bool>(boolV);
 
     //if debug : push + d'options
