@@ -70,7 +70,7 @@ bool Referee::alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) cons
     Map::PTR ptr = map.go[dir];
     Tile& inter_tile = (map.*ptr)(tile, 1);
 
-    if (inter_tile.getIntValue(color, dir % 4) == 3)
+    if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
         return true;
     return false;
 }
@@ -78,15 +78,15 @@ bool Referee::alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) cons
 bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const
 {
     Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, first_value);
+    Tile& extrem_tile = (map.*ptr)(tile, first_value);
 
-    if (inter_tile.getColor() != Stone::E_COLOR::NONE)
+    if (!(extrem_tile.isEmpty()))
         return false;
 
     ptr = map.go[Map::OP_DIR[dir]];
-    Tile& second_inter_tile = (map.*ptr)(tile, second_value);
+    Tile& extrem_op_tile = (map.*ptr)(tile, second_value);
 
-    if (second_inter_tile.getColor() != Stone::E_COLOR::NONE)
+    if (!(extrem_op_tile.isEmpty()))
         return false;
     return true;
 }
@@ -96,7 +96,7 @@ bool Referee::alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) cons
     Map::PTR ptr = map.go[dir];
     Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 1);
 
-    if (inter_tile.getIntValue(color, dir) == 3)
+    if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
         return true;
     return false;
 }
@@ -114,7 +114,7 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
         {
             case 1:
                 if (alignOne(map, tile, color, dir)
-                    && /*extremOne(map, tile, color, dir))*/  XFactorextrem(map, tile, color, dir, 4, 1))
+                    && XFactorextrem(map, tile, color, dir, 4, 1))
                 {
                     // std::cout << "Cas 1 align" << std::endl;
                     return true;
@@ -122,7 +122,7 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
                 break;
             case 2:
                 if (alignTwo(map, tile, color, dir)
-                    && /*extremTwo(map, tile, color, dir))*/ XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 3, tile.getValue(color, Map::OP_DIR[dir]) + 1))
+                    && XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 3, tile.getValue(color, Map::OP_DIR[dir]) + 1))
                 {
                     // std::cout << "Cas 2 align" << std::endl;
                     return true;
@@ -130,7 +130,7 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
                 break;
             case 3:
                 if (alignThree(map, tile, color, dir)
-                    && /*extremThree(map, tile, color, dir))*/ XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 1, tile.getValue(color, Map::OP_DIR[dir]) + 1)) // TODO : OPTI POUR NE PAS CHECKER DEUX FOIS LA MEME CHOSE
+                    && XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 1, tile.getValue(color, Map::OP_DIR[dir]) + 1)) // TODO : OPTI POUR NE PAS CHECKER DEUX FOIS LA MEME CHOSE
                 {
                     // std::cout << "Cas 3 align" << std::endl;
                     return true;
@@ -187,15 +187,15 @@ bool Referee::alignParcours(Map& map, Tile& tile, Stone::E_COLOR color, int firs
         switch (tile.getIntValue(color, first_dir))
         {
             case 1:
-                if (XFactorParcours(map, tile, color, first_dir, 2, 3) == true) /*if (parcoursOne(map, tile, color, first_dir) == true)*/
+                if (XFactorParcours(map, tile, color, first_dir, 2, 3) == true)
                     return true;
                 break;
             case 2:
-                if (XFactorParcours(map, tile, color, first_dir, 1, 3) == true) /*if (parcoursTwo(map, tile, color, first_dir) == true)*/
+                if (XFactorParcours(map, tile, color, first_dir, 1, 3) == true)
                     return true;
                 break;
             case 3:
-                if (XFactorParcours(map, tile, color, first_dir, 1, 2) == true) /*if (parcoursThree(map, tile, color, first_dir) == true)*/
+                if (XFactorParcours(map, tile, color, first_dir, 1, 2) == true)
                     return true;
                 break;
             default:
