@@ -36,19 +36,11 @@ private:
     Referee     _referee;
     Referee::E_STATE    _gameState;
     
-    inline bool quit() const {
-        return _events.getKey(EventManager::E_KEYS::QUIT);
-    }
-
     inline AGui*    gui() { return _guis[static_cast<int>(_guiState)]; }
-    inline Menu*    menu() {
-        assert(_guiState == MENU);
-        return dynamic_cast<Menu*>(gui());
-    }
-    inline void     switchGuiState() {
-        _guiState = (_guiState == MENU) ? (GAME) : (MENU);
-    }
+    inline Menu*    menu() { return dynamic_cast<Menu*>(_guis[static_cast<int>(MENU)]); }
+    inline void     switchGuiState();
 
+    inline bool quit() const { return _events.getKey(EventManager::E_KEYS::QUIT); }
     int menuLoop();
     int start();
     int cleanGame();
