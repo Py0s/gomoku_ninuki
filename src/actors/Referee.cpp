@@ -270,8 +270,8 @@ bool Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
 
 Referee::E_STATE Referee::checkLbreakables(Map &map)
 {
-    for (std::list<std::pair<Tile&, Map::E_DIR>>::iterator it = this->_breakables.begin();
-            it != this->_breakables.end(); ++it)
+    std::list<std::pair<Tile&, Map::E_DIR>>::iterator it = this->_breakables.begin();
+    while (it != this->_breakables.end())
     {
         if ((*it).first.getColor() == Stone::NONE)
         {
@@ -280,12 +280,15 @@ Referee::E_STATE Referee::checkLbreakables(Map &map)
         }
         else if (isTileBreakable((*it).first, map) == false)
         {
-            (*it).first._breakable = false;
-            E_STATE ret = checkAlign((*it).first, map, true);
+            Tile& t = (*it).first;
+            t._breakable = false;
+            it = this->_breakables.erase(it);
+            E_STATE ret = checkAlign(t, map, true);
             if (ret != VALID)
                 return ret;
-            it = this->_breakables.erase(it);
         }
+        else
+            ++it;
     }
     return VALID;
 } //ToDo mettre dans meme if //ToDo implanter dans boucle //Todo new func with direction //Todo const?
