@@ -29,22 +29,18 @@ int Game::mainLoop()
     while (/*!(quit()) && */_conf.continue_game)
     {
         std::cout << "start of menu" << std::endl;
-        std::cout << _conf.continue_game << std::endl;
         menuLoop();
         switchGuiState();
         // TODO : deboguer et decommenter
         // if (!_conf.continue_game)
         //     break;
         std::cout << "end of menu" << std::endl;
-        std::cout << _conf.continue_game << std::endl;
         start();
         std::cout << "end of game" << std::endl;
-        std::cout << _conf.continue_game << std::endl;
         if (gameHasEnded())
             cleanGame();
         switchGuiState();
         std::cout << "game cleaned" << std::endl;
-        std::cout << _conf.continue_game << std::endl;
     }
     return 0;
 }

@@ -75,3 +75,17 @@ GText*     Options::validatedText() const {
     assert(_validated >= 1 && _validated < _texts.size());
     return _texts[_validated];
 }
+
+
+template<>
+bool     Options::selectedValue<>() const {
+    assert(_values.size() > 0);
+    assert((_selected - 1 ) >= 0 && (_selected - 1 ) < _values.size());
+    return (_values[_selected - 1] == "true");
+}
+template<>
+bool     Options::validatedValue<>() const {
+    assert(_values.size() > 0);
+    assert((_validated - 1 ) >= 0 && (_validated - 1 ) < _values.size());
+    return (_values[_validated - 1] == "true");
+}
