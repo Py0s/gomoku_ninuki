@@ -24,12 +24,6 @@ class Referee
     };
 
     static const enum Stone::E_COLOR OP_COLOR[];
-    inline static bool gameHasEnded(E_STATE const& ret) {
-        return (ret == Referee::END_BLACK
-            || ret == Referee::END_WHITE
-            || ret == Referee::END_DRAW);
-    }
-
 
     Referee();
     ~Referee();
@@ -39,11 +33,9 @@ class Referee
     
     // Members
     E_STATE check(const Stone& s, Map& map, char& captured);
-
-    void reset() {
-        _conf = nullptr;
-        _breakables.clear();
-    }
+    void reset();
+    
+    static bool gameHasEnded(const E_STATE & ret);
     
   private:
     Config const * _conf;
@@ -81,7 +73,7 @@ class Referee
     bool                isAlignBreakable(Tile &t, Map &m, Map::E_DIR dir);
     Map::E_OR           isTileBreakable(Tile &start, Map &m);
     bool                isOrBreakable(Tile &start, Map &m, Map::E_OR ori);
-    Referee::E_STATE    checkLbreakables(Map& map);
+    Referee::E_STATE    checkListBreakable(Map& map);
     
     /* MEMBERS */
     Referee::E_STATE    winner(const Stone::E_COLOR color) const;
