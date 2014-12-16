@@ -16,21 +16,12 @@ Game::Game()
 }
 
 Game::~Game() {
-<<<<<<< HEAD
-    delete _menu;
-    delete _gui;
-//    if (_players[0])
-//        delete _players[0];
-//    if (_players[1])
-//        delete _players[1];
-=======
     delete _guis[0];
     delete _guis[1];
     if (_players[0])
         delete _players[0];
     if (_players[1])
         delete _players[1];
->>>>>>> 9690cc091b294f1bf5fb28ae24f38380d79ccf96
 }
 
 int Game::mainLoop()
