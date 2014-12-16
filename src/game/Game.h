@@ -30,7 +30,7 @@ private:
     E_GUI_STATE _guiState;
 
     APlayer *   _currentPlayer;
-    APlayer *   _players[2] = {NULL, NULL};
+    APlayer *   _players[2] = {nullptr, nullptr};
     int         _player_nb;
     Config      _conf;
     Referee     _referee;
