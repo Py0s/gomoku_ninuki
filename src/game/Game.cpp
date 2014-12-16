@@ -7,9 +7,8 @@
 #include <iostream>
 
 Game::Game()
-: _map(), _currentPlayer(NULL),
+: _map(), _currentPlayer(nullptr),
         _player_nb(0), _conf(), _referee() {
-    _referee.setConf(&_conf);
     _guis[static_cast<int>(MENU)] = new Menu((_init_sfml).getWindow());
     _guis[static_cast<int>(GAME)] = new Sfml(_map, _init_sfml.getWindow());
     _guiState = MENU;
@@ -50,6 +49,10 @@ inline void     Game::switchGuiState() {
 }
 
 
+void Game::applyConf() {
+    _conf = menu()->config();
+    _referee.setConf(&_conf);
+}
 
 int Game::menuLoop() {
     assert(_guiState == MENU);
@@ -85,7 +88,7 @@ int Game::menuLoop() {
         }
     }
     _events.disposeLastKey();
-    _conf = menu()->config();
+    applyConf();
     return 0;
 }
 
@@ -115,11 +118,11 @@ void Game::initPlayers()
 int Game::cleanGame() {
     delete this->_players[0];
     delete this->_players[1];
-    this->_players[0] = NULL;
-    this->_players[1] = NULL;
-    // TODO : clean tout ce qu'il faut entre 2 parties
-    // clean map, referee, conf ?
-    //    _map.reset();
+    this->_currentPlayer = nullptr;
+    this->_players[0] = nullptr;
+    this->_players[1] = nullptr;
+    _map.reset();
+    _referee.reset();
     _gameState = Referee::VALID;
     return 0;
 }

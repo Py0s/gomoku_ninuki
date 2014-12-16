@@ -39,6 +39,11 @@ class Referee
     
     // Members
     E_STATE check(const Stone& s, Map& map, char& captured);
+
+    void reset() {
+        _conf = nullptr;
+        _breakables.clear();
+    }
     
   private:
     Config const * _conf;

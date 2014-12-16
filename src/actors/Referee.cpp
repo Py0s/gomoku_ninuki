@@ -31,8 +31,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     map.placeStone(s);
     map.played();// TODO : pourquoi c'est pas direct dans placeStones ?
 
-    // if RULE
-    if (checkDoubleThree(map, tile, s.color()))
+    if (this->_conf->doublethree_rule == true && checkDoubleThree(map, tile, s.color()))
     {
         map.removeStone(tile);
         //TODO : ya pas de played-- ?
@@ -52,7 +51,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
         map.displayDebug();
     }
     
-    if (this->_conf->fivebreak_rule == true && ret != END_BLACK && ret != END_WHITE)
+    if (this->_conf->fivebreak_rule == true && !(Referee::gameHasEnded(ret)))
     {
         // Recheck des alignements potentiellement gagnants mais cassables
         ret = checkLbreakables(map);
@@ -281,15 +280,15 @@ Referee::E_STATE Referee::checkLbreakables(Map &map)
         if ((*it).first.getColor() == Stone::NONE)
         {
             (*it).first._breakable = false;
-            this->_breakables.erase(it);
+            it = this->_breakables.erase(it);
         }
         else if (isTileBreakable((*it).first, map) == false)
         {
             (*it).first._breakable = false;
-            E_STATE ret = checkAlign(map[(*it).first.Y][(*it).first.X], map, true);
+            E_STATE ret = checkAlign((*it).first, map, true);
             if (ret != VALID)
                 return ret;
-            this->_breakables.erase(it);
+            it = this->_breakables.erase(it);
         }
     }
     return VALID;
@@ -307,36 +306,34 @@ Referee::E_STATE Referee::checkAlign(Tile& t, Map& m, bool breakable) {
     return VALID;
 }
 
-bool Referee::isAlignBreakable(Tile &t, Map &m, Map::E_DIR dir)
+bool Referee::isAlignBreakable(Tile &start, Map &m, Map::E_DIR dir)
 {
-    Tile&    next = t;
-    int     count = 5; // TODO Why is this shit ?
+    Tile*     t = &start;
+    int       count = 5; // TODO Why is this shit ?
     Map::E_OR ori = Map::E_OR::MAX;
 
     try {
-        while (count > 0 && next.getColor() == t.getColor())
-        {
-            if ((ori = isTileBreakable(next, m)) != Map::E_OR::MAX)
+        while (count > 0 && t->getColor() == start.getColor()) {
+            if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
                 break;
-            next = (m.*(m.go[dir]))(next, 1);
+            t = &(m.*(m.go[dir]))(*t, 1);
             count--;
         }
     }
-    catch (const ExcOutOfBound& ex){
+    catch (const ExcOutOfBound& ex) {
     }
 
     try {
         dir = Map::OP_DIR[dir];
-        next = (m.*(m.go[dir]))(t, 1);
-        while (count > 0 && next.getColor() == t.getColor())
-        {
-            if ((ori = isTileBreakable(next, m)) != Map::E_OR::MAX)
+        t = &(m.*(m.go[dir]))(start, 1);
+        while (count > 0 && t->getColor() == start.getColor()) {
+            if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
                 break;
-            next = (m.*(m.go[dir]))(next, 1);
+            t = &(m.*(m.go[dir]))(*t, 1);
             count--;
         }
     }
-    catch (const ExcOutOfBound& ex){
+    catch (const ExcOutOfBound& ex) {
     }
 
     if (count == 0)
@@ -362,7 +359,7 @@ Map::E_OR Referee::isTileBreakable(Tile &start, Map &m)
 
 bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
 {
-        Tile& check = start;
+        Tile check = start;
         Map::E_DIR cdir = Map::OR_TO_DIR[ori];
         int end = 0;
 
@@ -390,7 +387,6 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
             {
                 if (start._breakable == false)
                 {
-                    // Todo: Remove const of start
                     start._breakable = true;
                     this->_breakables.push_back(std::pair<Tile&, Map::E_DIR>(start, cdir));
                 }

@@ -13,18 +13,18 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
 {
     _mainWindow.clear(sf::Color::Black);
     if (!_font.loadFromFile("./font/arial.ttf"))
-        throw Exceptions("Can't load arial font");//TODO : don't forget to catch it !!
+        throw Exceptions("Can't load arial font");
     _title = new GText(title, &_font, GText::TITLE);
 
     std::vector<std::string> playerV;
-    playerV.push_back("HUMAN");
     playerV.push_back("AI");
+    playerV.push_back("HUMAN");
     std::vector<bool> boolV;
     boolV.push_back(false);
     boolV.push_back(true);
     std::vector<float> timeV;
     timeV.push_back(0.5);
-    timeV.push_back(2);
+    timeV.push_back(1);
     timeV.push_back(5);
     timeV.push_back(10);
     timeV.push_back(20);

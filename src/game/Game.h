@@ -30,7 +30,7 @@ private:
     E_GUI_STATE _guiState;
 
     APlayer *   _currentPlayer;
-    APlayer *   _players[2] = {NULL, NULL};
+    APlayer *   _players[2] = {nullptr, nullptr};
     int         _player_nb;
     Config      _conf;
     Referee     _referee;
@@ -41,9 +41,11 @@ private:
     inline void     switchGuiState();
 
     inline bool quit() const { return _events.getKey(EventManager::E_KEYS::QUIT); }
+    void applyConf();
     int menuLoop();
     int start();
     int cleanGame();
+
     void initPlayers();
     inline void nextPlayer();
     void accept();
