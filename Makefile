@@ -3,7 +3,7 @@
 CXX ?= g++
 
 CXXFLAGS = -Wall -std=c++11 $(INCFLAGS)
-LDFLAGS := -lncurses -lsfml-graphics -lsfml-window -lsfml-system
+LDFLAGS := -lsfml-graphics -lsfml-window -lsfml-system
 
 DEBUG = 1
 

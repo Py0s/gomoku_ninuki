@@ -93,7 +93,7 @@ void Map::removeStone(Tile& tile) {
 
 void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char inter_value) {
     tile.setValue(color, Map::OP_DIR[dir], value);
-    tile.AddToInterValue(color, dir % 4, inter_value); // TODO : Changer le modulo par autre chose ?
+    tile.AddToInterValue(color, dir, inter_value);
     if (tile.getColor() == color)
     {
         try

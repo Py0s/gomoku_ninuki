@@ -1,6 +1,6 @@
-#include "Sfml.h"
+#include "Goban.h"
 
-Sfml::Sfml(const Map& m, sf::RenderWindow& mainWindow)
+Goban::Goban(const Map& m, sf::RenderWindow& mainWindow)
 : AGui(m.sizeY(), m.sizeX(), AGui::GAME), _m(m), _mainWindow(mainWindow) {
     this->_mainWindow.clear(sf::Color::Black);
 
@@ -19,10 +19,10 @@ Sfml::Sfml(const Map& m, sf::RenderWindow& mainWindow)
 
 }
 
-Sfml::~Sfml() {
+Goban::~Goban() {
 }
 
-bool Sfml::getInput(EventManager& events) {
+bool Goban::getInput(EventManager& events) {
     sf::Event current;
     if (this->_mainWindow.isOpen() == false)
         return false;
@@ -43,16 +43,16 @@ bool Sfml::getInput(EventManager& events) {
 }
 
 // Members
-bool Sfml::refresh() {
+bool Goban::refresh() {
     this->_mainWindow.display();
     return true;
 }
 
-bool Sfml::drawFrame(char c, const Rectangle& rect) {
+bool Goban::drawFrame(char c, const Rectangle& rect) {
     return false;
 }
 
-bool Sfml::drawAll() {
+bool Goban::drawAll() {
     Stone::E_COLOR c;
     std::list<sf::Sprite> stones;
     const Stone::E_COLOR* map = this->_m.displayMap();
@@ -67,7 +67,7 @@ bool Sfml::drawAll() {
             stones.back().setTexture(this->_stone_tx);
             if (c == Stone::E_COLOR::BLACK)
                 stones.back().setColor(sf::Color(75, 75, 75));
-            stones.back().setPosition(Sfml::OFFSET_X + (x * 50), Sfml::OFFSET_Y + (y * 50));
+            stones.back().setPosition(Goban::OFFSET_X + (x * 50), Goban::OFFSET_Y + (y * 50));
         }
     }
     this->_mainWindow.draw(this->_goban_sp);
@@ -81,7 +81,7 @@ bool Sfml::drawAll() {
     return true;
 }
 
-bool Sfml::cursorUp() {
+bool Goban::cursorUp() {
     this->_curs.Y--;
     if (this->_curs.Y < 0)
         this->_curs.Y = this->_map_size_y - 1;
@@ -89,7 +89,7 @@ bool Sfml::cursorUp() {
     return true;
 }
 
-bool Sfml::cursorDown() {
+bool Goban::cursorDown() {
     this->_curs.Y++;
     if (this->_curs.Y >= this->_map_size_y)
         this->_curs.Y = 0;
@@ -97,7 +97,7 @@ bool Sfml::cursorDown() {
     return true;
 }
 
-bool Sfml::cursorLeft() {
+bool Goban::cursorLeft() {
     this->_curs.X--;
     if (this->_curs.X < 0)
         this->_curs.X = this->_map_size_x - 1;
@@ -105,7 +105,7 @@ bool Sfml::cursorLeft() {
     return true;
 }
 
-bool Sfml::cursorRight() {
+bool Goban::cursorRight() {
     this->_curs.X++;
     if (this->_curs.X >= this->_map_size_x)
         this->_curs.X = 0;
@@ -113,17 +113,17 @@ bool Sfml::cursorRight() {
     return true;
 }
 
-bool Sfml::cursorMouse(int pos_x, int pos_y) {
+bool Goban::cursorMouse(int pos_x, int pos_y) {
     return false;
 }
 
-bool Sfml::newWindow(const Rectangle& rect, const std::string& msg) {
+bool Goban::newWindow(const Rectangle& rect, const std::string& msg) {
     return false;
 }
 
 /* PRIVATES */
 
-bool Sfml::handleKeys(const sf::Event& current, EventManager& events) {
+bool Goban::handleKeys(const sf::Event& current, EventManager& events) {
     switch (current.key.code) {
         case (sf::Keyboard::Up):
             events.setKey(EventManager::E_KEYS::UP);
