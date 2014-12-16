@@ -16,39 +16,35 @@ Game::Game()
 }
 
 Game::~Game() {
-<<<<<<< HEAD
-    delete _menu;
-    delete _gui;
-//    if (_players[0])
-//        delete _players[0];
-//    if (_players[1])
-//        delete _players[1];
-=======
     delete _guis[0];
     delete _guis[1];
     if (_players[0])
         delete _players[0];
     if (_players[1])
         delete _players[1];
->>>>>>> 9690cc091b294f1bf5fb28ae24f38380d79ccf96
 }
 
 int Game::mainLoop()
 {
-    while (!(quit()) && _conf.continue_game)
+    while (/*!(quit()) && */_conf.continue_game)
     {
         std::cout << "start of menu" << std::endl;
+        std::cout << _conf.continue_game << std::endl;
         menuLoop();
         switchGuiState();
         // TODO : deboguer et decommenter
         // if (!_conf.continue_game)
         //     break;
         std::cout << "end of menu" << std::endl;
+        std::cout << _conf.continue_game << std::endl;
         start();
         std::cout << "end of game" << std::endl;
+        std::cout << _conf.continue_game << std::endl;
         if (gameHasEnded())
             cleanGame();
         switchGuiState();
+        std::cout << "game cleaned" << std::endl;
+        std::cout << _conf.continue_game << std::endl;
     }
     return 0;
 }
@@ -127,8 +123,7 @@ int Game::cleanGame() {
     this->_players[1] = NULL;
     // TODO : clean tout ce qu'il faut entre 2 parties
     // clean map, referee, conf ?
-
-//    _map.reset();
+    //    _map.reset();
     _gameState = Referee::VALID;
     return 0;
 }
