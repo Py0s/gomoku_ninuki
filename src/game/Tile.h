@@ -21,7 +21,8 @@ class Tile {
     inline const char  getValue(Stone::E_COLOR color, int dir) const {
         return _values[color][dir];
     }
-    inline const char  getIntValue(Stone::E_COLOR color, int dir) const {
+    inline const char
+    getIntValue(Stone::E_COLOR color, int dir) const {
         return _inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
     }
 
