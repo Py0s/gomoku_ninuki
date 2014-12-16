@@ -4,11 +4,11 @@
 #include <SFML/Graphics.hpp>
 #include <list>
 
-class Sfml: public AGui
+class Goban: public AGui
 {
    public:
-      Sfml(const Map& m, sf::RenderWindow& mainWindow);
-      virtual ~Sfml();
+      Goban(const Map& m, sf::RenderWindow& mainWindow);
+      virtual ~Goban();
       
       // Getters
       virtual bool getInput(EventManager& events);

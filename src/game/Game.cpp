@@ -1,5 +1,5 @@
 #include "Game.h"
-#include "Sfml.h"
+#include "Goban.h"
 #include "Menu.h"
 #include "AGui.h"
 #include "Human.h"
@@ -10,7 +10,7 @@ Game::Game()
 : _map(), _currentPlayer(nullptr),
         _player_nb(0), _conf(), _referee() {
     _guis[static_cast<int>(MENU)] = new Menu((_init_sfml).getWindow());
-    _guis[static_cast<int>(GAME)] = new Sfml(_map, _init_sfml.getWindow());
+    _guis[static_cast<int>(GAME)] = new Goban(_map, _init_sfml.getWindow());
     _guiState = MENU;
 }
 
