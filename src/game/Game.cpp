@@ -123,8 +123,7 @@ int Game::cleanGame() {
     this->_players[1] = NULL;
     // TODO : clean tout ce qu'il faut entre 2 parties
     // clean map, referee, conf ?
-
-//    _map.reset();
+    //    _map.reset();
     _gameState = Referee::VALID;
     return 0;
 }
