@@ -30,9 +30,8 @@ int Game::mainLoop()
         std::cout << "start of menu" << std::endl;
         menuLoop();
         switchGuiState();
-        // TODO : deboguer et decommenter
-        // if (!_conf.continue_game)
-        //     break;
+        if (!_conf.continue_game)
+            break;
         std::cout << "end of menu" << std::endl;
         start();
         std::cout << "end of game" << std::endl;

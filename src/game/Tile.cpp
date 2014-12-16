@@ -15,26 +15,6 @@ Tile::Tile()
 Tile::~Tile() {
 }
 
-
-// Getters
-// inline bool Tile::isEmpty() const {
-//     return (_color == Stone::E_COLOR::NONE);
-// }
-
-// inline const char Tile::getValue(Stone::E_COLOR color, int dir) const {
-//     return _values[color][dir];
-// }
-
-// inline const char Tile::getIntValue(Stone::E_COLOR color, int dir) const {
-//     return this->_inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
-// }
-
-// inline const Stone::E_COLOR  Tile::getColor() const {
-//     return _color;
-// }
-
-
-// Setters
 void Tile::reset() {
     _color = Stone::NONE;
     for (int i=0; i < 8; ++i)
@@ -47,17 +27,36 @@ void Tile::reset() {
     }
 }
 
-void  Tile::setColor(Stone::E_COLOR color) {
-    _color = color;
-}
+// Getters
+// /*inline*/ bool Tile::isEmpty() const {
+//     return (_color == Stone::E_COLOR::NONE);
+// }
 
-void Tile::setValue(Stone::E_COLOR color, int dir, char value) {
-    _values[color][dir] = value;
-}
+// /*inline*/ const Stone::E_COLOR  Tile::getColor() const {
+//     return _color;
+// }
 
-void Tile::AddToInterValue(Stone::E_COLOR color, int dir, char value) {
-    _inter_values[color][dir] += value;
-}
+// /*inline*/ const char Tile::getValue(Stone::E_COLOR color, int dir) const {
+//     return _values[color][dir];
+// }
+
+// /*inline*/ const char Tile::getIntValue(Stone::E_COLOR color, int dir) const {
+//     return this->_inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
+// }
+
+
+// Setters
+// /*inline*/ void  Tile::setColor(Stone::E_COLOR color) {
+//     _color = color;
+// }
+
+// /*inline*/ void Tile::setValue(Stone::E_COLOR color, int dir, char value) {
+//     _values[color][dir] = value;
+// }
+
+// /*inline*/ void Tile::AddToInterValue(Stone::E_COLOR color, int dir, char value) {
+//     _inter_values[color][dir] += value;
+// }
 
 
 
