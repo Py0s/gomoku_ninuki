@@ -108,10 +108,11 @@ void Game::initPlayers()
 int Game::cleanGame() {
     delete this->_players[0];
     delete this->_players[1];
+    this->_players[0] = NULL;
+    this->_players[1] = NULL;
     // TODO : clean tout ce qu'il faut entre 2 parties
     // clean map, referee, conf ?
-
-//    _map.reset();
+    //    _map.reset();
     _gameState = Referee::VALID;
     return 0;
 }
