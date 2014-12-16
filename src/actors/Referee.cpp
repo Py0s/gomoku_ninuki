@@ -46,6 +46,11 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
         return END_WHITE;
     }
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
+    if (ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
+    {
+        std::cout << "Ref ret:"<<ret << std::endl;
+        map.displayDebug();
+    }
     
     if (this->_conf->fivebreak_rule == true && ret != END_BLACK && ret != END_WHITE)
     {
