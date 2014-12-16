@@ -52,6 +52,24 @@ Stone AI::plays() {
     return stone;
 }
 
+
+// int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured) {
+//     char stonesPlayed = map.getPlayed();
+
+//     if (ret == Referee::E_STATE::END_WHITE)
+//         return _color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+//     if (ret == Referee::E_STATE::END_BLACK)
+//         return _color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+
+//     int takenStones = captured - _captured;
+//     int opponentTakenStones = opponentCaptured - _opponent->getCaptured();
+//     if (takenStones)
+//         return 100 * takenStones - stonesPlayed;
+//     if (opponentTakenStones)
+//         return -100 * opponentTakenStones + stonesPlayed;
+//     return (0);
+// }
+
 int AI::eval(Map& map, Referee::E_STATE ret) {
     char stonesPlayed = map.getPlayed();
 
@@ -69,29 +87,11 @@ int AI::eval(Map& map, Referee::E_STATE ret) {
     return (0);
 }
 
-int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured) {
-    char stonesPlayed = map.getPlayed();
 
-    if (ret == Referee::E_STATE::END_WHITE)
-        return _color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
-    if (ret == Referee::E_STATE::END_BLACK)
-        return _color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
-
-    int takenStones = captured - _captured;
-    int opponentTakenStones = opponentCaptured - _opponent->getCaptured();
-    if (takenStones)
-        return 100 * takenStones - stonesPlayed;
-    if (opponentTakenStones)
-        return -100 * opponentTakenStones + stonesPlayed;
-    return (0);
-}
-
-
-int AI::calcMax(Map& map, int depth, Referee::E_STATE ret,/* char& captured, char& opponentCaptured,*/ int alpha, int beta) {
+int AI::calcMax(Map& map, int depth, Referee::E_STATE ret, int alpha, int beta) {
 
     if (depth == 0 || Referee::gameHasEnded(ret))
         return eval(map, ret);
-        //return eval(map, ret, captured, opponentCaptured);
 
     int score;
     //int max = -AI_INFINITY;
@@ -107,21 +107,19 @@ int AI::calcMax(Map& map, int depth, Referee::E_STATE ret,/* char& captured, cha
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
-                /*char tmp_captured = captured;
-                char tmp_opponentCaptured = opponentCaptured;*/
 
                 // On crée la pierre et on joue le coup
                 char fake = 0;
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, /*tmp_captured*/fake);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, fake);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    score = calcMin(map_tmp, depth-1, ret,/* tmp_captured, tmp_opponentCaptured,*/ alpha, beta);
+                    score = calcMin(map_tmp, depth-1, ret, alpha, beta);
 
                     // Si le score est plus petit on le sauvegarde
-                    /*if (score > max)
-                        max = score;*/
+                    // if (score > max)
+                    //     max = score;
                     if (score > alpha)
                         alpha = score;
                     if (alpha >= beta)
@@ -135,11 +133,10 @@ int AI::calcMax(Map& map, int depth, Referee::E_STATE ret,/* char& captured, cha
     return alpha;
 }
 
-int AI::calcMin(Map& map, int depth, Referee::E_STATE ret,/* char& captured, char& opponentCaptured,*/ int alpha, int beta) {
+int AI::calcMin(Map& map, int depth, Referee::E_STATE ret, int alpha, int beta) {
 
     if (depth == 0 || Referee::gameHasEnded(ret))
         return eval(map, ret);
-        //return eval(map, ret, captured, opponentCaptured);
 
     int score;
     //int min = AI_INFINITY;
@@ -155,21 +152,19 @@ int AI::calcMin(Map& map, int depth, Referee::E_STATE ret,/* char& captured, cha
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = map;
-                /*char tmp_captured = captured;
-                char tmp_opponentCaptured = opponentCaptured;*/
 
                 // On crée la pierre et on joue le coup
                 char fake = 0;
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _opColor), map_tmp, /*tmp_opponentCaptured*/fake);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _opColor), map_tmp, fake);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    score = calcMax(map_tmp, depth-1, ret, /*tmp_captured, tmp_opponentCaptured,*/ alpha, beta);
+                    score = calcMax(map_tmp, depth-1, ret, alpha, beta);
 
                     // Si le score est plus petit on le sauvegarde
-                    /*if (score < min)
-                        min = score;*/
+                    // if (score < min)
+                    //     min = score;
                     if (score < beta)
                         beta = score;
                     if (beta <= alpha)
@@ -201,17 +196,15 @@ Stone AI::calc(int depth) {
             {
                 // Copy de la map et des nombres de pierres capturées
                 Map map_tmp = _map;
-                /*char tmp_captured = this->getCaptured();
-                char tmp_opponentCaptured = _opponent->getCaptured();*/
 
                 // On crée la pierre et on joue le coup
                 char fake = 0;
-                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, /*tmp_captured*/fake);
+                Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, fake);
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
                 {
-                    score = calcMin(map_tmp, depth - 1, ret,/* tmp_captured, tmp_opponentCaptured,*/ alpha, beta);
+                    score = calcMin(map_tmp, depth - 1, ret, alpha, beta);
 
                     // Si ce score est plus grand
                     //if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
