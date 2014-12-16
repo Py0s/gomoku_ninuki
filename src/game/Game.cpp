@@ -19,10 +19,10 @@ Game::Game()
 Game::~Game() {
     delete _menu;
     delete _gui;
-    if (_players[0])
-        delete _players[0];
-    if (_players[1])
-        delete _players[1];
+//    if (_players[0])
+//        delete _players[0];
+//    if (_players[1])
+//        delete _players[1];
 }
 
 int Game::mainLoop()
