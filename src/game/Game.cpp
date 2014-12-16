@@ -43,6 +43,12 @@ int Game::mainLoop()
     }
     return 0;
 }
+inline void     Game::switchGuiState() {
+    _guiState = (_guiState == MENU) ? (GAME) : (MENU);
+    gui()->drawAll();
+}
+
+
 
 int Game::menuLoop() {
     assert(_guiState == MENU);
@@ -108,6 +114,8 @@ void Game::initPlayers()
 int Game::cleanGame() {
     delete this->_players[0];
     delete this->_players[1];
+    this->_players[0] = NULL;
+    this->_players[1] = NULL;
     // TODO : clean tout ce qu'il faut entre 2 parties
     // clean map, referee, conf ?
 
