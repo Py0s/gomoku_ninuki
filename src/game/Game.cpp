@@ -7,7 +7,7 @@
 #include <iostream>
 
 Game::Game()
-: _map(), _currentPlayer(NULL),
+: _map(), _currentPlayer(nullptr),
         _player_nb(0), _conf(), _referee() {
     _guis[static_cast<int>(MENU)] = new Menu((_init_sfml).getWindow());
     _guis[static_cast<int>(GAME)] = new Sfml(_map, _init_sfml.getWindow());
@@ -118,9 +118,9 @@ void Game::initPlayers()
 int Game::cleanGame() {
     delete this->_players[0];
     delete this->_players[1];
-    this->_currentPlayer = NULL;
-    this->_players[0] = NULL;
-    this->_players[1] = NULL;
+    this->_currentPlayer = nullptr;
+    this->_players[0] = nullptr;
+    this->_players[1] = nullptr;
     _map.reset();
     _referee.reset();
     _gameState = Referee::VALID;

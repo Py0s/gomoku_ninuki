@@ -31,8 +31,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     map.placeStone(s);
     map.played();// TODO : pourquoi c'est pas direct dans placeStones ?
 
-    // if RULE
-    if (checkDoubleThree(map, tile, s.color()))
+    if (this->_conf->doublethree_rule == true && checkDoubleThree(map, tile, s.color()))
     {
         map.removeStone(tile);
         //TODO : ya pas de played-- ?
@@ -47,7 +46,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     }
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
     
-    if (this->_conf->fivebreak_rule == true && ret != END_BLACK && ret != END_WHITE)
+    if (this->_conf->fivebreak_rule == true && !(Referee::gameHasEnded(ret)))
     {
         // Recheck des alignements potentiellement gagnants mais cassables
         ret = checkLbreakables(map);

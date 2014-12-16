@@ -41,7 +41,7 @@ class Referee
     E_STATE check(const Stone& s, Map& map, char& captured);
 
     void reset() {
-        _conf = NULL;
+        _conf = nullptr;
         _breakables.clear();
     }
     
