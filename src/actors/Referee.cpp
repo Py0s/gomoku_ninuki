@@ -282,7 +282,7 @@ Referee::E_STATE Referee::checkLbreakables(Map &map)
             (*it).first._breakable = false;
             it = this->_breakables.erase(it);
         }
-        else if (isTileBreakable((*it).first, map) == false)
+        else if (isTileBreakable((*it).first, map) == Map::E_OR::MAX)
         {
             Tile& t = (*it).first;
             t._breakable = false;
@@ -386,7 +386,7 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
                 if (check.getColor() == Stone::NONE)
                     end++;
             }
-            if (end == 1)
+            if (end == 1) // if breakable
             {
                 if (start._breakable == false)
                 {
