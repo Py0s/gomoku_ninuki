@@ -39,5 +39,5 @@ class AI : public APlayer
  
         //Fonction qui évalue le jeu
         int eval(Map& map, Referee::E_STATE ret);
-        int eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured);
+        int eval(Map& map, Referee::E_STATE ret, Stone::E_COLOR color);
 };
