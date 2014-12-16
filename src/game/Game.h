@@ -11,6 +11,11 @@
 
 class Game {
 public:
+    enum E_GUI_STATE {
+        MENU = 0,
+        GAME,
+    };
+
     Game();
     virtual ~Game();
     
@@ -20,28 +25,28 @@ public:
 private:
     Map         _map;
     EventManager    _events;
-//    Core        _core;
     InitSfml    _init_sfml;
-//    AGui*       _guis[2];
-    AGui*       _gui; // Current Gui
-    Menu*       _menu;
+    AGui*       _guis[2];
+    E_GUI_STATE _guiState;
+
     APlayer *   _currentPlayer;
     APlayer *   _players[2] = {NULL, NULL};
     int         _player_nb;
     Config      _conf;
     Referee     _referee;
-    Referee::E_STATE    _currentState;
+    Referee::E_STATE    _gameState;
     
-    inline bool quit() const {
-        return _events.getKey(EventManager::E_KEYS::QUIT);
-    }
+    inline AGui*    gui() { return _guis[static_cast<int>(_guiState)]; }
+    inline Menu*    menu() { return dynamic_cast<Menu*>(_guis[static_cast<int>(MENU)]); }
+    inline void     switchGuiState();
 
-    int menu();
+    inline bool quit() const { return _events.getKey(EventManager::E_KEYS::QUIT); }
+    int menuLoop();
     int start();
     int cleanGame();
     void initPlayers();
     inline void nextPlayer();
     void accept();
-    inline bool gameHasEnded() const { return Referee::gameHasEnded(_currentState); }
+    inline bool gameHasEnded() const { return Referee::gameHasEnded(_gameState); }
 };
 

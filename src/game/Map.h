@@ -53,7 +53,6 @@ class Map {
 
     // Operator
     std::array<Tile, _MAPSIZE_X>& operator[](size_t idx);
-        
     
     // Members
     void placeStone(const Stone& s);

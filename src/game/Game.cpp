@@ -10,19 +10,27 @@ Game::Game()
 : _map(), _currentPlayer(NULL),
         _player_nb(0), _conf(), _referee() {
     _referee.setConf(&_conf);
-    // _guis[0] = new Menu((_init_sfml).getWindow());
-    // _guis[1] = new Sfml(_map, _init_sfml.getWindow());
-    _menu = new Menu((_init_sfml).getWindow());
-    _gui = new Sfml(_map, _init_sfml.getWindow());
+    _guis[static_cast<int>(MENU)] = new Menu((_init_sfml).getWindow());
+    _guis[static_cast<int>(GAME)] = new Sfml(_map, _init_sfml.getWindow());
+    _guiState = MENU;
 }
 
 Game::~Game() {
+<<<<<<< HEAD
     delete _menu;
     delete _gui;
 //    if (_players[0])
 //        delete _players[0];
 //    if (_players[1])
 //        delete _players[1];
+=======
+    delete _guis[0];
+    delete _guis[1];
+    if (_players[0])
+        delete _players[0];
+    if (_players[1])
+        delete _players[1];
+>>>>>>> 9690cc091b294f1bf5fb28ae24f38380d79ccf96
 }
 
 int Game::mainLoop()
@@ -30,7 +38,8 @@ int Game::mainLoop()
     while (!(quit()) && _conf.continue_game)
     {
         std::cout << "start of menu" << std::endl;
-        menu();
+        menuLoop();
+        switchGuiState();
         // TODO : deboguer et decommenter
         // if (!_conf.continue_game)
         //     break;
@@ -39,55 +48,64 @@ int Game::mainLoop()
         std::cout << "end of game" << std::endl;
         if (gameHasEnded())
             cleanGame();
+        switchGuiState();
     }
     return 0;
 }
+inline void     Game::switchGuiState() {
+    _guiState = (_guiState == MENU) ? (GAME) : (MENU);
+    gui()->drawAll();
+}
 
-int Game::menu() {
-    _menu->drawAll();
+
+
+int Game::menuLoop() {
+    assert(_guiState == MENU);
+    menu()->drawAll();
     while (!(quit()))
     {
-        _menu->refresh();
-        _menu->getInput(_events);
+        menu()->refresh();
+        menu()->getInput(_events);
 
         switch (_events.getLastKey()) {
             case EventManager::E_KEYS::UP:
                 _events.disposeLastKey();
-                _menu->cursorUp();
+                menu()->cursorUp();
                 break;
             case EventManager::E_KEYS::DOWN:
                 _events.disposeLastKey();
-                _menu->cursorDown();
+                menu()->cursorDown();
                 break;
             case EventManager::E_KEYS::LEFT:
                 _events.disposeLastKey();
-                _menu->cursorLeft();
+                menu()->cursorLeft();
                 break;
             case EventManager::E_KEYS::RIGHT:
                 _events.disposeLastKey();
-                _menu->cursorRight();
+                menu()->cursorRight();
                 break;
             case EventManager::E_KEYS::ACCEPT:
                 _events.disposeLastKey();
-                _menu->chooseOptionValue();
+                menu()->chooseOptionValue();
                 break;
             default:
                 break;
         }
     }
     _events.disposeLastKey();
-    _conf = _menu->config();
+    _conf = menu()->config();
     return 0;
 }
 
 
 void Game::initPlayers()
 {
+    assert(_guiState == GAME);
     _players[0] = (_conf.human_player_1 ?
-                    dynamic_cast<APlayer *>(new Human(this->_gui->getCursor(), Stone::E_COLOR::BLACK)) :
+                    dynamic_cast<APlayer *>(new Human(this->gui()->getCursor(), Stone::E_COLOR::BLACK)) :
                     dynamic_cast<APlayer *>(new AI(_map, _referee, Stone::E_COLOR::BLACK)));
     _players[1] = (_conf.human_player_2 ?
-                    dynamic_cast<APlayer *>(new Human(this->_gui->getCursor(), Stone::E_COLOR::WHITE)) :
+                    dynamic_cast<APlayer *>(new Human(this->gui()->getCursor(), Stone::E_COLOR::WHITE)) :
                     dynamic_cast<APlayer *>(new AI(_map, _referee, Stone::E_COLOR::WHITE)));
     if (_players[0]->getType() == APlayer::AI)
     {
@@ -100,64 +118,50 @@ void Game::initPlayers()
         dynamic_cast<AI *>(_players[1])->setOpponent(_players[0]);
     }
     _currentPlayer = _players[0];
-
-    // Human * p1 = new Human(this->_gui->getCursor(), Stone::E_COLOR::BLACK);
-    // if (this->_conf.ai_player_pos == -1)
-    // {
-    //     Human * p2 = new Human(this->_gui->getCursor(), Stone::E_COLOR::WHITE);
-    //     this->_players[0] = p1;
-    //     this->_players[1] = p2;
-    // }
-    // else
-    // {
-    //     AI * p2 = new AI(_map, _referee, Stone::E_COLOR::WHITE);
-    //     p2->setTimeLimit(1.5);
-    //     p2->setOpponent(p1);
-    //     this->_players[this->_conf.ai_player_pos] = p2;
-    //     this->_players[(this->_conf.ai_player_pos + 1) % 2] = p1;
-    // }
-    // this->_currentPlayer = this->_players[0];
 }
 
 int Game::cleanGame() {
     delete this->_players[0];
     delete this->_players[1];
+    this->_players[0] = NULL;
+    this->_players[1] = NULL;
     // TODO : clean tout ce qu'il faut entre 2 parties
     // clean map, referee, conf ?
 
 //    _map.reset();
-    _currentState = Referee::VALID;
+    _gameState = Referee::VALID;
     return 0;
 }
 
 // Members
 int Game::start() {
+    assert(_guiState == GAME);
     this->initPlayers();
-    this->_gui->drawAll();
+    this->gui()->drawAll();
 
     while (!(this->quit()) && !(gameHasEnded()))
     {
-        this->_gui->refresh();
-        this->_gui->getInput(this->_events);
+        this->gui()->refresh();
+        this->gui()->getInput(this->_events);
         if (this->_currentPlayer->getType() == APlayer::AI)
             this->_events.setKey(EventManager::E_KEYS::ACCEPT);
 
         switch (this->_events.getLastKey()) {
             case EventManager::E_KEYS::UP:
                 this->_events.disposeLastKey();
-                this->_gui->cursorUp();
+                this->gui()->cursorUp();
                 break;
             case EventManager::E_KEYS::DOWN:
                 this->_events.disposeLastKey();
-                this->_gui->cursorDown();
+                this->gui()->cursorDown();
                 break;
             case EventManager::E_KEYS::LEFT:
                 this->_events.disposeLastKey();
-                this->_gui->cursorLeft();
+                this->gui()->cursorLeft();
                 break;
             case EventManager::E_KEYS::RIGHT:
                 this->_events.disposeLastKey();
-                this->_gui->cursorRight();
+                this->gui()->cursorRight();
                 break;
             case EventManager::E_KEYS::ACCEPT:
                 this->_events.disposeLastKey();
@@ -189,28 +193,28 @@ inline void Game::nextPlayer() {
 }
 
 void Game::accept() {
-    _currentState = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer->getCaptured());
-    switch (_currentState) {
+    _gameState = _referee.check(this->_currentPlayer->plays(), _map, this->_currentPlayer->getCaptured());
+    switch (_gameState) {
         case Referee::E_STATE::VALID:
             this->nextPlayer();
-            this->_gui->drawAll();
+            this->gui()->drawAll();
             break;
         case Referee::E_STATE::INVALID:
             break;
         case Referee::E_STATE::END_BLACK:
             this->nextPlayer();
-            this->_gui->drawAll();
-            _menu->setTitle("Winner Black");
+            this->gui()->drawAll();
+            menu()->setTitle("Winner Black");
             break;
         case Referee::E_STATE::END_WHITE:
             this->nextPlayer();
-            this->_gui->drawAll();
-            _menu->setTitle("Winner White");
+            this->gui()->drawAll();
+            menu()->setTitle("Winner White");
             break;
         case Referee::E_STATE::END_DRAW:
             this->nextPlayer();
-            this->_gui->drawAll();
-            _menu->setTitle("Draw");
+            this->gui()->drawAll();
+            menu()->setTitle("Draw");
             break;
     }
 }
