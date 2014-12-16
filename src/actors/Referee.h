@@ -73,9 +73,9 @@ class Referee
 
     /* ALIGNEMENT FUNCTIONS */
     Referee::E_STATE    checkAlign(Tile& t, Map& map, bool breakable);
-    bool                isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir);
-    Map::E_OR           isTileBreakable(const Tile &start, Map &m);
-    bool                isOrBreakable(const Tile &start, Map &m, Map::E_OR ori);
+    bool                isAlignBreakable(Tile &t, Map &m, Map::E_DIR dir);
+    Map::E_OR           isTileBreakable(Tile &start, Map &m);
+    bool                isOrBreakable(Tile &start, Map &m, Map::E_OR ori);
     Referee::E_STATE    checkLbreakables(Map& map);
     
     /* MEMBERS */
