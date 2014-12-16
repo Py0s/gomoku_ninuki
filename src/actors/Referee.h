@@ -42,8 +42,8 @@ class Referee
     
   private:
     Config const * _conf;
-    std::list<std::pair<Tile, Map::E_DIR>>    _breakables;
-
+    std::list<std::pair<Tile&, Map::E_DIR>>    _breakables;
+    
     
     /* DOUBLE THREE FUNCTIONS */
     // oui oui toutes les fonctions qui suivent c'est juste pour les double-trois ;)
