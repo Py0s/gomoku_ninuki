@@ -39,11 +39,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     if (checkCapture(tile, map, captured))
         return this->winner(tile.getColor());
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
-    if (ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
-    {
-        std::cout << "Ref ret:"<<ret << std::endl;
-        map.displayDebug();
-    }
+
     if (this->_conf->fivebreak_rule == true && !(Referee::gameHasEnded(ret)))
         ret = checkLbreakables(map);
 
@@ -308,8 +304,8 @@ bool Referee::isAlignBreakable(Tile &start, Map &m, Map::E_DIR dir)
         while (count > 0 && t->getColor() == start.getColor()) {
             if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
                 break;
-            t = &(m.*(m.go[dir]))(*t, 1);
             count--;
+            t = &(m.*(m.go[dir]))(*t, 1);
         }
     }
     catch (const ExcOutOfBound& ex) {
@@ -321,8 +317,8 @@ bool Referee::isAlignBreakable(Tile &start, Map &m, Map::E_DIR dir)
         while (count > 0 && t->getColor() == start.getColor()) {
             if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
                 break;
-            t = &(m.*(m.go[dir]))(*t, 1);
             count--;
+            t = &(m.*(m.go[dir]))(*t, 1);
         }
     }
     catch (const ExcOutOfBound& ex) {
