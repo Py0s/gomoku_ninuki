@@ -11,25 +11,18 @@ class Tile {
     Tile();
     virtual ~Tile();
 
+    void reset();
+
     // Getters
-    inline bool isEmpty() const {
-        return (_color == Stone::E_COLOR::NONE);
-    }
-    inline const Stone::E_COLOR  getColor() const {
-       return _color;
-    }
-    inline const char  getValue(Stone::E_COLOR color, int dir) const {
-        return _values[color][dir];
-    }
-    inline const char  getIntValue(Stone::E_COLOR color, int dir) const {
-        return _inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
-    }
+    inline bool isEmpty() const { return (_color == Stone::E_COLOR::NONE); }
+    inline const Stone::E_COLOR  getColor() const { return _color; }
+    inline const char  getValue(Stone::E_COLOR color, int dir) const { return _values[color][dir]; }
+    inline const char  getIntValue(Stone::E_COLOR color, int dir) const { return _inter_values[color][dir % 4]; }// TODO : Virer ce fuding modulo 4
 
     // Setters
-    void reset();
-    void setColor(Stone::E_COLOR color);
-    void setValue(Stone::E_COLOR color, int dir, char value);
-    void AddToInterValue(Stone::E_COLOR color, int dir, char value);
+    inline void setColor(Stone::E_COLOR color) { _color = color; }
+    inline void setValue(Stone::E_COLOR color, int dir, char value) { _values[color][dir] = value; }
+    inline void AddToInterValue(Stone::E_COLOR color, int dir, char value) { _inter_values[color][dir] += value; }
 
     // Debug
     void Debug() const;
