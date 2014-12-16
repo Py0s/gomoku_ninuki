@@ -36,6 +36,7 @@ Tile::~Tile() {
 
 // Setters
 void Tile::reset() {
+    _color = Stone::NONE;
     for (int i=0; i < 8; ++i)
     {
         _values[Stone::BLACK][i] = 0;
