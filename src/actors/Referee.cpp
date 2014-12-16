@@ -74,6 +74,19 @@ bool Referee::alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) cons
         return true;
     return false;
 }
+bool Referee::alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+{
+    Map::PTR ptr = map.go[dir];
+    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 1);
+
+    if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
+        return true;
+    return false;
+}
+bool Referee::alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+{
+    return true;
+}
 
 bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const
 {
@@ -91,19 +104,40 @@ bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir,
     return true;
 }
 
-bool Referee::alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+// les values sont celles d'extrem
+bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir, int first_value, int second_value) const
 {
-    Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 1);
+    Map::PTR ptr = map.go[first_dir];
+    for (int v = 0; v < first_value; ++v)
+    {
+        Tile& current_tile = (map.*ptr)(tile, v);
+        // on check que les cases où il y a mes pierres
+        if (tile.getColor() == color && checkDoubleThreeSecondPart(map, current_tile, color, first_dir))
+            return true;
+    }
 
-    if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
-        return true;
+    ptr = map.go[Map::OP_DIR[first_dir]];
+    for (int v = 0; v < second_value; ++v)
+    {
+        Tile& zboob_tile = (map.*ptr)(tile, v);
+        if (tile.getColor() == color && checkDoubleThreeSecondPart(map, zboob_tile, color, first_dir))
+            return true;
+    }
     return false;
-}
+/*    Map::PTR ptr = map.go[first_dir];
 
-bool Referee::alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
-{
-    return true;
+    if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
+        return true;
+
+    Tile& second_tile = (map.*ptr)(tile, first_value);
+    if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
+        return true;
+
+    Tile& third_tile = (map.*ptr)(tile, second_value);
+    if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
+        return true;
+
+    return false;*/
 }
 
 bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
@@ -162,24 +196,6 @@ bool Referee::checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR co
 }
 
 
-bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir, int first_value, int second_value) const
-{
-    Map::PTR ptr = map.go[first_dir];
-
-    if (checkDoubleThreeSecondPart(map, tile, color, first_dir))
-        return true;
-
-    Tile& second_tile = (map.*ptr)(tile, first_value);
-    if (checkDoubleThreeSecondPart(map, second_tile, color, first_dir))
-        return true;
-
-    Tile& third_tile = (map.*ptr)(tile, second_value);
-    if (checkDoubleThreeSecondPart(map, third_tile, color, first_dir))
-        return true;
-
-    return false;
-}
-
 bool Referee::alignParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
 {
     try
@@ -187,15 +203,18 @@ bool Referee::alignParcours(Map& map, Tile& tile, Stone::E_COLOR color, int firs
         switch (tile.getIntValue(color, first_dir))
         {
             case 1:
-                if (XFactorParcours(map, tile, color, first_dir, 2, 3) == true)
+                //if (XFactorParcours(map, tile, color, first_dir, 2, 3) == true)
+                if (XFactorParcours(map, tile, color, first_dir, 4, 1))
                     return true;
                 break;
             case 2:
-                if (XFactorParcours(map, tile, color, first_dir, 1, 3) == true)
+                //if (XFactorParcours(map, tile, color, first_dir, 1, 3) == true)
+                if (XFactorParcours(map, tile, color, first_dir, tile.getValue(color, first_dir) + 3, tile.getValue(color, Map::OP_DIR[first_dir]) + 1))
                     return true;
                 break;
             case 3:
-                if (XFactorParcours(map, tile, color, first_dir, 1, 2) == true)
+                //if (XFactorParcours(map, tile, color, first_dir, 1, 2) == true)
+                if (XFactorParcours(map, tile, color, first_dir, tile.getValue(color, first_dir) + 1, tile.getValue(color, Map::OP_DIR[first_dir]) + 1))
                     return true;
                 break;
             default:
