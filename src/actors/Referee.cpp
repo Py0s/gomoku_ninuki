@@ -24,39 +24,28 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     assert(this->_conf != nullptr);
     Tile& tile = map[s.y()][s.x()];
 
-    // TODO : mettre ça avant l'appel a check
     if (tile.getColor() != Stone::E_COLOR::NONE)
         return INVALID;
-
-    map.placeStone(s);
-    map.played();// TODO : pourquoi c'est pas direct dans placeStones ?
-
-    if (this->_conf->doublethree_rule == true && checkDoubleThree(map, tile, s.color()))
-    {
-        map.removeStone(tile);
-        //TODO : ya pas de played-- ?
+    map.placeStone(s); // Preview
+    if (this->_conf->doublethree_rule == true
+            && checkDoubleThree(map, tile, s.color())) {
+        map.removeStone(tile); // Cancel Preview
         return INVALID;
     }
 
+    // Confirm play
+    map.played();
+
     if (checkCapture(tile, map, captured))
-    {
-        if (tile.getColor() == Stone::E_COLOR::BLACK)
-            return END_BLACK;
-        return END_WHITE;
-    }
+        return this->winner(tile.getColor());
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
     if (ret == Referee::E_STATE::END_WHITE || ret == Referee::E_STATE::END_BLACK)
     {
         std::cout << "Ref ret:"<<ret << std::endl;
         map.displayDebug();
     }
-    
     if (this->_conf->fivebreak_rule == true && !(Referee::gameHasEnded(ret)))
-    {
-        // Recheck des alignements potentiellement gagnants mais cassables
         ret = checkLbreakables(map);
-    }
-    // map.displayDebug();
 
     if (map.getPlayed() == MAX_STONE_PLAYED)
         return END_DRAW;
@@ -282,7 +271,7 @@ Referee::E_STATE Referee::checkLbreakables(Map &map)
             (*it).first._breakable = false;
             it = this->_breakables.erase(it);
         }
-        else if (isTileBreakable((*it).first, map) == false)
+        else if (isTileBreakable((*it).first, map) == Map::E_OR::MAX)
         {
             Tile& t = (*it).first;
             t._breakable = false;
@@ -386,7 +375,7 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
                 if (check.getColor() == Stone::NONE)
                     end++;
             }
-            if (end == 1)
+            if (end == 1) // if breakable
             {
                 if (start._breakable == false)
                 {
