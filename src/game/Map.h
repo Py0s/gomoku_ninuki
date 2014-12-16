@@ -33,8 +33,8 @@ class Map {
     static const int _MAPSIZE_X = 19;
     static const int _MAPSIZE_Y = _MAPSIZE_X;
 
-    // static const int _MAPSIZE_X = 9; // For now
-    // static const int _MAPSIZE_Y = 5;
+    // static const int _MAPSIZE_X = 15; // For now
+    // static const int _MAPSIZE_Y = 15;
     
     typedef Tile& (Map::*PTR) (const Tile&, unsigned char);
     const PTR go[DIR_COUNT] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
@@ -49,6 +49,7 @@ class Map {
     const Stone::E_COLOR * displayMap() const;
     char getPlayed() {return _stonesPlayed;}
     char getPlayed(Stone::E_COLOR color) {return _played[color];}
+    char getCapturedBy(Stone::E_COLOR color) {return _captured[color];}
 
     // Operator
     std::array<Tile, _MAPSIZE_X>& operator[](size_t idx);
@@ -57,6 +58,7 @@ class Map {
     void placeStone(const Stone& s);
     void removeStone(Tile& tile);
     void played() {_stonesPlayed++;}
+    void addCaptured(Stone::E_COLOR color, char value) { _captured[color] += value;}
     void reset();
   
     // Debug
@@ -65,6 +67,7 @@ class Map {
   private:
     char _stonesPlayed;
     char _played[2] = {0,0};
+    char _captured[2] = {0,0};
 
     Stone::E_COLOR   _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
     std::array<std::array<Tile, _MAPSIZE_X>, _MAPSIZE_Y>    _map;

@@ -48,9 +48,11 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
 
     E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
     
-    // Recheck des alignements potentiellement gagnants mais cassables
-    // checkLbreakables(map);
-
+    if (this->_conf->fivebreak_rule == true && ret != END_BLACK && ret != END_WHITE)
+    {
+        // Recheck des alignements potentiellement gagnants mais cassables
+        ret = checkLbreakables(map);
+    }
     // map.displayDebug();
 
     if (map.getPlayed() == MAX_STONE_PLAYED)
@@ -256,6 +258,7 @@ bool Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
                         return true;//TODO : est-ce necessaire de faire le += 2 ici aussi ?
 
                     captured += 2;
+                    map.addCaptured(color, 2);
                 }
             }
             catch (const ExcOutOfBound& e) {
@@ -266,7 +269,7 @@ bool Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
     return false;
 }
 
-void Referee::checkLbreakables(Map &map)
+Referee::E_STATE Referee::checkLbreakables(Map &map)
 {
     for (std::list<std::pair<Tile, Map::E_DIR>>::iterator it = this->_breakables.begin(); it!= this->_breakables.end(); it++)
     {
@@ -278,9 +281,13 @@ void Referee::checkLbreakables(Map &map)
         else if (isTileBreakable((*it).first, map) == false)
         {
             map[(*it).first.Y][(*it).first.X]._breakable == false;
+            E_STATE ret = checkAlign(map[(*it).first.Y][(*it).first.X], map, true);
+            if (ret != VALID)
+                return ret;
             this->_breakables.erase(it);
         }
     }
+    return VALID;
 } //ToDo mettre dans meme if //ToDo implanter dans boucle //Todo new func with direction //Todo const?
 
 /* ALIGNEMENT FUNCTIONS */
@@ -298,7 +305,7 @@ Referee::E_STATE Referee::checkAlign(Tile& t, Map& m, bool breakable) {
 bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir)
 {
     Tile    next = t;
-    int     count = 4; // TODO Why is this shit ?
+    int     count = 5; // TODO Why is this shit ?
     Map::E_OR ori = Map::E_OR::MAX;
 
     try {

@@ -18,6 +18,7 @@ class APlayer
     //Getters
     virtual char& getCaptured() { return _captured; }
     virtual TYPE const& getType() const { return _type; }
+    virtual const Stone::E_COLOR getColor() const { return _color; }
     
   protected:
 //    APlayer(): _color(Stone::E_COLOR::NONE) { };

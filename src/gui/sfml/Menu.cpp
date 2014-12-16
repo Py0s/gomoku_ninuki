@@ -25,7 +25,9 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     timeV.push_back(10);
     timeV.push_back(20);
     timeV.push_back(30);
+    timeV.push_back(40);
     timeV.push_back(50);
+    timeV.push_back(60);
 
     _options.push_back(new Options("Player1 (Black)", _mainWindow, &_font));
     _options[0]->addValues<std::string>(playerV);
