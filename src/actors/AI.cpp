@@ -206,6 +206,7 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
         return eval(map, ret, color);
 
     int score;
+    int current = -AI_INFINITY;
     for (int y = 0; y < Map::_MAPSIZE_Y; ++y)
     {
         for (int x = 0; x < Map::_MAPSIZE_X; ++x)
@@ -226,17 +227,21 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
                 {
                     score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
 
-                    if (score > alpha)
+                    if (score >= current)
                     {
-                        alpha = score;
-                        if (alpha >= beta)
-                            return alpha;
+                        current = score;
+                        if (score >= alpha)
+                        {
+                            alpha = score;
+                            if (/*alpha*/score >= beta)
+                                return alpha;
+                        }
                     }
                 }
             }
         }
     }
-    return alpha;
+    return /*alpha*/current;
 }
 
 Stone AI::calc(int depth) {
