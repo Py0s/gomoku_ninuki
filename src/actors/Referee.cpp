@@ -302,9 +302,9 @@ Referee::E_STATE Referee::checkAlign(Tile& t, Map& m, bool breakable) {
     return VALID;
 }
 
-bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir)
+bool Referee::isAlignBreakable(Tile &t, Map &m, Map::E_DIR dir)
 {
-    Tile    next = t;
+    Tile&    next = t;
     int     count = 5; // TODO Why is this shit ?
     Map::E_OR ori = Map::E_OR::MAX;
 
@@ -339,7 +339,7 @@ bool Referee::isAlignBreakable(const Tile &t, Map &m, Map::E_DIR dir)
     return true;
 }
 
-Map::E_OR Referee::isTileBreakable(const Tile &start, Map &m)
+Map::E_OR Referee::isTileBreakable(Tile &start, Map &m)
 {
     for (int ori_int = Map::E_OR::NS; ori_int != Map::E_OR::MAX; ++ori_int)
     {
@@ -355,9 +355,9 @@ Map::E_OR Referee::isTileBreakable(const Tile &start, Map &m)
     return Map::E_OR::MAX;
 }
 
-bool Referee::isOrBreakable(const Tile &start, Map &m, Map::E_OR ori)
+bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
 {
-        Tile check = start;
+        Tile& check = start;
         Map::E_DIR cdir = Map::OR_TO_DIR[ori];
         int end = 0;
 
@@ -386,8 +386,8 @@ bool Referee::isOrBreakable(const Tile &start, Map &m, Map::E_OR ori)
                 if (start._breakable == false)
                 {
                     // Todo: Remove const of start
-                    m[start.Y][start.X]._breakable = true;
-                    this->_breakables.push_back(std::pair<Tile&, Map::E_DIR>(m[start.Y][start.X], cdir));
+                    start._breakable = true;
+                    this->_breakables.push_back(std::pair<Tile&, Map::E_DIR>(start, cdir));
                 }
                 return true;
             }
