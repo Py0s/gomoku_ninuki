@@ -41,9 +41,11 @@ private:
     inline void     switchGuiState();
 
     inline bool quit() const { return _events.getKey(EventManager::E_KEYS::QUIT); }
+    void applyConf();
     int menuLoop();
     int start();
     int cleanGame();
+
     void initPlayers();
     inline void nextPlayer();
     void accept();
