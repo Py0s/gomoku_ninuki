@@ -20,11 +20,9 @@ void    Options::setSelected(unsigned int i)
 {
     if (i >= 1 && i < _texts.size())
     {
-        if (_texts[_selected]->style() != GText::VALIDATED)
-            _texts[_selected]->unselect();
+        _texts[_selected]->unselect();
         _selected = i;
-        if (_texts[_selected]->style() != GText::VALIDATED)
-            _texts[_selected]->select();
+        _texts[_selected]->select();
     }
 }
 void    Options::selectLeft()
@@ -37,11 +35,9 @@ void    Options::selectRight()
 }
 void    Options::validate()
 {
-    unsigned int i = 0;
-    std::for_each(_texts.begin(), _texts.end(), [&](GText * text){
-        if (i != 0 && i != _selected)
-            selectedText()->unselect();
-    });
+    for (unsigned int i = 1; i < _texts.size(); ++i) {
+        _texts[i]->unvalidate();
+    }
     _validated = _selected;
     selectedText()->validate();
 }
@@ -51,11 +47,9 @@ void    Options::focus()
 }
 void    Options::unfocus()
 {
-    unsigned int i = 0;
-    std::for_each(_texts.begin(), _texts.end(), [&](GText * text){
-        if (i != 0 && text->style() != GText::VALIDATED)
-            selectedText()->unselect();
-    });
+    for (unsigned int i = 1; i < _texts.size(); ++i) {
+        _texts[i]->unselect();
+    }
 }
 void    Options::setY(int y)
 {

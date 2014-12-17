@@ -53,6 +53,8 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     std::for_each(_options.begin(), _options.end(), [&](Options * option){
         option->setY(_mainWindow.getSize().y * i++ / (_options.size() + 1));
     });
+    setSelected(0);
+//    _options[_selected]->focus();
 }
 
 Menu::~Menu() {

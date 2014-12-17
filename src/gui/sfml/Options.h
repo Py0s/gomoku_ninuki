@@ -29,8 +29,9 @@ public:
     {
         for (typename std::vector<T>::iterator it = values.begin(); it < values.end(); ++it)
             addValue(*it);
-        selectedText()->select();
-        validatedText()->validate();
+        //selectionne et valide la valeur par default
+        //selectedText()->select();
+        validatedText()->validate();//on pourrait mettre selected car au debut c'est la meme
     }
     
     //Setters

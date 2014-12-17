@@ -7,27 +7,30 @@ class GText : public sf::Text
 {
 public:
     enum STYLE {
-        TITLE = 0,
-        SUBTITLE,
-        SELECTED,
-        UNSELECTED,
-        VALIDATED
+        DEFAULT = 0,
+        TITLE = 1,
+        SUBTITLE = 2,
+        SELECTED = 4,
+        VALIDATED = 8,
     };
 
-    GText(std::string content, sf::Font * font, STYLE style = UNSELECTED, float x = 0, float y = 0);
+    GText(std::string content, sf::Font * font, STYLE style = DEFAULT, float x = 0, float y = 0);
     ~GText();
 
     void title();
+    // void untitle();
     void subtitle();
+    // void unsubtitle();
     void select();
     void unselect();
     void validate();
-
-    inline STYLE style() const {
-        return _style;
-    }
+    void unvalidate();
+    void resetStyle(STYLE newStyle);
 
 private:
     sf::Font *   _font;
     STYLE       _style;
+
+    bool flagSetted(int flag);
+    void _default();
 };
