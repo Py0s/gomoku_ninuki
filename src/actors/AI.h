@@ -34,6 +34,7 @@ class AI : public APlayer
  
         //Fonctions pour le calcul
         int calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR color, int alpha, int beta);
+        int getEvalForFirstMovePossible(Map& map, int depth, Stone::E_COLOR color, int alpha, int beta, int &y, int &x);
         int calcMin(Map& map, int depth, Referee::E_STATE ret, int alpha, int beta);
         int calcMax(Map& map, int depth, Referee::E_STATE ret, int alpha, int beta);
  

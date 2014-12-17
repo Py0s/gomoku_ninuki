@@ -186,30 +186,26 @@ int AI::eval(Map& map, Referee::E_STATE ret, Stone::E_COLOR color) {
     char stonesPlayed = map.getPlayed();
 
     if (ret == Referee::E_STATE::END_WHITE)
-        return _color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+        return color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
     if (ret == Referee::E_STATE::END_BLACK)
-        return _color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+        return color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
 
-
-    int takenStones =  map.getCapturedBy(color) - (color == _color ? _captured : _opponent->getCaptured());
-    int opponentTakenStones = map.getCapturedBy(Referee::OP_COLOR[color]) - (color == _color ? _captured : _opponent->getCaptured());
-    if (takenStones)
-        return 100 * takenStones - stonesPlayed;
-    if (opponentTakenStones)
-        return -100 * opponentTakenStones + stonesPlayed;
-    return (0);
+    // int takenStones =  map.getCapturedBy(color) - (color == _color ? _captured : _opponent->getCaptured());
+    // int opponentTakenStones = map.getCapturedBy(Referee::OP_COLOR[color]) - (color == _color ? _captured : _opponent->getCaptured());
+    // if (takenStones)
+    //     return 100 * takenStones - stonesPlayed;
+    // if (opponentTakenStones)
+    //     return -100 * opponentTakenStones + stonesPlayed;
+    return (map.getCapturedBy(color) - map.getCapturedBy(Referee::OP_COLOR[color]));
 }
 
-int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR color, int alpha, int beta) {
+int AI::getEvalForFirstMovePossible(Map& map, int depth, Stone::E_COLOR color, int alpha, int beta,
+                                    int &y, int &x) {
 
-    if (depth == 0 || Referee::gameHasEnded(ret))
-        return eval(map, ret, color);
-
-    int score;
-    int current = -AI_INFINITY;
-    for (int y = 0; y < Map::_MAPSIZE_Y; ++y)
+    // On parcours le Goban a la recherche du premier coup possible
+    for (; y < Map::_MAPSIZE_Y; ++y)
     {
-        for (int x = 0; x < Map::_MAPSIZE_X; ++x)
+        for (; x < Map::_MAPSIZE_X; ++x)
         {
             checkTime();
 
@@ -224,21 +220,66 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
 
                 // Si le coup est valide on évalue (Pas de double trois)
                 if (ret != Referee::E_STATE::INVALID)
-                {
-                    score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
+                    return -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
+            }
+        }
+    }
+    return 0;
+}
 
-                    if (score >= current)
+int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR color, int alpha, int beta) {
+
+    if (depth == 0 || Referee::gameHasEnded(ret))
+        return eval(map, ret, color);
+
+    int y = 0;
+    int x = 0;
+
+    // On récupère l'évaluation du premier coup possible
+    int current = getEvalForFirstMovePossible(map, depth, color, alpha, beta, y, x);
+    if (current >= alpha)
+        alpha = current;
+
+    if (current < beta)
+    {
+        // On parcours les autres cases du Goban
+        for (; y < Map::_MAPSIZE_Y; ++y)
+        {
+            for (++x; x < Map::_MAPSIZE_X; ++x)
+            {
+                checkTime();
+
+                if (map[y][x].isEmpty())
+                {
+                    // Copy de la map et des nombres de pierres capturées
+                    Map map_tmp = map;
+
+                    // On crée la pierre et on joue le coup
+                    char fake = 0;
+                    Referee::E_STATE ret = _referee.check(Stone(y, x, color), map_tmp, fake);
+
+                    // Si le coup est valide on évalue (Pas de double trois)
+                    if (ret != Referee::E_STATE::INVALID)
                     {
-                        current = score;
-                        if (score >= alpha)
+                        int score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -(alpha+1), -alpha);
+
+                        if (score > alpha && score < beta)
+                            score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
+
+                        if (score >= current)
                         {
-                            alpha = score;
-                            if (/*alpha*/score >= beta)
-                                return alpha;
+                            current = score;
+                            if (score >= alpha)
+                            {
+                                alpha = score;
+                                if (/*alpha*/score >= beta)
+                                    return current;
+                            }
                         }
                     }
                 }
             }
+            x = -1; // Gérer a la pisse pour remettre a zero mais la ca me fait chier (TODO : Améliorer)
         }
     }
     return /*alpha*/current;
