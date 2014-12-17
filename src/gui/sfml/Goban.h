@@ -33,12 +33,18 @@ class Goban: public AGui
       sf::Texture _goban_tile_tx;
       sf::Texture _stone_tx;
       sf::Texture _hand_tx;
-
+      sf::Texture _stone_black_tx;
+      sf::Texture _stone_white_tx;
+      sf::Texture _background_tile_tx;
+      
       sf::Sprite _goban_sp;
       sf::Sprite _curs_sp;
+      sf::Sprite _background_sp;
       
-      static const int OFFSET_Y = 38;
-      static const int OFFSET_X = 38;
+      int _OFFSET_Y;
+      int _OFFSET_X;
+      sf::Vector2f _SQUARE_SIZE;
       
       bool handleKeys(const sf::Event& current, EventManager& events);
+      void resize();
 };
