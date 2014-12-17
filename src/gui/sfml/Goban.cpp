@@ -15,6 +15,9 @@ Goban::Goban(const Map& m, sf::RenderWindow& mainWindow)
     this->_goban_sp.setTexture(this->_goban_tile_tx);
     this->_curs_sp.setTexture(this->_hand_tx);
     this->resize();
+    
+    this->_curs.X = Map::_MAPSIZE_X / 2;
+    this->_curs.Y = Map::_MAPSIZE_Y / 2;
 }
 
 Goban::~Goban() {
@@ -184,8 +187,6 @@ void Goban::resize() {
     this->_curs_sp.setScale(0.75 * target_size.x / this->_goban_sp.getLocalBounds().width
             ,0.75 * target_size.y / this->_goban_sp.getLocalBounds().height);
     
-//    this->_OFFSET_X = 57 * this->_goban_sp.getScale().x;
-//    this->_OFFSET_Y = 57 * this->_goban_sp.getScale().y;
     this->_OFFSET_X = this->_goban_sp.getGlobalBounds().left;
     this->_OFFSET_Y = this->_goban_sp.getGlobalBounds().top;
     this->_SQUARE_SIZE = sf::Vector2f(
