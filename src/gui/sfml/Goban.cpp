@@ -1,7 +1,9 @@
 #include "Goban.h"
+#include "Exceptions.h"
+
 
 Goban::Goban(const Map& m, sf::RenderWindow& mainWindow)
-: AGui(m.sizeY(), m.sizeX(), AGui::GAME), _m(m), _mainWindow(mainWindow) {
+: AGui(m.sizeY(), m.sizeX(), AGui::GOBAN), _m(m), _mainWindow(mainWindow) {
     this->_stone_tx.loadFromFile("./texture/stone.png");
     this->_stone_black_tx.loadFromFile("./texture/stone_black.png");
     this->_stone_white_tx.loadFromFile("./texture/stone_white.png");
@@ -18,9 +20,35 @@ Goban::Goban(const Map& m, sf::RenderWindow& mainWindow)
     
     this->_curs.X = Map::_MAPSIZE_X / 2;
     this->_curs.Y = Map::_MAPSIZE_Y / 2;
+    if (!_font.loadFromFile("./font/arial.ttf"))
+        throw Exceptions("Can't load arial font");
+    this->_capturedBlack = new GText("BLACK 0", &_font, GText::TITLE, 0, 0);
+    this->_capturedWhite = new GText("WHITE 0", &_font, GText::TITLE, _mainWindow.getSize().x / 2, 0);
 }
 
 Goban::~Goban() {
+}
+
+void  Goban::setOptions(std::vector<Options*> const& options) {
+    _options = options;
+    drawAll();
+    // int i = 1;
+    // std::for_each(_options.begin(), _options.end(), [&](Options * option){
+    //     option->setY(_mainWindow.getSize().y * i++ / (_options.size() + 1));
+    // });
+}
+void  Goban::setCaptured(char black, char white) {
+    std::stringstream stream2;
+    std::string str2;
+    stream2 << (int)black;
+    stream2 >> str2;
+    _capturedBlack->setString("BLACK " + str2);
+    std::stringstream stream;
+    std::string str;
+    stream << (int)white;
+    stream >> str;
+    _capturedWhite->setString("WHITE " + str);
+    drawAll();
 }
 
 bool Goban::getInput(EventManager& events) {
@@ -92,6 +120,10 @@ bool Goban::drawAll() {
             this->_OFFSET_Y + this->_curs.Y * this->_SQUARE_SIZE.y);
     this->_mainWindow.draw(this->_curs_sp);
 
+    this->_mainWindow.draw(*_capturedWhite);
+    this->_mainWindow.draw(*_capturedBlack);
+    for (std::vector<Options *>::iterator it = _options.begin(); it < _options.end(); ++it)
+        (*it)->draw();
     return true;
 }
 

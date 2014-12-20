@@ -121,34 +121,30 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
             int y = it->first;//le temps de faire marcher les iterateurs
             int x = it->second;
 
-            // if (map[y][x].isEmpty())
-            // {
-                // Copy de la map et des nombres de pierres capturées
-                Map map_tmp = map;
-                // On crée la pierre et on joue le coup
-                char fake = 0;
-                Referee::E_STATE ret = _referee.check(Stone(it->first, it->second, color), map_tmp, fake);
-                // Si le coup est valide on évalue (Pas de double trois)
-                if (ret != Referee::E_STATE::INVALID)
-                {
-                    // int score = 1;
-                    int score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -(alpha+1), -alpha);
-
-                    if (score > alpha && score < beta)
-                        score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
-
-                    // if (score >= current)
-                    // {
-                        // current = score;
-                        if (score >= alpha)
-                        {
-                            alpha = score;
-                            if (/*alpha*/score >= beta)
-                                return score;
-                                // return current;
-                        }
-                    // }
-                }
+            // Copy de la map et des nombres de pierres capturées
+            Map map_tmp = map;
+            // On crée la pierre et on joue le coup
+            char fake = 0;
+            Referee::E_STATE ret = _referee.check(Stone(it->first, it->second, color), map_tmp, fake);
+            // Si le coup est valide on évalue (Pas de double trois)
+            if (ret != Referee::E_STATE::INVALID)
+            {
+                // int score = 1;
+                int score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -(alpha+1), -alpha);
+                if (score > alpha && score < beta)
+                    score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
+                // if (score >= current)
+                // {
+                    // current = score;
+                    if (score >= alpha)
+                    {
+                        alpha = score;
+                        if (/*alpha*/score >= beta)
+                            return score;
+                            // return current;
+                    }
+                // }
+            }
             ++it;
         }
     // }
@@ -164,60 +160,43 @@ Stone AI::calc(int depth) {
     int beta = AI_INFINITY;
 
     //On parcourt les cases du Goban
-    // for (TILE_IT_T it = _openTiles.begin(); it != _openTiles.end(); ++it) {
     TILE_IT_T it = _openTiles.begin();
-    // On parcours les autres cases du Goban
     while (it != _openTiles.end()) {
-    // for (int y=0; y<Map::_MAPSIZE_Y; ++y)
-    // {
-    //     for (int x=0; x<Map::_MAPSIZE_X; ++x)
-    //     {
-            checkTime();
-            int y = it->first;//le temps de faire marcher les iterateurs
-            int x = it->second;
+        checkTime();
+        int y = it->first;//le temps de faire marcher les iterateurs
+        int x = it->second;
 
-            // if (_map[y][x].isEmpty())
-            // {
-                // Copy de la map et des nombres de pierres capturées
-                Map map_tmp = _map;
+        Map map_tmp = _map;// Copy de la map et des nombres de pierres capturées
 
-                // On crée la pierre et on joue le coup
-                char fake = 0;
-                Referee::E_STATE ret = _referee.check(Stone(y,x, _color), map_tmp, fake);
+        char fake = 0;// On crée la pierre et on joue le coup
+        Referee::E_STATE ret = _referee.check(Stone(y,x, _color), map_tmp, fake);
 
-                // _closeTiles.push_back(*it);
-                // it = _openTiles.erase(it);
-
-                // Si le coup est valide on évalue (Pas de double trois)
-                if (ret != Referee::E_STATE::INVALID)
-                {
-                    //score = calcMin(map_tmp, depth - 1, ret, alpha, beta);
-                    
-                    score = -calcMinMax(map_tmp, depth - 1, ret, _opColor, -beta, -alpha);
-                    //score = 10;
-
-                    // Si ce score est plus grand
-                    //if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
-                    if (score > alpha)
-                    {
-                        //std::cout << "depth:"<<depth<<"[" << alpha << "("<<max_y<<";"<<max_x<<")->" << score << "("<<y<<";"<<x<< ")]" << std::endl;
-
-                        //On le choisit
-                        //max = score;
-                        alpha = score;
-                        // On sauvegarde les coordonnées du coup optimum
-                        max_y = y;
-                        max_x = x;
-                    }
-                }
-                // On annule le coup (Ici rien pour l'instant car copie de la Map et des éléments)
-                // TILE_VALUE_T tmp_tile = _closeTiles.back();
-                // _closeTiles.pop_back();
-                // it = _openTiles.insert(it, tmp_tile);
-        //     }
-        // }
-            ++it;
-        //}
+        // _closeTiles.push_back(*it);
+        // it = _openTiles.erase(it);
+        // Si le coup est valide on évalue (Pas de double trois)
+        if (ret != Referee::E_STATE::INVALID)
+        {
+            //score = calcMin(map_tmp, depth - 1, ret, alpha, beta);
+            
+            score = -calcMinMax(map_tmp, depth - 1, ret, _opColor, -beta, -alpha);
+            // Si ce score est plus grand
+            //if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
+            if (score > alpha)
+            {
+                //std::cout << "depth:"<<depth<<"[" << alpha << "("<<max_y<<";"<<max_x<<")->" << score << "("<<y<<";"<<x<< ")]" << std::endl;
+                //On le choisit
+                //max = score;
+                alpha = score;
+                // On sauvegarde les coordonnées du coup optimum
+                max_y = y;
+                max_x = x;
+            }
+        }
+        // On annule le coup (Ici rien pour l'instant car copie de la Map et des éléments)
+        // TILE_VALUE_T tmp_tile = _closeTiles.back();
+        // _closeTiles.pop_back();
+        // it = _openTiles.insert(it, tmp_tile);
+        ++it;
     }
     // On retourne la pierre optimale
     return Stone(max_y, max_x, _color);

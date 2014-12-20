@@ -16,7 +16,8 @@ class Menu: public AGui
       Config const& config();
       bool chooseOptionValue();
       void setTitle(std::string const& title);
-      
+      std::vector<Options*> const&  getOptions();
+
       // Getters
       virtual bool getInput(EventManager& events);
        

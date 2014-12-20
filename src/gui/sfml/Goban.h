@@ -1,5 +1,6 @@
 #pragma once
 #include "AGui.h"
+#include "Options.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <list>
@@ -10,6 +11,10 @@ class Goban: public AGui
       Goban(const Map& m, sf::RenderWindow& mainWindow);
       virtual ~Goban();
       
+      // specific goban
+      void  setOptions(std::vector<Options*> const& options);
+      void  setCaptured(char white, char black);
+
       // Getters
       virtual bool getInput(EventManager& events);
        
@@ -44,7 +49,13 @@ class Goban: public AGui
       int _OFFSET_Y;
       int _OFFSET_X;
       sf::Vector2f _SQUARE_SIZE;
-      
+
+      //Infos à l'arrache
+      sf::Font            _font;
+      GText*      _capturedWhite;
+      GText*      _capturedBlack;
+      std::vector<Options*>    _options;
+
       bool handleKeys(const sf::Event& current, EventManager& events);
       void resize();
 };

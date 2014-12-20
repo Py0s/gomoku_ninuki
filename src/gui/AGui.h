@@ -12,7 +12,7 @@ class AGui {
   public:
     enum E_SCENE {
         MENU,
-        GAME,
+        GOBAN,
     };
 
     AGui(int map_size_y, int map_size_x, enum E_SCENE scene);

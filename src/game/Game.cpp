@@ -10,7 +10,7 @@ Game::Game()
 : _map(), _currentPlayer(nullptr),
         _player_nb(0), _conf(), _referee() {
     _guis[static_cast<int>(MENU)] = new Menu((_init_sfml).getWindow());
-    _guis[static_cast<int>(GAME)] = new Goban(_map, _init_sfml.getWindow());
+    _guis[static_cast<int>(GOBAN)] = new Goban(_map, _init_sfml.getWindow());
     _guiState = MENU;
 }
 
@@ -43,7 +43,7 @@ int Game::mainLoop()
     return 0;
 }
 inline void     Game::switchGuiState() {
-    _guiState = (_guiState == MENU) ? (GAME) : (MENU);
+    _guiState = (_guiState == MENU) ? (GOBAN) : (MENU);
     gui()->drawAll();
 }
 
@@ -94,13 +94,13 @@ int Game::menuLoop() {
 
 void Game::initPlayers()
 {
-    assert(_guiState == GAME);
+    assert(_guiState == GOBAN);
     _players[0] = (_conf.human_player_1 ?
-                    dynamic_cast<APlayer *>(new Human(this->gui()->getCursor(), Stone::E_COLOR::BLACK)) :
-                    dynamic_cast<APlayer *>(new AI(_map, _referee, Stone::E_COLOR::BLACK)));
+                    dynamic_cast<APlayer *>(new Human(this->gui()->getCursor(), Stone::BLACK)) :
+                    dynamic_cast<APlayer *>(new AI(_map, _referee, Stone::BLACK)));
     _players[1] = (_conf.human_player_2 ?
-                    dynamic_cast<APlayer *>(new Human(this->gui()->getCursor(), Stone::E_COLOR::WHITE)) :
-                    dynamic_cast<APlayer *>(new AI(_map, _referee, Stone::E_COLOR::WHITE)));
+                    dynamic_cast<APlayer *>(new Human(this->gui()->getCursor(), Stone::WHITE)) :
+                    dynamic_cast<APlayer *>(new AI(_map, _referee, Stone::WHITE)));
     if (_players[0]->getType() == APlayer::AI)
     {
         dynamic_cast<AI *>(_players[0])->setTimeLimit(_conf.ai_time);
@@ -128,12 +128,14 @@ int Game::cleanGame() {
 
 // Members
 int Game::start() {
-    assert(_guiState == GAME);
+    assert(_guiState == GOBAN);
     this->initPlayers();
+    this->goban()->setOptions(this->menu()->getOptions());
     this->gui()->drawAll();
 
     while (!(this->quit()) && !(gameHasEnded()))
     {
+        this->goban()->setCaptured(_players[Stone::BLACK]->getCaptured(), _players[Stone::WHITE]->getCaptured());
         this->gui()->refresh();
         this->gui()->getInput(this->_events);
         if (this->_currentPlayer->getType() == APlayer::AI)

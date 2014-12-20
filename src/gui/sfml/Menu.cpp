@@ -1,14 +1,13 @@
 #include "Menu.h"
 #include "Exceptions.h"
 #include "Game.h"
-#include "Options.h"
 
 static int selected_boolean(bool field) {
     return (field) ? 2 : 1;
 }
 
 Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
-    : AGui(0, 0, AGui::GAME), _mainWindow(mainWindow), _selected(0),
+    : AGui(0, 0, AGui::GOBAN), _mainWindow(mainWindow), _selected(0),
     _config()
 {
     _mainWindow.clear(sf::Color::Black);
@@ -75,6 +74,9 @@ bool Menu::chooseOptionValue() {
 void    Menu::setTitle(std::string const& title) {
     _title->setString(title);
     drawAll();
+}
+std::vector<Options*> const&  Menu::getOptions() {
+    return _options;
 }
 
 /* Getters */

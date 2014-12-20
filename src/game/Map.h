@@ -30,7 +30,7 @@ class Map {
     static const enum E_DIR OP_DIR[];
     static const enum E_DIR OR_TO_DIR[];
 
-    static const int _MAPSIZE_X = 9;
+    static const int _MAPSIZE_X = 19;
     static const int _MAPSIZE_Y = _MAPSIZE_X;
 
     // static const int _MAPSIZE_X = 9; // For now

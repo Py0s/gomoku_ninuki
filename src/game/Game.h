@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "AGui.h"
 #include "Menu.h"
+#include "Goban.h"
 #include "APlayer.h"
 #include "Referee.h"
 #include "InitSfml.h"
@@ -13,7 +14,7 @@ class Game {
 public:
     enum E_GUI_STATE {
         MENU = 0,
-        GAME,
+        GOBAN,
     };
 
     Game();
@@ -38,6 +39,7 @@ private:
     
     inline AGui*    gui() { return _guis[static_cast<int>(_guiState)]; }
     inline Menu*    menu() { return dynamic_cast<Menu*>(_guis[static_cast<int>(MENU)]); }
+    inline Goban*   goban() { return dynamic_cast<Goban*>(_guis[static_cast<int>(GOBAN)]); }
     inline void     switchGuiState();
 
     inline bool quit() const { return _events.getKey(EventManager::E_KEYS::QUIT); }
