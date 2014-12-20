@@ -24,6 +24,8 @@ class Referee
     };
 
     static const Stone::E_COLOR OP_COLOR[];
+    static const Stone::E_COLOR WIN_COLOR[];//les index utilises sont de types E_STATE
+    static const E_STATE        COLOR_WIN[];//les index utilises sont de types Stone::E_COLOR
 
     Referee();
     ~Referee();

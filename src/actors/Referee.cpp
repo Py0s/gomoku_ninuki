@@ -6,6 +6,8 @@
 #include <assert.h>
 
 const Stone::E_COLOR Referee::OP_COLOR[] = { Stone::WHITE, Stone::BLACK };
+const Stone::E_COLOR Referee::WIN_COLOR[] = { Stone::NONE, Stone::NONE, Stone::BLACK, Stone::WHITE, Stone::NONE };
+const Referee::E_STATE Referee::COLOR_WIN[] = { Referee::END_BLACK, Referee::END_WHITE, Referee::END_DRAW };//les index utilises sont de types E_COLOR
 
 Referee::Referee(): _conf(nullptr) {
 }

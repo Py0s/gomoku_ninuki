@@ -52,14 +52,15 @@ Stone AI::plays() {
     return stone;
 }
 
-
 int AI::eval(Map& map, Referee::E_STATE ret, Stone::E_COLOR color) {
-    char stonesPlayed = map.getPlayed();
+    // char stonesPlayed = map.getPlayed();
 
-    if (ret == Referee::E_STATE::END_WHITE)
-        return color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
-    if (ret == Referee::E_STATE::END_BLACK)
-        return color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+    if (ret == Referee::END_DRAW)//si match null
+        return 0;
+    if (ret == Referee::COLOR_WIN[color])//si j'ai gagne
+        return 1000 - map.getPlayed();
+    if (ret == Referee::COLOR_WIN[Referee::OP_COLOR[color]])//si l'adversaire a gagne
+        return map.getPlayed() - 1000;
 
     // int takenStones =  map.getCapturedBy(color) - (color == _color ? _captured : _opponent->getCaptured());
     // int opponentTakenStones = map.getCapturedBy(Referee::OP_COLOR[color]) - (color == _color ? _captured : _opponent->getCaptured());
@@ -107,12 +108,12 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
     int x_first = 0;
 
     // On récupère l'évaluation du premier coup possible
-    int current = getEvalForFirstMovePossible(map, depth, color, alpha, beta, y_first, x_first);
-    if (current >= alpha)
-        alpha = current;
+    // int current = getEvalForFirstMovePossible(map, depth, color, alpha, beta, y_first, x_first);
+    // if (current >= alpha)
+    //     alpha = current;
 
-    if (current < beta)
-    {
+    // if (current < beta)
+    // {
         TILE_IT_T it = _openTiles.begin();
         // On parcours les autres cases du Goban
         while (it != _openTiles.end()) {
@@ -136,21 +137,23 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
                     if (score > alpha && score < beta)
                         score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
 
-                    if (score >= current)
-                    {
-                        current = score;
+                    // if (score >= current)
+                    // {
+                        // current = score;
                         if (score >= alpha)
                         {
                             alpha = score;
                             if (/*alpha*/score >= beta)
-                                return current;
+                                return score;
+                                // return current;
                         }
-                    }
+                    // }
                 }
-                ++it;
+            ++it;
         }
-    }
-    return /*alpha*/current;
+    // }
+    return alpha;
+    // return /*alpha*/current;
 }
 
 Stone AI::calc(int depth) {
