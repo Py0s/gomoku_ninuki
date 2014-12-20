@@ -109,8 +109,10 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char
 
 void Map::reset() {
     _stonesPlayed = 0;
-    _played[0] = 0;
-    _played[1] = 0;
+    _played[Stone::E_COLOR::WHITE] = 0;
+    _played[Stone::E_COLOR::BLACK] = 0;
+    _captured[Stone::E_COLOR::WHITE] = 0;
+    _captured[Stone::E_COLOR::BLACK] = 0;
     for (int y = 0; y < _MAPSIZE_Y; ++y)
     {
         for (int x = 0; x < _MAPSIZE_X; ++x)

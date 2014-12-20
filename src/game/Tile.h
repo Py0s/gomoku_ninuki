@@ -6,7 +6,7 @@ static char            inter_directions[8] = { 1,2,3,4,1,2,3,4 };
 
 class Tile {
   public:
-    int     Y;
+    int     Y;//TODO : mettre en prive ici ou en public dans Stone
     int     X;
     bool    _breakable;
 

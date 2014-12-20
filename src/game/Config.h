@@ -13,7 +13,7 @@ struct Config {
         human_player_2 = false;
         fivebreak_rule = true;
         doublethree_rule = true;
-        ai_time = 10;
+        ai_time = 0.5;
         continue_game = true;
     }
 

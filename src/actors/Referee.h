@@ -10,7 +10,7 @@
 
 struct Config;
 
-#define MAX_STONE_PLAYED    60
+#define MAX_STONE_PLAYED    Map::_MAPSIZE_X * Map::_MAPSIZE_Y / 4
 
 class Referee
 {
@@ -23,7 +23,7 @@ class Referee
         END_DRAW,
     };
 
-    static const enum Stone::E_COLOR OP_COLOR[];
+    static const Stone::E_COLOR OP_COLOR[];
 
     Referee();
     ~Referee();

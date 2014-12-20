@@ -5,7 +5,7 @@
 #include "Game.h"
 #include <assert.h>
 
-const enum Stone::E_COLOR Referee::OP_COLOR[] = { Stone::WHITE, Stone::BLACK };
+const Stone::E_COLOR Referee::OP_COLOR[] = { Stone::WHITE, Stone::BLACK };
 
 Referee::Referee(): _conf(nullptr) {
 }

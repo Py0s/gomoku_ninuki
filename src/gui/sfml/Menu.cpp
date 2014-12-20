@@ -119,28 +119,24 @@ bool Menu::drawAll() { // This is general drawing func
 }
 
 bool Menu::cursorUp() {
-    std::cout << "up" << std::endl;
     selectUp();
     drawAll();
     return true;
 }
 
 bool Menu::cursorDown() {
-    std::cout << "down" << std::endl;
     selectDown();
     drawAll();
     return true;
 }
 
 bool Menu::cursorLeft() {
-    std::cout << "left" << std::endl;
     selectLeft();
     drawAll();
     return true;
 }
 
 bool Menu::cursorRight() {
-    std::cout << "right" << std::endl;
     selectRight();
     drawAll();
     return true;
