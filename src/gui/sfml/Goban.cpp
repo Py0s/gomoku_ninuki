@@ -96,10 +96,10 @@ bool Goban::drawAll() {
     for (int y = 0; y < _map_size_y; ++y) {
         for (int x = 0; x < _map_size_x; ++x) {
             c = map[(y * _map_size_x) + x];
-            if (c == Stone::E_COLOR::NONE)
+            if (c == Stone::NONE)
                 continue;
             stones.push_back(stone);
-            if (c == Stone::E_COLOR::BLACK)
+            if (c == Stone::BLACK)
                 stones.back().setTexture(_stone_black_tx);
             else
                 stones.back().setTexture(_stone_white_tx);

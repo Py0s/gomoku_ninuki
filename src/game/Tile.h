@@ -16,7 +16,7 @@ class Tile {
     void reset();
 
     // Getters
-    inline bool isEmpty() const { return (_color == Stone::E_COLOR::NONE); }
+    inline bool isEmpty() const { return (_color == Stone::NONE); }
     inline const Stone::E_COLOR  getColor() const { return _color; }
     inline const char  getValue(Stone::E_COLOR color, int dir) const { return _values[color][dir]; }
     inline const char  getIntValue(Stone::E_COLOR color, int dir) const { return _inter_values[color][getInterDir(dir)]; }

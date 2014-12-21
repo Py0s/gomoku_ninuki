@@ -26,7 +26,7 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     assert(_conf != nullptr);
     Tile& tile = map[s.y()][s.x()];
 
-    if (tile.getColor() != Stone::E_COLOR::NONE)
+    if (tile.getColor() != Stone::NONE)
         return INVALID;
     map.placeStone(s); // Preview
     if (_conf->doublethree_rule == true

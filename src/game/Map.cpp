@@ -8,7 +8,7 @@ const enum Map::E_DIR Map::OR_TO_DIR[] = {N, NE, E, SE};
 Map::Map() : _stonesPlayed(0) {
     for (int y = 0; y < _MAPSIZE_Y; ++y) {
         for (int x = 0; x < _MAPSIZE_X; ++x) {
-            _displayMap[y][x] = Stone::E_COLOR::NONE;
+            _displayMap[y][x] = Stone::NONE;
             _map[y][x].Y = y;
             _map[y][x].X = x;
         }
@@ -69,9 +69,9 @@ void Map::placeStone(const Stone& s) {
 void Map::removeStone(Tile& tile) {
     Stone::E_COLOR color = tile.getColor();
 
-    _displayMap[tile.Y][tile.X] = Stone::E_COLOR::NONE;
+    _displayMap[tile.Y][tile.X] = Stone::NONE;
     _played[color]--;
-    tile.setColor(Stone::E_COLOR::NONE);
+    tile.setColor(Stone::NONE);
 
     for (int dir_inter = 0; dir_inter < 4; ++dir_inter)
     {
@@ -109,16 +109,16 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char
 
 void Map::reset() {
     _stonesPlayed = 0;
-    _played[Stone::E_COLOR::WHITE] = 0;
-    _played[Stone::E_COLOR::BLACK] = 0;
-    _captured[Stone::E_COLOR::WHITE] = 0;
-    _captured[Stone::E_COLOR::BLACK] = 0;
+    _played[Stone::WHITE] = 0;
+    _played[Stone::BLACK] = 0;
+    _captured[Stone::WHITE] = 0;
+    _captured[Stone::BLACK] = 0;
     for (int y = 0; y < _MAPSIZE_Y; ++y)
     {
         for (int x = 0; x < _MAPSIZE_X; ++x)
         {
             getTile(y, x).reset();
-            _displayMap[y][x] = Stone::E_COLOR::NONE;
+            _displayMap[y][x] = Stone::NONE;
         }
     }
 }

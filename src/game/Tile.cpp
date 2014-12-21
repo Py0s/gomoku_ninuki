@@ -1,7 +1,7 @@
 #include "Tile.h"
 
 Tile::Tile()
-: _color(Stone::E_COLOR::NONE) {
+: _color(Stone::NONE) {
     for (int i=0; i < 8; ++i)
     {
         _values[Stone::BLACK][i] = 0;
@@ -29,7 +29,7 @@ void Tile::reset() {
 
 // Getters
 // /*inline*/ bool Tile::isEmpty() const {
-//     return (_color == Stone::E_COLOR::NONE);
+//     return (_color == Stone::NONE);
 // }
 
 // /*inline*/ const Stone::E_COLOR  Tile::getColor() const {

@@ -91,7 +91,7 @@ int AI::getEvalForFirstMovePossible(Map& map, int depth, Stone::E_COLOR color, i
                 Referee::E_STATE ret = _referee.check(Stone(y, x, color), map_tmp, fake);
 
                 // Si le coup est valide on évalue (Pas de double trois)
-                if (ret != Referee::E_STATE::INVALID)
+                if (ret != Referee::INVALID)
                     return -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -beta, -alpha);
             }
         }
@@ -104,8 +104,8 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
     if (depth == 0 || Referee::gameHasEnded(ret))
         return eval(map, ret, color);
 
-    int y_first = 0;
-    int x_first = 0;
+    // int y_first = 0;
+    // int x_first = 0;
 
     // On récupère l'évaluation du premier coup possible
     // int current = getEvalForFirstMovePossible(map, depth, color, alpha, beta, y_first, x_first);
@@ -125,9 +125,9 @@ int AI::calcMinMax(Map& map, int depth, Referee::E_STATE ret, Stone::E_COLOR col
             Map map_tmp = map;
             // On crée la pierre et on joue le coup
             char fake = 0;
-            Referee::E_STATE ret = _referee.check(Stone(it->first, it->second, color), map_tmp, fake);
+            Referee::E_STATE ret = _referee.check(Stone(y, x, color), map_tmp, fake);
             // Si le coup est valide on évalue (Pas de double trois)
-            if (ret != Referee::E_STATE::INVALID)
+            if (ret != Referee::INVALID)
             {
                 // int score = 1;
                 int score = -calcMinMax(map_tmp, depth-1, ret, Referee::OP_COLOR[color], -(alpha+1), -alpha);
@@ -174,7 +174,7 @@ Stone AI::calc(int depth) {
         // _closeTiles.push_back(*it);
         // it = _openTiles.erase(it);
         // Si le coup est valide on évalue (Pas de double trois)
-        if (ret != Referee::E_STATE::INVALID)
+        if (ret != Referee::INVALID)
         {
             //score = calcMin(map_tmp, depth - 1, ret, alpha, beta);
             
@@ -243,10 +243,10 @@ inline void AI::closeTile(TILE_IT_T & it) {
 // int AI::eval(Map& map, Referee::E_STATE ret, char captured, char opponentCaptured) {
 //     char stonesPlayed = map.getPlayed();
 
-//     if (ret == Referee::E_STATE::END_WHITE)
-//         return _color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
-//     if (ret == Referee::E_STATE::END_BLACK)
-//         return _color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+//     if (ret == Referee::END_WHITE)
+//         return _color == Stone::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+//     if (ret == Referee::END_BLACK)
+//         return _color == Stone::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
 
 //     int takenStones = captured - _captured;
 //     int opponentTakenStones = opponentCaptured - _opponent->getCaptured();
@@ -260,10 +260,10 @@ inline void AI::closeTile(TILE_IT_T & it) {
 // int AI::eval(Map& map, Referee::E_STATE ret) {
 //     char stonesPlayed = map.getPlayed();
 
-//     if (ret == Referee::E_STATE::END_WHITE)
-//         return _color == Stone::E_COLOR::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
-//     if (ret == Referee::E_STATE::END_BLACK)
-//         return _color == Stone::E_COLOR::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+//     if (ret == Referee::END_WHITE)
+//         return _color == Stone::WHITE ? 1000 - stonesPlayed : -1000 + stonesPlayed;
+//     if (ret == Referee::END_BLACK)
+//         return _color == Stone::BLACK ? 1000 - stonesPlayed : -1000 + stonesPlayed;
 
 //     int takenStones = map.getCapturedBy(_color) - _captured;
 //     int opponentTakenStones = map.getCapturedBy(_opColor) - _opponent->getCaptured();
@@ -299,7 +299,7 @@ inline void AI::closeTile(TILE_IT_T & it) {
 //                 Referee::E_STATE ret = _referee.check(Stone(y, x, _color), map_tmp, fake);
 
 //                 // Si le coup est valide on évalue (Pas de double trois)
-//                 if (ret != Referee::E_STATE::INVALID)
+//                 if (ret != Referee::INVALID)
 //                 {
 //                     score = calcMin(map_tmp, depth-1, ret, alpha, beta);
 
@@ -346,7 +346,7 @@ inline void AI::closeTile(TILE_IT_T & it) {
 //                 Referee::E_STATE ret = _referee.check(Stone(y, x, _opColor), map_tmp, fake);
 
 //                 // Si le coup est valide on évalue (Pas de double trois)
-//                 if (ret != Referee::E_STATE::INVALID)
+//                 if (ret != Referee::INVALID)
 //                 {
 //                     score = calcMax(map_tmp, depth-1, ret, alpha, beta);
 
