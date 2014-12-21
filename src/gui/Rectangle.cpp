@@ -9,35 +9,35 @@ Rectangle::~Rectangle() {
 
 // Getters
 int Rectangle::x() const {
-    return this->_pos_x;
+    return _pos_x;
 }
 
 int Rectangle::y() const {
-    return this->_pos_y;
+    return _pos_y;
 }
 
 int Rectangle::sizeX() const {
-    return this->_size_x;
+    return _size_x;
 }
 
 int Rectangle::sizeY() const {
-    return this->_size_y;
+    return _size_y;
 }
 
 // Setters
 
 void Rectangle::x(int pos_x) {
-    this->_pos_x = pos_x;
+    _pos_x = pos_x;
 }
 
 void Rectangle::y(int pos_y) {
-    this->_pos_y = pos_y;
+    _pos_y = pos_y;
 }
 
 void Rectangle::sizeX(int size_x) {
-    this->_size_x = size_x;
+    _size_x = size_x;
 }
 
 void Rectangle::sizeY(int size_y) {
-    this->_size_y = size_y;
+    _size_y = size_y;
 }

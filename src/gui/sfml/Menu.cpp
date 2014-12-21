@@ -83,13 +83,13 @@ std::vector<Options*> const&  Menu::getOptions() {
 
 bool Menu::getInput(EventManager& events) {
     sf::Event current;
-    if (this->_mainWindow.isOpen() == false)
+    if (_mainWindow.isOpen() == false)
         return false;
-    while (this->_mainWindow.pollEvent(current) == true)
+    while (_mainWindow.pollEvent(current) == true)
     {
         switch (current.type) {
             case sf::Event::KeyPressed:
-                this->handleKeys(current, events);
+                handleKeys(current, events);
                 break;
             case sf::Event::Closed:
                 events.setKey(EventManager::E_KEYS::QUIT);
@@ -104,7 +104,7 @@ bool Menu::getInput(EventManager& events) {
 /* Members */
 
 bool Menu::refresh() {
-    this->_mainWindow.display();
+    _mainWindow.display();
     return true;
 }
 
@@ -113,7 +113,7 @@ bool Menu::drawFrame(char c, const Rectangle& rect) { // Not used
 }
 
 bool Menu::drawAll() { // This is general drawing func
-    this->_mainWindow.clear(sf::Color::Black);
+    _mainWindow.clear(sf::Color::Black);
     _mainWindow.draw(*_title);
     for (std::vector<Options *>::iterator it = _options.begin(); it < _options.end(); ++it)
         (*it)->draw();

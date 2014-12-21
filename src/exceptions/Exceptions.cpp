@@ -10,7 +10,7 @@ Exceptions::~Exceptions() {
 
 // Getters
 const char* Exceptions::what() const throw() {
-    return this->_what.c_str();
+    return _what.c_str();
 }
 
 const int Exceptions::errNo() const throw () {

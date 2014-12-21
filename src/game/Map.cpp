@@ -6,9 +6,9 @@ const enum Map::E_DIR Map::OP_DIR[] = { SE, S, SW, W, NW, N, NE, E };
 const enum Map::E_DIR Map::OR_TO_DIR[] = {N, NE, E, SE};
 
 Map::Map() : _stonesPlayed(0) {
-    for (int y = 0; y < this->_MAPSIZE_Y; ++y) {
-        for (int x = 0; x < this->_MAPSIZE_X; ++x) {
-            this->_displayMap[y][x] = Stone::E_COLOR::NONE;
+    for (int y = 0; y < _MAPSIZE_Y; ++y) {
+        for (int x = 0; x < _MAPSIZE_X; ++x) {
+            _displayMap[y][x] = Stone::E_COLOR::NONE;
             _map[y][x].Y = y;
             _map[y][x].X = x;
         }
@@ -20,15 +20,15 @@ Map::~Map() {
 
 // Getters
 int Map::sizeX() const {
-    return this->_MAPSIZE_X;
+    return _MAPSIZE_X;
 }
 
 int Map::sizeY() const {
-    return this->_MAPSIZE_Y;
+    return _MAPSIZE_Y;
 }
 
 const Stone::E_COLOR * Map::displayMap() const {
-    return (Stone::E_COLOR*)(this->_displayMap);
+    return (Stone::E_COLOR*)(_displayMap);
 }
 
 
@@ -43,7 +43,7 @@ void Map::placeStone(const Stone& s) {
     Tile& tile = getTile(s);
     Stone::E_COLOR color = s.color();
 
-    this->_displayMap[s.y()][s.x()] = color;
+    _displayMap[s.y()][s.x()] = color;
     _played[color]++;
     tile.setColor(color);
 
@@ -56,7 +56,7 @@ void Map::placeStone(const Stone& s) {
     {
         try
         {
-            PTR ptr = this->go[dir];
+            PTR ptr = go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
             char value = tile.getValue(color, Map::OP_DIR[dir]) + 1;
             updateTile(color, dir, value, next_tile, value);
@@ -69,7 +69,7 @@ void Map::placeStone(const Stone& s) {
 void Map::removeStone(Tile& tile) {
     Stone::E_COLOR color = tile.getColor();
 
-    this->_displayMap[tile.Y][tile.X] = Stone::E_COLOR::NONE;
+    _displayMap[tile.Y][tile.X] = Stone::E_COLOR::NONE;
     _played[color]--;
     tile.setColor(Stone::E_COLOR::NONE);
 
@@ -82,7 +82,7 @@ void Map::removeStone(Tile& tile) {
     {
         try
         {
-            PTR ptr = this->go[dir];
+            PTR ptr = go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
             updateTile(color, dir, 0, next_tile, -(tile.getValue(color, Map::OP_DIR[dir]) + 1));
         }
@@ -98,7 +98,7 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char
     {
         try
         {
-            PTR ptr = this->go[dir];
+            PTR ptr = go[dir];
             Tile& next_tile = (this->*ptr)(tile, 1);
             updateTile(color, dir, ++value, next_tile, inter_value);
         }
@@ -145,25 +145,25 @@ Tile& Map::n(const Tile& t, unsigned char len) {
 
     if (y < 0)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }
 
 Tile& Map::s(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X;
 
-    if (y >= this->_MAPSIZE_Y)
+    if (y >= _MAPSIZE_Y)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }
 
 Tile& Map::e(const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X + 1 * len;
 
-    if (x >= this->_MAPSIZE_X)
+    if (x >= _MAPSIZE_X)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }
 
 Tile& Map::w(const Tile& t, unsigned char len) {
@@ -172,16 +172,16 @@ Tile& Map::w(const Tile& t, unsigned char len) {
 
     if (x < 0)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }
 
 Tile& Map::ne(const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X + 1 * len;
 
-    if (y < 0 || x >= this->_MAPSIZE_X)
+    if (y < 0 || x >= _MAPSIZE_X)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }
 
 Tile& Map::nw(const Tile& t, unsigned char len) {
@@ -190,23 +190,23 @@ Tile& Map::nw(const Tile& t, unsigned char len) {
 
     if (y < 0 || x < 0)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }
 
 Tile& Map::se(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X + 1 * len;
 
-    if (y >= this->_MAPSIZE_Y || x >= this->_MAPSIZE_X)
+    if (y >= _MAPSIZE_Y || x >= _MAPSIZE_X)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }
 
 Tile& Map::sw(const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X - 1 * len;
 
-    if (y >= this->_MAPSIZE_Y || x < 0)
+    if (y >= _MAPSIZE_Y || x < 0)
         throw ExcOutOfBound();
-    return this->_map[y][x];
+    return _map[y][x];
 }

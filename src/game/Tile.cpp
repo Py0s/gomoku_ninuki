@@ -41,7 +41,7 @@ void Tile::reset() {
 // }
 
 // /*inline*/ const char Tile::getIntValue(Stone::E_COLOR color, int dir) const {
-//     return this->_inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
+//     return _inter_values[color][dir % 4]; // TODO : Virer ce fuding modulo 4
 // }
 
 

@@ -17,18 +17,18 @@ struct Stone {
 
     // Getters
     inline E_COLOR color() const {
-        return this->_color;
+        return _color;
     }
     inline int y() const {
-        return this->_y;
+        return _y;
     }
     inline int x() const {
-        return this->_x;
+        return _x;
     }
 
     // Setters
     inline void color(E_COLOR color) {
-        this->_color = color;
+        _color = color;
     }
     
   private:

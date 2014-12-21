@@ -18,18 +18,18 @@ Referee::~Referee() {
 
 // Setters
 void Referee::setConf(Config const * conf) {
-    this->_conf = conf;
+    _conf = conf;
 }
 
 // Members
 Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
-    assert(this->_conf != nullptr);
+    assert(_conf != nullptr);
     Tile& tile = map[s.y()][s.x()];
 
     if (tile.getColor() != Stone::E_COLOR::NONE)
         return INVALID;
     map.placeStone(s); // Preview
-    if (this->_conf->doublethree_rule == true
+    if (_conf->doublethree_rule == true
             && checkDoubleThree(map, tile, s.color())) {
         map.removeStone(tile); // Cancel Preview
         return INVALID;
@@ -39,10 +39,10 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
     map.played();
 
     if (checkCapture(tile, map, captured))
-        return this->winner(tile.getColor());
-    E_STATE ret = checkAlign(tile, map, this->_conf->fivebreak_rule);
+        return winner(tile.getColor());
+    E_STATE ret = checkAlign(tile, map, _conf->fivebreak_rule);
 
-    if (this->_conf->fivebreak_rule == true && !(Referee::gameHasEnded(ret)))
+    if (_conf->fivebreak_rule == true && !(Referee::gameHasEnded(ret)))
         ret = checkListBreakable(map);
 
     if (map.getPlayed() == MAX_STONE_PLAYED)
@@ -52,8 +52,8 @@ Referee::E_STATE Referee::check(const Stone& s, Map& map, char& captured) {
 }
 
 void Referee::reset() {
-    this->_conf = nullptr;
-    this->_breakables.clear();
+    _conf = nullptr;
+    _breakables.clear();
 }
 
 inline bool Referee::gameHasEnded(const E_STATE& ret) {
@@ -300,7 +300,7 @@ Referee::E_STATE Referee::checkAlign(Tile& t, Map& m, bool breakable) {
         Map::E_DIR d = Map::OR_TO_DIR[ori];
         if (t.getIntValue(t.getColor(), d) >= 5
                 && (breakable == false || isAlignBreakable(t, m, d) == false))
-            return this->winner(t.getColor());
+            return winner(t.getColor());
     }
     return VALID;
 }
@@ -346,7 +346,7 @@ Map::E_OR Referee::isTileBreakable(Tile &start, Map &m)
     {
         try {
             Map::E_OR ori = static_cast<Map::E_OR>(ori_int);
-            if (this->isOrBreakable(start, m, ori) == true)
+            if (isOrBreakable(start, m, ori) == true)
                 return ori;
         }
         catch (const ExcOutOfBound& ex){
@@ -387,7 +387,7 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
                 if (start._breakable == false)
                 {
                     start._breakable = true;
-                    this->_breakables.push_back(std::pair<Tile&, Map::E_DIR>(start, cdir));
+                    _breakables.push_back(std::pair<Tile&, Map::E_DIR>(start, cdir));
                 }
                 return true;
             }
@@ -397,19 +397,19 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
 
 Referee::E_STATE Referee::checkListBreakable(Map &map)
 {
-    std::list<std::pair<Tile&, Map::E_DIR>>::iterator it = this->_breakables.begin();
-    while (it != this->_breakables.end())
+    std::list<std::pair<Tile&, Map::E_DIR>>::iterator it = _breakables.begin();
+    while (it != _breakables.end())
     {
         if ((*it).first.getColor() == Stone::NONE)
         {
             (*it).first._breakable = false;
-            it = this->_breakables.erase(it);
+            it = _breakables.erase(it);
         }
         else if (isTileBreakable((*it).first, map) == Map::E_OR::MAX)
         {
             Tile& t = (*it).first;
             t._breakable = false;
-            it = this->_breakables.erase(it);
+            it = _breakables.erase(it);
             E_STATE ret = checkAlign(t, map, true);
             if (ret != VALID)
                 return ret;

@@ -11,9 +11,9 @@ AGui::~AGui() {
 
 // Getters
 const  Cursor& AGui::getCursor() const {
-    return this->_curs;
+    return _curs;
 }
 
 enum AGui::E_SCENE AGui::getScene() const {
-    return this->_scene;
+    return _scene;
 }

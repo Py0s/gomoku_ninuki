@@ -202,6 +202,10 @@ Stone AI::calc(int depth) {
     return Stone(max_y, max_x, _color);
 }
 
+//Stone AI::calc(int depth) {
+//    
+//}
+
 
 void AI::initOpenTiles() {
     _openTiles.clear();

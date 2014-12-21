@@ -10,5 +10,5 @@ Human::~Human() {
 
 //Members
 Stone Human::plays() {
-    return Stone(this->_curs->Y, this->_curs->X, this->_color);
+    return Stone(_curs->Y, _curs->X, _color);
 }

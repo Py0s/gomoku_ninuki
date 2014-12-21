@@ -12,7 +12,7 @@ class APlayer
     //Members
     virtual Stone   plays() = 0;
     virtual void    setColor(Stone::E_COLOR color) {
-        this->_color = color;
+        _color = color;
     };
 
     //Getters

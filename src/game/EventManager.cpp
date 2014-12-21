@@ -2,7 +2,7 @@
 
 EventManager::EventManager(): _lastKey(E_KEYS::NONE) {
     for (int i = E_KEYS::NONE; i < E_KEYS::MAX; ++i)
-        this->_keys[i] = false;
+        _keys[i] = false;
 }
 
 EventManager::~EventManager() {
@@ -11,38 +11,38 @@ EventManager::~EventManager() {
 
 // Setters
 void EventManager::setKey(E_KEYS key, bool activate) {
-    this->_keys[key] = activate;
+    _keys[key] = activate;
     if (activate == true)
-        this->_lastKey = key;
+        _lastKey = key;
 }
 
 // Getters
 bool EventManager::getKey(E_KEYS key) const {
-    return this->_keys[key];
+    return _keys[key];
 }
 
 bool EventManager::getDisposeKey(E_KEYS key) {
   bool state = EventManager::getKey(key);
-  this->disposeKey(key);
+  disposeKey(key);
   return state;
 }
 
 EventManager::E_KEYS EventManager::getLastKey() {
-    return this->_lastKey;
+    return _lastKey;
 }
 
 EventManager::E_KEYS EventManager::getDisposeLastKey() {
     E_KEYS key = EventManager::getLastKey();
-    this->_lastKey = E_KEYS::NONE;
-    this->disposeKey(key);
+    _lastKey = E_KEYS::NONE;
+    disposeKey(key);
     return key;
 }
 
 void EventManager::disposeKey(E_KEYS key) {
-    this->_keys[key] = false;
+    _keys[key] = false;
 }
 
 void EventManager::disposeLastKey() {
-    this->disposeKey(this->_lastKey);
-    this->_lastKey = E_KEYS::NONE;
+    disposeKey(_lastKey);
+    _lastKey = E_KEYS::NONE;
 }
