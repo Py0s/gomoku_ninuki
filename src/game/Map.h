@@ -49,7 +49,7 @@ class Map {
     const Stone::E_COLOR * displayMap() const;
     char getPlayed() {return _stonesPlayed;}
     char getPlayed(Stone::E_COLOR color) {return _played[color];}
-    char getCapturedBy(Stone::E_COLOR color) {return _captured[color];}
+    char getCapturedBy(Stone::E_COLOR color) const {return _captured[color];}
 
     // Operator
     std::array<Tile, _MAPSIZE_X>& operator[](size_t idx);

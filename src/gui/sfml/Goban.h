@@ -13,8 +13,8 @@ class Goban: public AGui
       
       // specific goban
       void  setOptions(std::vector<Options*> const& options);
-      void  setCaptured(char white, char black);
-
+      void setPlaying(Stone::E_COLOR c);
+      
       // Getters
       virtual bool getInput(EventManager& events);
        
@@ -33,6 +33,8 @@ class Goban: public AGui
       
     private:
       const Map& _m;
+      
+      Stone::E_COLOR _curs_color;
       
       sf::RenderWindow& _mainWindow;
       sf::Texture _goban_tile_tx;

@@ -135,7 +135,6 @@ int Game::start() {
 
     while (!(quit()) && !(gameHasEnded()))
     {
-        goban()->setCaptured(_players[Stone::BLACK]->getCaptured(), _players[Stone::WHITE]->getCaptured());
         gui()->refresh();
         gui()->getInput(_events);
         if (_currentPlayer->getType() == APlayer::AI)
@@ -192,6 +191,7 @@ void Game::accept() {
     switch (_gameState) {
         case Referee::VALID:
             nextPlayer();
+            static_cast<Goban*>(gui())->setPlaying(_currentPlayer->getColor());
             gui()->drawAll();
             break;
         case Referee::INVALID:
