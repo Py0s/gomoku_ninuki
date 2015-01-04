@@ -144,11 +144,13 @@ void Map::removeHelpInDisplayMap(const Stone& stone) {
 // Debug
 void Map::displayDebug() const
 {
-    for (int y=0; y < 5; ++y)
+    std::cout << "Black: " << _captured[Stone::BLACK] + '0' - '0' << "\t";
+    std::cout << "White: " << _captured[Stone::WHITE] + '0' - '0' << std::endl;
+    for (int y=0; y < _MAPSIZE_Y; ++y)
     {
-        for (int x = 0; x < 9; ++x)
+        for (int x = 0; x < _MAPSIZE_X; ++x)
         {
-            std::cout << _map[y][x].getColor() << "|";
+            std::cout << _debugChar[_map[y][x].getColor()];
         }
         std::cout << std::endl;
     }
