@@ -10,7 +10,8 @@
 
 struct Config;
 
-#define MAX_STONE_PLAYED    Map::_MAPSIZE_X * Map::_MAPSIZE_Y / 4
+//TODO : remettre un vrai match nul
+#define MAX_STONE_PLAYED    1000//Map::_MAPSIZE_X * Map::_MAPSIZE_Y / 4
 
 class Referee
 {
@@ -51,21 +52,21 @@ class Referee
     bool checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
     bool checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
 
-    bool alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+    bool alignOne(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+    bool alignTwo(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
+    bool alignThree(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
 
     // bool extremOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
     // bool extremTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
     // bool extremThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const;
-    bool XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
+    bool XFactorextrem(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
 
     bool alignParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
 
     // bool parcoursOne(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
     // bool parcoursTwo(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
     // bool parcoursThree(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const;
-    bool XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
+    bool XFactorParcours(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const;
 
     /* CAPTURE FUNCTIONS */
     bool checkCapture(Tile& tile, Map& map, char& captured) const;
@@ -74,7 +75,7 @@ class Referee
     Referee::E_STATE    checkAlign(Tile& t, Map& map, bool breakable);
     bool                isAlignBreakable(Tile &t, Map &m, Map::E_DIR dir);
     Map::E_OR           isTileBreakable(Tile &start, Map &m);
-    bool                isOrBreakable(Tile &start, Map &m, Map::E_OR ori);
+    bool                isOrBreakable(bool& outOfBound, Tile &start, Map &m, Map::E_OR ori);
     Referee::E_STATE    checkListBreakable(Map& map);
     
     /* MEMBERS */

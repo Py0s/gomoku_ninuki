@@ -75,12 +75,13 @@ Stone AI::helpMe(Stone::E_COLOR color) {
 int AI::eval(Map& map, Referee::E_STATE ret, Stone::E_COLOR color) {
     // char stonesPlayed = map.getPlayed();
 
+    if (ret == Referee::COLOR_WIN[color])//si j'ai gagne
+        return 1000/* - map.getPlayed()*/;
+    if (ret == Referee::COLOR_WIN[Referee::OP_COLOR[color]])//si l'adversaire a gagne
+        return /*map.getPlayed()*/ - 1000;
+
     if (ret == Referee::END_DRAW)//si match null
         return 0;
-    if (ret == Referee::COLOR_WIN[color])//si j'ai gagne
-        return 1000 - map.getPlayed();
-    if (ret == Referee::COLOR_WIN[Referee::OP_COLOR[color]])//si l'adversaire a gagne
-        return map.getPlayed() - 1000;
 
     // int takenStones =  map.getCapturedBy(color) - (color == _color ? _captured : _opponent->getCaptured());
     // int opponentTakenStones = map.getCapturedBy(Referee::OP_COLOR[color]) - (color == _color ? _captured : _opponent->getCaptured());

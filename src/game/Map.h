@@ -36,7 +36,7 @@ class Map {
     // static const int _MAPSIZE_X = 9; // For now
     // static const int _MAPSIZE_Y = 5;
     
-    typedef Tile& (Map::*PTR) (const Tile&, unsigned char);
+    typedef Tile& (Map::*PTR) (bool&, const Tile&, unsigned char);
     const PTR go[DIR_COUNT] = { &Map::nw, &Map::n, &Map::ne, &Map::e,   \
                           &Map::se, &Map::s, &Map::sw, &Map::w };
     
@@ -49,7 +49,7 @@ class Map {
     const Stone::E_COLOR * displayMap() const;
     char getPlayed() {return _stonesPlayed;}
     char getPlayed(Stone::E_COLOR color) {return _played[color];}
-    char getCapturedBy(Stone::E_COLOR color) const {return _captured[color];}
+    char getCapturedBy(Stone::E_COLOR color) {return _captured[color];}
 
     // Operator
     std::array<Tile, _MAPSIZE_X>& operator[](size_t idx);
@@ -80,13 +80,13 @@ class Map {
     inline Tile& getTile(Stone const& s) { return _map[s.y()][s.x()]; }
     void updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char inter_value);
     
-    Tile& n(const Tile& t, unsigned char len);
-    Tile& s(const Tile& t, unsigned char len);
-    Tile& e(const Tile& t, unsigned char len);
-    Tile& w(const Tile& t, unsigned char len);
+    Tile& n(bool& outOfBound, const Tile& t, unsigned char len);
+    Tile& s(bool& outOfBound, const Tile& t, unsigned char len);
+    Tile& e(bool& outOfBound, const Tile& t, unsigned char len);
+    Tile& w(bool& outOfBound, const Tile& t, unsigned char len);
     
-    Tile& ne(const Tile& t, unsigned char len);
-    Tile& nw(const Tile& t, unsigned char len);
-    Tile& se(const Tile& t, unsigned char len);
-    Tile& sw(const Tile& t, unsigned char len);
+    Tile& ne(bool& outOfBound, const Tile& t, unsigned char len);
+    Tile& nw(bool& outOfBound, const Tile& t, unsigned char len);
+    Tile& se(bool& outOfBound, const Tile& t, unsigned char len);
+    Tile& sw(bool& outOfBound, const Tile& t, unsigned char len);
 };

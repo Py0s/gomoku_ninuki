@@ -56,7 +56,7 @@ void Referee::reset() {
     _breakables.clear();
 }
 
-bool Referee::gameHasEnded(const E_STATE& ret) {
+inline bool Referee::gameHasEnded(const E_STATE& ret) {
     return (ret == Referee::END_BLACK || ret == Referee::END_WHITE
             || ret == Referee::END_DRAW);
 }
@@ -67,39 +67,47 @@ bool Referee::gameHasEnded(const E_STATE& ret) {
 
 /*************** DOUBLE THREE FUNCTIONS ***************/
 
-bool Referee::alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+bool Referee::alignOne(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, 1);
+    Tile& inter_tile = (map.*ptr)(outOfBound, tile, 1);
+    if (outOfBound)
+        return false;
 
     if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
         return true;
     return false;
 }
-bool Referee::alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+bool Referee::alignTwo(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 1);
+    Tile& inter_tile = (map.*ptr)(outOfBound, tile, tile.getValue(color, dir) + 1);
+    if (outOfBound)
+        return false;
 
     if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
         return true;
     return false;
 }
-bool Referee::alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+bool Referee::alignThree(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     return true;
 }
 
-bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const
+bool Referee::XFactorextrem(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const
 {
     Map::PTR ptr = map.go[dir];
-    Tile& extrem_tile = (map.*ptr)(tile, first_value);
+    Tile& extrem_tile = (map.*ptr)(outOfBound, tile, first_value);
+    if (outOfBound)
+        return false;
 
     if (!(extrem_tile.isEmpty()))
         return false;
 
     ptr = map.go[Map::OP_DIR[dir]];
-    Tile& extrem_op_tile = (map.*ptr)(tile, second_value);
+    Tile& extrem_op_tile = (map.*ptr)(outOfBound, tile, second_value);
+    if (outOfBound)
+        return false;
 
     if (!(extrem_op_tile.isEmpty()))
         return false;
@@ -107,12 +115,14 @@ bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir,
 }
 
 // les values sont celles d'extrem
-bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir, int first_value, int second_value) const
+bool Referee::XFactorParcours(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int first_dir, int first_value, int second_value) const
 {
     Map::PTR ptr = map.go[first_dir];
     for (int v = 0; v < first_value; ++v)
     {
-        Tile& current_tile = (map.*ptr)(tile, v);
+        Tile& current_tile = (map.*ptr)(outOfBound, tile, v);
+        if (outOfBound)
+            return false;
         // on check que les cases où il y a mes pierres
         if (tile.getColor() == color && checkDoubleThreeSecondPart(map, current_tile, color, first_dir))
             return true;
@@ -121,7 +131,9 @@ bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int fi
     ptr = map.go[Map::OP_DIR[first_dir]];
     for (int v = 0; v < second_value; ++v)
     {
-        Tile& zboob_tile = (map.*ptr)(tile, v);
+        Tile& zboob_tile = (map.*ptr)(outOfBound, tile, v);
+        if (outOfBound)
+            return false;
         if (tile.getColor() == color && checkDoubleThreeSecondPart(map, zboob_tile, color, first_dir))
             return true;
     }
@@ -144,29 +156,30 @@ bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int fi
 
 bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
-    try
-    {
+    bool outOfBound = false;
+//    try
+//    {
         switch (tile.getIntValue(color, dir))
         {
             case 1:
-                if (alignOne(map, tile, color, dir)
-                    && XFactorextrem(map, tile, color, dir, 4, 1))
+                if (alignOne(outOfBound, map, tile, color, dir) && !outOfBound
+                    && XFactorextrem(outOfBound, map, tile, color, dir, 4, 1) && !outOfBound)
                 {
                     // std::cout << "Cas 1 align" << std::endl;
                     return true;
                 }
                 break;
             case 2:
-                if (alignTwo(map, tile, color, dir)
-                    && XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 3, tile.getValue(color, Map::OP_DIR[dir]) + 1))
+                if (alignTwo(outOfBound, map, tile, color, dir) && !outOfBound
+                    && XFactorextrem(outOfBound, map, tile, color, dir, tile.getValue(color, dir) + 3, tile.getValue(color, Map::OP_DIR[dir]) + 1) && !outOfBound)
                 {
                     // std::cout << "Cas 2 align" << std::endl;
                     return true;
                 }
                 break;
             case 3:
-                if (alignThree(map, tile, color, dir)
-                    && XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 1, tile.getValue(color, Map::OP_DIR[dir]) + 1)) // TODO : OPTI POUR NE PAS CHECKER DEUX FOIS LA MEME CHOSE
+                if (alignThree(outOfBound, map, tile, color, dir) && !outOfBound
+                    && XFactorextrem(outOfBound, map, tile, color, dir, tile.getValue(color, dir) + 1, tile.getValue(color, Map::OP_DIR[dir]) + 1) && !outOfBound) // TODO : OPTI POUR NE PAS CHECKER DEUX FOIS LA MEME CHOSE
                 {
                     // std::cout << "Cas 3 align" << std::endl;
                     return true;
@@ -175,10 +188,10 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
             default:
                 break;
         }
-    }
-    catch (const ExcOutOfBound& e) {
-        return false;
-    }
+//    }
+//    catch (const ExcOutOfBound& e) {
+//        return false;
+//    }
     return false;
 }
 
@@ -200,32 +213,33 @@ bool Referee::checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR co
 
 bool Referee::alignParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
 {
-    try
-    {
+    bool outOfBound = false;
+//    try
+//    {
         switch (tile.getIntValue(color, first_dir))
         {
             case 1:
                 //if (XFactorParcours(map, tile, color, first_dir, 2, 3) == true)
-                if (XFactorParcours(map, tile, color, first_dir, 4, 1))
+                if (XFactorParcours(outOfBound, map, tile, color, first_dir, 4, 1) && !outOfBound)
                     return true;
                 break;
             case 2:
                 //if (XFactorParcours(map, tile, color, first_dir, 1, 3) == true)
-                if (XFactorParcours(map, tile, color, first_dir, tile.getValue(color, first_dir) + 3, tile.getValue(color, Map::OP_DIR[first_dir]) + 1))
+                if (XFactorParcours(outOfBound, map, tile, color, first_dir, tile.getValue(color, first_dir) + 3, tile.getValue(color, Map::OP_DIR[first_dir]) + 1) && !outOfBound)
                     return true;
                 break;
             case 3:
                 //if (XFactorParcours(map, tile, color, first_dir, 1, 2) == true)
-                if (XFactorParcours(map, tile, color, first_dir, tile.getValue(color, first_dir) + 1, tile.getValue(color, Map::OP_DIR[first_dir]) + 1))
+                if (XFactorParcours(outOfBound, map, tile, color, first_dir, tile.getValue(color, first_dir) + 1, tile.getValue(color, Map::OP_DIR[first_dir]) + 1) && !outOfBound)
                     return true;
                 break;
             default:
                 break;
         }
-    }
-    catch (const ExcOutOfBound& e) {
-        return false;
-    }
+//    }
+//    catch (const ExcOutOfBound& e) {
+//        return false;
+//    }
     return false;
 }
 
@@ -266,27 +280,33 @@ bool Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
     {
         if (map[tile.Y][tile.X].getValue(Referee::OP_COLOR[color], dir) == 2)
         {
-            try
-            {
+//            try
+//            {
+                bool outOfBound = false;
                 Map::Map::PTR ptr = map.go[dir];
-                Tile& tile_for_capture = (map.*ptr)(tile, 3);
+                Tile& tile_for_capture = (map.*ptr)(outOfBound, tile, 3);
+                if (!outOfBound) {
 
-                if (tile_for_capture.getColor() == color)
-                {
-                    Tile& first_captured_stone = (map.*ptr)(tile, 1);
-                    Tile& second_captured_stone = (map.*ptr)(tile, 2);
+                    if (tile_for_capture.getColor() == color)
+                    {
+                        Tile& first_captured_stone = (map.*ptr)(outOfBound, tile, 1);
+                        Tile& second_captured_stone = (map.*ptr)(outOfBound, tile, 2);
+    
+                        if (!outOfBound) {
 
-                    map.removeStone(first_captured_stone);
-                    map.removeStone(second_captured_stone);
-                    map.addCaptured(color, 2);
-
-                    captured += 2;
-                    if (captured == 10)
-                        return true;
+                            map.removeStone(first_captured_stone);
+                            map.removeStone(second_captured_stone);
+                            map.addCaptured(color, 2);
+    
+                            captured += 2;
+                            if (captured == 10)
+                                return true;
+                        }
+                    }
                 }
-            }
-            catch (const ExcOutOfBound& e) {
-            }
+//            }
+//            catch (const ExcOutOfBound& e) {
+//            }
         }
     }
 
@@ -311,29 +331,37 @@ bool Referee::isAlignBreakable(Tile &start, Map &m, Map::E_DIR dir)
     int       count = 5; // TODO Why is this shit ?
     Map::E_OR ori = Map::E_OR::MAX;
 
-    try {
+    bool outOfBound = false;
+//    try {
         while (count > 0 && t->getColor() == start.getColor()) {
             if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
                 break;
             count--;
-            t = &(m.*(m.go[dir]))(*t, 1);
+            t = &(m.*(m.go[dir]))(outOfBound, *t, 1);
+            if (outOfBound)
+                break;
         }
-    }
-    catch (const ExcOutOfBound& ex) {
-    }
+//    }
+//    catch (const ExcOutOfBound& ex) {
+//    }
 
-    try {
+    outOfBound = false;
+//    try {
         dir = Map::OP_DIR[dir];
-        t = &(m.*(m.go[dir]))(start, 1);
-        while (count > 0 && t->getColor() == start.getColor()) {
-            if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
-                break;
-            count--;
-            t = &(m.*(m.go[dir]))(*t, 1);
+        t = &(m.*(m.go[dir]))(outOfBound, start, 1);
+        if (!outOfBound) {
+            while (count > 0 && t->getColor() == start.getColor()) {
+                if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
+                    break;
+                count--;
+                t = &(m.*(m.go[dir]))(outOfBound, *t, 1);
+                if (outOfBound)
+                    break;
+            }
         }
-    }
-    catch (const ExcOutOfBound& ex) {
-    }
+//    }
+//    catch (const ExcOutOfBound& ex) {
+//    }
 
     if (count == 0)
         return false;
@@ -344,19 +372,21 @@ Map::E_OR Referee::isTileBreakable(Tile &start, Map &m)
 {
     for (int ori_int = Map::E_OR::NS; ori_int != Map::E_OR::MAX; ++ori_int)
     {
-        try {
+        bool outOfBound = false;
+//        try {
             Map::E_OR ori = static_cast<Map::E_OR>(ori_int);
-            if (isOrBreakable(start, m, ori) == true)
+            if (isOrBreakable(outOfBound, start, m, ori) == true)
                 return ori;
-        }
-        catch (const ExcOutOfBound& ex){
+//        }
+//        catch (const ExcOutOfBound& ex){
+        if (outOfBound)
             continue;
-        }
+//        }
     }
     return Map::E_OR::MAX;
 }
 
-bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
+bool Referee::isOrBreakable(bool& outOfBound, Tile &start, Map &m, Map::E_OR ori)
 {
         Tile check = start;
         Map::E_DIR cdir = Map::OR_TO_DIR[ori];
@@ -364,13 +394,19 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
 
         if (start.getIntValue(start.getColor(), cdir) == 2)
         {
-            check = (m.*(m.go[cdir]))(check, 1);
+            check = (m.*(m.go[cdir]))(outOfBound, check, 1);
+            if (outOfBound)
+                return false;
             if (check.getColor() == start.getColor())
             {
-                check = (m.*(m.go[cdir]))(check, 1);
+                check = (m.*(m.go[cdir]))(outOfBound, check, 1);
+                if (outOfBound)
+                    return false;
                 if (check.getColor() == Stone::NONE)
                     end++;
-                check = (m.*(m.go[Map::OP_DIR[cdir]]))(check, 3);
+                check = (m.*(m.go[Map::OP_DIR[cdir]]))(outOfBound, check, 3);
+                if (outOfBound)
+                    return false;
                 if (check.getColor() == Stone::NONE)
                     end++;
             }
@@ -378,7 +414,9 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
             {
                 if (check.getColor() == Stone::NONE)
                     end++;
-                check = (m.*(m.go[Map::OP_DIR[cdir]]))(check, 3);
+                check = (m.*(m.go[Map::OP_DIR[cdir]]))(outOfBound, check, 3);
+                if (outOfBound)
+                    return false;
                 if (check.getColor() == Stone::NONE)
                     end++;
             }
