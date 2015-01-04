@@ -56,7 +56,7 @@ void Referee::reset() {
     _breakables.clear();
 }
 
-inline bool Referee::gameHasEnded(const E_STATE& ret) {
+bool Referee::gameHasEnded(const E_STATE& ret) {
     return (ret == Referee::END_BLACK || ret == Referee::END_WHITE
             || ret == Referee::END_DRAW);
 }
