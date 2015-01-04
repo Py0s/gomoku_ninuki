@@ -280,27 +280,33 @@ bool Referee::checkCapture(Tile& tile, Map& map, char& captured) const {
     {
         if (map[tile.Y][tile.X].getValue(Referee::OP_COLOR[color], dir) == 2)
         {
-            try
-            {
+//            try
+//            {
+                bool outOfBound = false;
                 Map::Map::PTR ptr = map.go[dir];
-                Tile& tile_for_capture = (map.*ptr)(tile, 3);
+                Tile& tile_for_capture = (map.*ptr)(outOfBound, tile, 3);
+                if (!outOfBound) {
 
-                if (tile_for_capture.getColor() == color)
-                {
-                    Tile& first_captured_stone = (map.*ptr)(tile, 1);
-                    Tile& second_captured_stone = (map.*ptr)(tile, 2);
+                    if (tile_for_capture.getColor() == color)
+                    {
+                        Tile& first_captured_stone = (map.*ptr)(outOfBound, tile, 1);
+                        Tile& second_captured_stone = (map.*ptr)(outOfBound, tile, 2);
+    
+                        if (!outOfBound) {
 
-                    map.removeStone(first_captured_stone);
-                    map.removeStone(second_captured_stone);
-                    map.addCaptured(color, 2);
-
-                    captured += 2;
-                    if (captured == 10)
-                        return true;
+                            map.removeStone(first_captured_stone);
+                            map.removeStone(second_captured_stone);
+                            map.addCaptured(color, 2);
+    
+                            captured += 2;
+                            if (captured == 10)
+                                return true;
+                        }
+                    }
                 }
-            }
-            catch (const ExcOutOfBound& e) {
-            }
+//            }
+//            catch (const ExcOutOfBound& e) {
+//            }
         }
     }
 
@@ -325,29 +331,37 @@ bool Referee::isAlignBreakable(Tile &start, Map &m, Map::E_DIR dir)
     int       count = 5; // TODO Why is this shit ?
     Map::E_OR ori = Map::E_OR::MAX;
 
-    try {
+    bool outOfBound = false;
+//    try {
         while (count > 0 && t->getColor() == start.getColor()) {
             if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
                 break;
             count--;
-            t = &(m.*(m.go[dir]))(*t, 1);
+            t = &(m.*(m.go[dir]))(outOfBound, *t, 1);
+            if (outOfBound)
+                break;
         }
-    }
-    catch (const ExcOutOfBound& ex) {
-    }
+//    }
+//    catch (const ExcOutOfBound& ex) {
+//    }
 
-    try {
+    outOfBound = false;
+//    try {
         dir = Map::OP_DIR[dir];
-        t = &(m.*(m.go[dir]))(start, 1);
-        while (count > 0 && t->getColor() == start.getColor()) {
-            if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
-                break;
-            count--;
-            t = &(m.*(m.go[dir]))(*t, 1);
+        t = &(m.*(m.go[dir]))(outOfBound, start, 1);
+        if (!outOfBound) {
+            while (count > 0 && t->getColor() == start.getColor()) {
+                if ((ori = isTileBreakable(*t, m)) != Map::E_OR::MAX)
+                    break;
+                count--;
+                t = &(m.*(m.go[dir]))(outOfBound, *t, 1);
+                if (outOfBound)
+                    break;
+            }
         }
-    }
-    catch (const ExcOutOfBound& ex) {
-    }
+//    }
+//    catch (const ExcOutOfBound& ex) {
+//    }
 
     if (count == 0)
         return false;
@@ -358,19 +372,21 @@ Map::E_OR Referee::isTileBreakable(Tile &start, Map &m)
 {
     for (int ori_int = Map::E_OR::NS; ori_int != Map::E_OR::MAX; ++ori_int)
     {
-        try {
+        bool outOfBound = false;
+//        try {
             Map::E_OR ori = static_cast<Map::E_OR>(ori_int);
-            if (isOrBreakable(start, m, ori) == true)
+            if (isOrBreakable(outOfBound, start, m, ori) == true)
                 return ori;
-        }
-        catch (const ExcOutOfBound& ex){
+//        }
+//        catch (const ExcOutOfBound& ex){
+        if (outOfBound)
             continue;
-        }
+//        }
     }
     return Map::E_OR::MAX;
 }
 
-bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
+bool Referee::isOrBreakable(bool& outOfBound, Tile &start, Map &m, Map::E_OR ori)
 {
         Tile check = start;
         Map::E_DIR cdir = Map::OR_TO_DIR[ori];
@@ -378,13 +394,19 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
 
         if (start.getIntValue(start.getColor(), cdir) == 2)
         {
-            check = (m.*(m.go[cdir]))(check, 1);
+            check = (m.*(m.go[cdir]))(outOfBound, check, 1);
+            if (outOfBound)
+                return false;
             if (check.getColor() == start.getColor())
             {
-                check = (m.*(m.go[cdir]))(check, 1);
+                check = (m.*(m.go[cdir]))(outOfBound, check, 1);
+                if (outOfBound)
+                    return false;
                 if (check.getColor() == Stone::NONE)
                     end++;
-                check = (m.*(m.go[Map::OP_DIR[cdir]]))(check, 3);
+                check = (m.*(m.go[Map::OP_DIR[cdir]]))(outOfBound, check, 3);
+                if (outOfBound)
+                    return false;
                 if (check.getColor() == Stone::NONE)
                     end++;
             }
@@ -392,7 +414,9 @@ bool Referee::isOrBreakable(Tile &start, Map &m, Map::E_OR ori)
             {
                 if (check.getColor() == Stone::NONE)
                     end++;
-                check = (m.*(m.go[Map::OP_DIR[cdir]]))(check, 3);
+                check = (m.*(m.go[Map::OP_DIR[cdir]]))(outOfBound, check, 3);
+                if (outOfBound)
+                    return false;
                 if (check.getColor() == Stone::NONE)
                     end++;
             }

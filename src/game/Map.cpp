@@ -132,6 +132,14 @@ void Map::reset() {
     }
 }
 
+void Map::helpInDisplayMap(const Stone& stone) {
+    _displayMap[stone.y()][stone.x()] = Stone::RED;
+}
+
+void Map::removeHelpInDisplayMap(const Stone& stone) {
+    if (_displayMap[stone.y()][stone.x()] == Stone::RED)
+        _displayMap[stone.y()][stone.x()] = Stone::NONE;
+}
 
 // Debug
 void Map::displayDebug() const

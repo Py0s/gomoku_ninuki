@@ -30,7 +30,7 @@ class Map {
     static const enum E_DIR OP_DIR[];
     static const enum E_DIR OR_TO_DIR[];
 
-    static const int _MAPSIZE_X = 3;
+    static const int _MAPSIZE_X = 19;
     static const int _MAPSIZE_Y = _MAPSIZE_X;
 
     // static const int _MAPSIZE_X = 9; // For now
@@ -61,6 +61,9 @@ class Map {
     void addCaptured(Stone::E_COLOR color, char value) { _captured[color] += value;}
     void reset();
   
+    void helpInDisplayMap(const Stone& stone);
+    void removeHelpInDisplayMap(const Stone& stone);
+
     // Debug
     void displayDebug() const;
     
@@ -69,6 +72,7 @@ class Map {
     char _played[2] = {0,0};
     char _captured[2] = {0,0};
 
+    char        _debugChar[4] = {'B','W','.','.'};
     Stone::E_COLOR   _displayMap[_MAPSIZE_Y][_MAPSIZE_X];
     std::array<std::array<Tile, _MAPSIZE_X>, _MAPSIZE_Y>    _map;
 

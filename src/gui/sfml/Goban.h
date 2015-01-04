@@ -1,6 +1,8 @@
 #pragma once
 #include "AGui.h"
 #include "Options.h"
+#include "Referee.h"
+#include "AI.h"
 #include <SFML/Window.hpp>
 #include <SFML/Graphics.hpp>
 #include <list>
@@ -8,7 +10,7 @@
 class Goban: public AGui
 {
    public:
-      Goban(const Map& m, sf::RenderWindow& mainWindow);
+      Goban(Map& m, sf::RenderWindow& mainWindow);
       virtual ~Goban();
       
       // specific goban
@@ -32,7 +34,7 @@ class Goban: public AGui
       virtual bool newWindow(const Rectangle& rect, const std::string& msg);
       
     private:
-      const Map& _m;
+      Map& _m;
       
       Stone::E_COLOR _curs_color;
       
@@ -42,6 +44,7 @@ class Goban: public AGui
       sf::Texture _hand_tx;
       sf::Texture _stone_black_tx;
       sf::Texture _stone_white_tx;
+      sf::Texture _stone_red_tx;
       sf::Texture _background_tile_tx;
       
       sf::Sprite _goban_sp;

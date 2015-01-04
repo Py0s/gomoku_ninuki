@@ -7,11 +7,15 @@
 #include <iostream>
 
 Game::Game()
-: _map(), _currentPlayer(nullptr),
+: _map(), _helpStone(0, 0), _currentPlayer(nullptr),
         _player_nb(0), _conf(), _referee() {
     _guis[static_cast<int>(MENU)] = new Menu((_init_sfml).getWindow());
     _guis[static_cast<int>(GOBAN)] = new Goban(_map, _init_sfml.getWindow());
     _guiState = MENU;
+
+    _helpAI = new AI(_map, _referee, Stone::BLACK);
+    _helpAI->setTimeLimit(10);
+    _helpAI->setOpponent(nullptr);
 }
 
 Game::~Game() {
@@ -126,6 +130,7 @@ int Game::cleanGame() {
     _map.reset();
     _referee.reset();
     _gameState = Referee::VALID;
+    _helpStone = Stone(0, 0);
     return 0;
 }
 
@@ -195,6 +200,18 @@ void Game::accept() {
         case Referee::VALID:
             nextPlayer();
             static_cast<Goban*>(gui())->setPlaying(_currentPlayer->getColor());
+
+            // Annulation de la prévis prec & changement couleur IA
+            if (_helpStone.color() != Stone::NONE)
+                _map.removeHelpInDisplayMap(_helpStone);
+
+            // Recuperation pierre helpAI
+            _helpStone = _helpAI->helpMe(_currentPlayer->getColor());
+            std::cout << _currentPlayer->getColor() << std::endl;
+
+            // Mise dans la displayMap
+            _map.helpInDisplayMap(_helpStone);
+
             gui()->drawAll();
             break;
         case Referee::INVALID:

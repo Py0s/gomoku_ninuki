@@ -75,7 +75,7 @@ class Referee
     Referee::E_STATE    checkAlign(Tile& t, Map& map, bool breakable);
     bool                isAlignBreakable(Tile &t, Map &m, Map::E_DIR dir);
     Map::E_OR           isTileBreakable(Tile &start, Map &m);
-    bool                isOrBreakable(Tile &start, Map &m, Map::E_OR ori);
+    bool                isOrBreakable(bool& outOfBound, Tile &start, Map &m, Map::E_OR ori);
     Referee::E_STATE    checkListBreakable(Map& map);
     
     /* MEMBERS */
