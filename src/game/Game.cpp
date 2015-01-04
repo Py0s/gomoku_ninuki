@@ -118,6 +118,8 @@ void Game::initPlayers()
         dynamic_cast<AI *>(_players[1])->setOpponent(_players[0]);
     }
     _currentPlayer = _players[0];
+    static_cast<Goban*>(gui())->setPlaying(_currentPlayer->getColor());
+    _player_nb = 0;
 }
 
 int Game::cleanGame() {
@@ -207,7 +209,6 @@ void Game::accept() {
 
             // Recuperation pierre helpAI
             _helpStone = _helpAI->helpMe(_currentPlayer->getColor());
-            std::cout << _currentPlayer->getColor() << std::endl;
 
             // Mise dans la displayMap
             _map.helpInDisplayMap(_helpStone);
