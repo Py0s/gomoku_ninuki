@@ -54,15 +54,18 @@ void Map::placeStone(const Stone& s) {
 
     for (int dir=0; dir < 8; ++dir)
     {
-        try
-        {
+        bool outOfBound = false;
+//        try
+//        {
             PTR ptr = go[dir];
-            Tile& next_tile = (this->*ptr)(tile, 1);
-            char value = tile.getValue(color, Map::OP_DIR[dir]) + 1;
-            updateTile(color, dir, value, next_tile, value);
-        }
-        catch (const ExcOutOfBound& e) {
-        }
+            Tile& next_tile = (this->*ptr)(outOfBound, tile, 1);
+            if (!outOfBound) {
+                char value = tile.getValue(color, Map::OP_DIR[dir]) + 1;
+                updateTile(color, dir, value, next_tile, value);
+            }
+//        }
+//        catch (const ExcOutOfBound& e) {
+//        }
     }
 }
 
@@ -80,14 +83,17 @@ void Map::removeStone(Tile& tile) {
 
     for (int dir=0; dir < 8; ++dir)
     {
-        try
-        {
+        bool outOfBound = false;
+//        try
+//        {
             PTR ptr = go[dir];
-            Tile& next_tile = (this->*ptr)(tile, 1);
-            updateTile(color, dir, 0, next_tile, -(tile.getValue(color, Map::OP_DIR[dir]) + 1));
-        }
-        catch (const ExcOutOfBound& e) {
-        }
+            Tile& next_tile = (this->*ptr)(outOfBound, tile, 1);
+            if (!outOfBound) {
+                updateTile(color, dir, 0, next_tile, -(tile.getValue(color, Map::OP_DIR[dir]) + 1));
+            }
+//        }
+//        catch (const ExcOutOfBound& e) {
+//        }
     }
 }
 
@@ -96,14 +102,17 @@ void Map::updateTile(Stone::E_COLOR color, int dir, char value, Tile& tile, char
     tile.AddToInterValue(color, dir, inter_value);
     if (tile.getColor() == color)
     {
-        try
-        {
+        bool outOfBound = false;
+//        try
+//        {
             PTR ptr = go[dir];
-            Tile& next_tile = (this->*ptr)(tile, 1);
-            updateTile(color, dir, ++value, next_tile, inter_value);
-        }
-        catch (const ExcOutOfBound& e) {
-        }
+            Tile& next_tile = (this->*ptr)(outOfBound, tile, 1);
+            if (!outOfBound) {
+                updateTile(color, dir, ++value, next_tile, inter_value);
+            }
+//        }
+//        catch (const ExcOutOfBound& e) {
+//        }
     }
 }
 
@@ -127,13 +136,11 @@ void Map::reset() {
 // Debug
 void Map::displayDebug() const
 {
-    std::cout << "Black: " << _captured[Stone::E_COLOR::BLACK] + '0' - '0' << "\t";
-    std::cout << "White: " << _captured[Stone::E_COLOR::WHITE] + '0' - '0' << std::endl;
-    for (int y=0; y < _MAPSIZE_Y; ++y)
+    for (int y=0; y < 5; ++y)
     {
-        for (int x = 0; x < _MAPSIZE_X; ++x)
+        for (int x = 0; x < 9; ++x)
         {
-            std::cout << _debugChar[_map[y][x].getColor()];
+            std::cout << _map[y][x].getColor() << "|";
         }
         std::cout << std::endl;
     }
@@ -141,74 +148,98 @@ void Map::displayDebug() const
 }
 
 // PRIVATE
-Tile& Map::n(const Tile& t, unsigned char len) {
+Tile& Map::n(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X;
 
-    if (y < 0)
-        throw ExcOutOfBound();
+    if (y < 0) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }
 
-Tile& Map::s(const Tile& t, unsigned char len) {
+Tile& Map::s(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X;
 
-    if (y >= _MAPSIZE_Y)
-        throw ExcOutOfBound();
+    if (y >= _MAPSIZE_Y) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }
 
-Tile& Map::e(const Tile& t, unsigned char len) {
+Tile& Map::e(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X + 1 * len;
 
-    if (x >= _MAPSIZE_X)
-        throw ExcOutOfBound();
+    if (x >= _MAPSIZE_X) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }
 
-Tile& Map::w(const Tile& t, unsigned char len) {
+Tile& Map::w(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y;
     char x = t.X - 1 * len;
 
-    if (x < 0)
-        throw ExcOutOfBound();
+    if (x < 0) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }
 
-Tile& Map::ne(const Tile& t, unsigned char len) {
+Tile& Map::ne(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X + 1 * len;
 
-    if (y < 0 || x >= _MAPSIZE_X)
-        throw ExcOutOfBound();
+    if (y < 0 || x >= _MAPSIZE_X) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }
 
-Tile& Map::nw(const Tile& t, unsigned char len) {
+Tile& Map::nw(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y - 1 * len;
     char x = t.X - 1 * len;
 
-    if (y < 0 || x < 0)
-        throw ExcOutOfBound();
+    if (y < 0 || x < 0) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }
 
-Tile& Map::se(const Tile& t, unsigned char len) {
+Tile& Map::se(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X + 1 * len;
 
-    if (y >= _MAPSIZE_Y || x >= _MAPSIZE_X)
-        throw ExcOutOfBound();
+    if (y >= _MAPSIZE_Y || x >= _MAPSIZE_X) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }
 
-Tile& Map::sw(const Tile& t, unsigned char len) {
+Tile& Map::sw(bool& outOfBound, const Tile& t, unsigned char len) {
     char y = t.Y + 1 * len;
     char x = t.X - 1 * len;
 
-    if (y >= _MAPSIZE_Y || x < 0)
-        throw ExcOutOfBound();
+    if (y >= _MAPSIZE_Y || x < 0) {
+        outOfBound = true;
+        return _map[0][0];
+        // throw ExcOutOfBound();
+    }
     return _map[y][x];
 }

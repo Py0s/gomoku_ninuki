@@ -56,7 +56,7 @@ void Referee::reset() {
     _breakables.clear();
 }
 
-bool Referee::gameHasEnded(const E_STATE& ret) {
+inline bool Referee::gameHasEnded(const E_STATE& ret) {
     return (ret == Referee::END_BLACK || ret == Referee::END_WHITE
             || ret == Referee::END_DRAW);
 }
@@ -67,39 +67,47 @@ bool Referee::gameHasEnded(const E_STATE& ret) {
 
 /*************** DOUBLE THREE FUNCTIONS ***************/
 
-bool Referee::alignOne(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+bool Referee::alignOne(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, 1);
+    Tile& inter_tile = (map.*ptr)(outOfBound, tile, 1);
+    if (outOfBound)
+        return false;
 
     if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
         return true;
     return false;
 }
-bool Referee::alignTwo(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+bool Referee::alignTwo(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     Map::PTR ptr = map.go[dir];
-    Tile& inter_tile = (map.*ptr)(tile, tile.getValue(color, dir) + 1);
+    Tile& inter_tile = (map.*ptr)(outOfBound, tile, tile.getValue(color, dir) + 1);
+    if (outOfBound)
+        return false;
 
     if (inter_tile.getIntValue(color, dir) == 3 && inter_tile.isEmpty())
         return true;
     return false;
 }
-bool Referee::alignThree(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
+bool Referee::alignThree(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
     return true;
 }
 
-bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const
+bool Referee::XFactorextrem(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int dir, int first_value, int second_value) const
 {
     Map::PTR ptr = map.go[dir];
-    Tile& extrem_tile = (map.*ptr)(tile, first_value);
+    Tile& extrem_tile = (map.*ptr)(outOfBound, tile, first_value);
+    if (outOfBound)
+        return false;
 
     if (!(extrem_tile.isEmpty()))
         return false;
 
     ptr = map.go[Map::OP_DIR[dir]];
-    Tile& extrem_op_tile = (map.*ptr)(tile, second_value);
+    Tile& extrem_op_tile = (map.*ptr)(outOfBound, tile, second_value);
+    if (outOfBound)
+        return false;
 
     if (!(extrem_op_tile.isEmpty()))
         return false;
@@ -107,12 +115,14 @@ bool Referee::XFactorextrem(Map& map, Tile& tile, Stone::E_COLOR color, int dir,
 }
 
 // les values sont celles d'extrem
-bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir, int first_value, int second_value) const
+bool Referee::XFactorParcours(bool& outOfBound, Map& map, Tile& tile, Stone::E_COLOR color, int first_dir, int first_value, int second_value) const
 {
     Map::PTR ptr = map.go[first_dir];
     for (int v = 0; v < first_value; ++v)
     {
-        Tile& current_tile = (map.*ptr)(tile, v);
+        Tile& current_tile = (map.*ptr)(outOfBound, tile, v);
+        if (outOfBound)
+            return false;
         // on check que les cases où il y a mes pierres
         if (tile.getColor() == color && checkDoubleThreeSecondPart(map, current_tile, color, first_dir))
             return true;
@@ -121,7 +131,9 @@ bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int fi
     ptr = map.go[Map::OP_DIR[first_dir]];
     for (int v = 0; v < second_value; ++v)
     {
-        Tile& zboob_tile = (map.*ptr)(tile, v);
+        Tile& zboob_tile = (map.*ptr)(outOfBound, tile, v);
+        if (outOfBound)
+            return false;
         if (tile.getColor() == color && checkDoubleThreeSecondPart(map, zboob_tile, color, first_dir))
             return true;
     }
@@ -144,29 +156,30 @@ bool Referee::XFactorParcours(Map& map, Tile& tile, Stone::E_COLOR color, int fi
 
 bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, int dir) const
 {
-    try
-    {
+    bool outOfBound = false;
+//    try
+//    {
         switch (tile.getIntValue(color, dir))
         {
             case 1:
-                if (alignOne(map, tile, color, dir)
-                    && XFactorextrem(map, tile, color, dir, 4, 1))
+                if (alignOne(outOfBound, map, tile, color, dir) && !outOfBound
+                    && XFactorextrem(outOfBound, map, tile, color, dir, 4, 1) && !outOfBound)
                 {
                     // std::cout << "Cas 1 align" << std::endl;
                     return true;
                 }
                 break;
             case 2:
-                if (alignTwo(map, tile, color, dir)
-                    && XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 3, tile.getValue(color, Map::OP_DIR[dir]) + 1))
+                if (alignTwo(outOfBound, map, tile, color, dir) && !outOfBound
+                    && XFactorextrem(outOfBound, map, tile, color, dir, tile.getValue(color, dir) + 3, tile.getValue(color, Map::OP_DIR[dir]) + 1) && !outOfBound)
                 {
                     // std::cout << "Cas 2 align" << std::endl;
                     return true;
                 }
                 break;
             case 3:
-                if (alignThree(map, tile, color, dir)
-                    && XFactorextrem(map, tile, color, dir, tile.getValue(color, dir) + 1, tile.getValue(color, Map::OP_DIR[dir]) + 1)) // TODO : OPTI POUR NE PAS CHECKER DEUX FOIS LA MEME CHOSE
+                if (alignThree(outOfBound, map, tile, color, dir) && !outOfBound
+                    && XFactorextrem(outOfBound, map, tile, color, dir, tile.getValue(color, dir) + 1, tile.getValue(color, Map::OP_DIR[dir]) + 1) && !outOfBound) // TODO : OPTI POUR NE PAS CHECKER DEUX FOIS LA MEME CHOSE
                 {
                     // std::cout << "Cas 3 align" << std::endl;
                     return true;
@@ -175,10 +188,10 @@ bool Referee::checkFreeThreeConfig(Map& map, Tile& tile, Stone::E_COLOR color, i
             default:
                 break;
         }
-    }
-    catch (const ExcOutOfBound& e) {
-        return false;
-    }
+//    }
+//    catch (const ExcOutOfBound& e) {
+//        return false;
+//    }
     return false;
 }
 
@@ -200,32 +213,33 @@ bool Referee::checkDoubleThreeSecondPart(Map& map, Tile& tile, Stone::E_COLOR co
 
 bool Referee::alignParcours(Map& map, Tile& tile, Stone::E_COLOR color, int first_dir) const
 {
-    try
-    {
+    bool outOfBound = false;
+//    try
+//    {
         switch (tile.getIntValue(color, first_dir))
         {
             case 1:
                 //if (XFactorParcours(map, tile, color, first_dir, 2, 3) == true)
-                if (XFactorParcours(map, tile, color, first_dir, 4, 1))
+                if (XFactorParcours(outOfBound, map, tile, color, first_dir, 4, 1) && !outOfBound)
                     return true;
                 break;
             case 2:
                 //if (XFactorParcours(map, tile, color, first_dir, 1, 3) == true)
-                if (XFactorParcours(map, tile, color, first_dir, tile.getValue(color, first_dir) + 3, tile.getValue(color, Map::OP_DIR[first_dir]) + 1))
+                if (XFactorParcours(outOfBound, map, tile, color, first_dir, tile.getValue(color, first_dir) + 3, tile.getValue(color, Map::OP_DIR[first_dir]) + 1) && !outOfBound)
                     return true;
                 break;
             case 3:
                 //if (XFactorParcours(map, tile, color, first_dir, 1, 2) == true)
-                if (XFactorParcours(map, tile, color, first_dir, tile.getValue(color, first_dir) + 1, tile.getValue(color, Map::OP_DIR[first_dir]) + 1))
+                if (XFactorParcours(outOfBound, map, tile, color, first_dir, tile.getValue(color, first_dir) + 1, tile.getValue(color, Map::OP_DIR[first_dir]) + 1) && !outOfBound)
                     return true;
                 break;
             default:
                 break;
         }
-    }
-    catch (const ExcOutOfBound& e) {
-        return false;
-    }
+//    }
+//    catch (const ExcOutOfBound& e) {
+//        return false;
+//    }
     return false;
 }
 
