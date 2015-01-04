@@ -95,6 +95,8 @@ int Game::menuLoop() {
 void Game::initPlayers()
 {
     assert(_guiState == GOBAN);
+    if (_players[0] != nullptr)
+        return;
     _players[0] = (_conf.human_player_1 ?
                     dynamic_cast<APlayer *>(new Human(gui()->getCursor(), Stone::BLACK)) :
                     dynamic_cast<APlayer *>(new AI(_map, _referee, Stone::BLACK)));
@@ -115,6 +117,7 @@ void Game::initPlayers()
 }
 
 int Game::cleanGame() {
+    _map.displayDebug();
     delete _players[0];
     delete _players[1];
     _currentPlayer = nullptr;

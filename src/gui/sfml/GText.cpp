@@ -10,12 +10,12 @@ GText::GText(std::string content, sf::Font * font, STYLE style, float x, float y
 GText::~GText() {
 }
 
-inline void GText::_default() {
+/*inline*/ void GText::_default() {
     setColor(sf::Color::White);
     setCharacterSize(24);
     setStyle(sf::Text::Regular);
 }
-inline void GText::title() {
+/*inline*/ void GText::title() {
     setColor(sf::Color::Blue);
     setCharacterSize(32);
 }
@@ -23,7 +23,7 @@ inline void GText::title() {
 //     setColor(sf::Color::White);
 //     setCharacterSize(24);
 // }
-inline void GText::subtitle() {
+/*inline*/ void GText::subtitle() {
     setColor(sf::Color::Green);
     setCharacterSize(32);
 }
@@ -31,16 +31,16 @@ inline void GText::subtitle() {
 //     setColor(sf::Color::White);
 //     setCharacterSize(24);
 // }
-inline void GText::validate() {
+/*inline*/ void GText::validate() {
     setColor(sf::Color::Red);
 }
-inline void GText::unvalidate() {
+/*inline*/ void GText::unvalidate() {
     setColor(sf::Color::White);
 }
-inline void GText::select() {
+/*inline*/ void GText::select() {
     setStyle(sf::Text::Underlined);
 }
-inline void GText::unselect() {
+/*inline*/ void GText::unselect() {
     setStyle(sf::Text::Regular);
 }
 

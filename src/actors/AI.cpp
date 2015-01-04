@@ -183,7 +183,7 @@ Stone AI::calc(int depth) {
             //if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
             if (score > alpha)
             {
-                //std::cout << "depth:"<<depth<<"[" << alpha << "("<<max_y<<";"<<max_x<<")->" << score << "("<<y<<";"<<x<< ")]" << std::endl;
+                std::cout << "depth:"<<depth<<"[" << alpha << "("<<max_y<<";"<<max_x<<")->" << score << "("<<y<<";"<<x<< ")]" << std::endl;
                 //On le choisit
                 //max = score;
                 alpha = score;

@@ -24,6 +24,7 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     std::vector<float> timeV;
     timeV.push_back(0.5);
     timeV.push_back(1);
+    timeV.push_back(3);
     timeV.push_back(5);
     timeV.push_back(10);
     timeV.push_back(20);
