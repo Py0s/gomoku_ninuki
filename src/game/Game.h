@@ -30,6 +30,9 @@ private:
     AGui*       _guis[2];
     E_GUI_STATE _guiState;
 
+    AI *  _helpAI;
+    Stone _helpStone;
+
     APlayer *   _currentPlayer;
     APlayer *   _players[2] = {nullptr, nullptr};
     int         _player_nb;

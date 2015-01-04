@@ -2,11 +2,12 @@
 #include "Exceptions.h"
 
 
-Goban::Goban(const Map& m, sf::RenderWindow& mainWindow)
+Goban::Goban(Map& m, sf::RenderWindow& mainWindow)
 : AGui(m.sizeY(), m.sizeX(), AGui::GOBAN), _m(m), _mainWindow(mainWindow) {
     _stone_tx.loadFromFile("./texture/stone.png");
     _stone_black_tx.loadFromFile("./texture/stone_black.png");
     _stone_white_tx.loadFromFile("./texture/stone_white.png");
+    _stone_red_tx.loadFromFile("./texture/stone_red.png");
     _hand_tx.loadFromFile("./texture/hand.png");
     _goban_tile_tx.loadFromFile("./texture/goban_tile.png");
     _goban_tile_tx.setRepeated(true);
@@ -45,6 +46,7 @@ bool Goban::getInput(EventManager& events) {
     if (_mainWindow.isOpen() == false)
         return false;
     while (_mainWindow.pollEvent(current) == true)
+    //if (_mainWindow.pollEvent(current) == true)
     {
         switch (current.type) {
             case sf::Event::KeyPressed:
@@ -74,6 +76,7 @@ bool Goban::drawFrame(char c, const Rectangle& rect) {
 bool Goban::drawAll() {
     Stone::E_COLOR c;
     sf::Sprite stone;
+    sf::Sprite helpStone;
     std::list<sf::Sprite> stones;
     const Stone::E_COLOR* map = _m.displayMap();    
 
@@ -92,13 +95,21 @@ bool Goban::drawAll() {
             stones.push_back(stone);
             if (c == Stone::BLACK)
                 stones.back().setTexture(_stone_black_tx);
-            else
+            else if (c == Stone::WHITE)
                 stones.back().setTexture(_stone_white_tx);
+            else
+                stones.back().setTexture(_stone_red_tx);
             stones.back().setPosition(
                     _OFFSET_X + x * _SQUARE_SIZE.x,
                     _OFFSET_Y + y * _SQUARE_SIZE.y);
         }
     }
+
+    // Stone helpResult = _helpAI->helpMe(Stone::WHITE/*recuperer current*/);
+    // helpStone.setPosition(
+    //         _OFFSET_X + helpResult.x() * _SQUARE_SIZE.x,
+    //         _OFFSET_Y + helpResult.y() * _SQUARE_SIZE.y);
+    // helpStone.setTexture(_stone_red_tx);
 
     // Set cursor
     _curs_sp.setPosition(
@@ -120,14 +131,18 @@ bool Goban::drawAll() {
     _mainWindow.clear(sf::Color::Black);
     _mainWindow.draw(_background_sp);
     _mainWindow.draw(_goban_sp);
+
     // Draw Stones
     for (std::list<sf::Sprite>::const_iterator it = stones.begin(); it != stones.end(); ++it) {
         _mainWindow.draw(*it);
     }
+    _mainWindow.draw(helpStone);
+
     // Draw cursor
     if (map[(_curs.Y * _map_size_x) + _curs.X] == Stone::NONE)
         _mainWindow.draw(stone);
     _mainWindow.draw(_curs_sp);
+
     // Draw Text
     _mainWindow.draw(*_capturedWhite);
     _mainWindow.draw(*_capturedBlack);

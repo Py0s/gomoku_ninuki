@@ -21,6 +21,7 @@ class AI : public APlayer
         virtual ~AI();
 
         virtual Stone    plays();
+        virtual Stone    helpMe(Stone::E_COLOR color);
 
         // Setters
         void setOpponent(APlayer * player);
@@ -29,8 +30,8 @@ class AI : public APlayer
     private:
         Map&        _map;
         Referee&    _referee;
-        APlayer *   _opponent;
-        Stone::E_COLOR _opColor;
+        // APlayer *   _opponent;
+        // Stone::E_COLOR _opColor;
         float       _durationSeconds;
         float       _playBeginTime;
         TILE_VEC_T  _openTiles;

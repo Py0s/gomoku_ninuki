@@ -7,6 +7,7 @@ struct Stone {
     enum E_COLOR {
         BLACK = 0,
         WHITE,
+        RED,
         NONE,
     };
 

@@ -18,8 +18,8 @@ void AI::setTimeLimit(float durationSeconds)
     _durationSeconds = durationSeconds;
 }
 void AI::setOpponent(APlayer * player) {
-    _opponent = player;
-    _opColor = player->getColor();
+    // _opponent = player;
+    // _opColor = player->getColor();
 }
 
 
@@ -49,6 +49,26 @@ Stone AI::plays() {
     if (stone.x() == -1)
         throw Exceptions("AI CAN'T PLAY :(");//TODO : catch + haut
     std::cout << "AI depth " << depth-1 << std::endl;
+    return stone;
+}
+
+Stone AI::helpMe(Stone::E_COLOR color) {
+    _color = color;
+    Stone stone(-1, -1, color);
+
+    initOpenTiles();
+    try
+    {
+        _playBeginTime = (float)clock();
+        stone = calc(2);
+    }
+    catch (const Exceptions& e)
+    {
+    }
+
+    if (stone.x() == -1)
+        throw Exceptions("AI CAN'T PLAY :(");//TODO : catch + haut
+    std::cout << "AI help depth " << 2 << std::endl;
     return stone;
 }
 
@@ -178,7 +198,7 @@ Stone AI::calc(int depth) {
         {
             //score = calcMin(map_tmp, depth - 1, ret, alpha, beta);
             
-            score = -calcMinMax(map_tmp, depth - 1, ret, _opColor, -beta, -alpha);
+            score = -calcMinMax(map_tmp, depth - 1, ret, Referee::OP_COLOR[_color], -beta, -alpha);
             // Si ce score est plus grand
             //if (score > max)/*Moins optimise mais aleatoire: if (score > max || (score == max && rand()%2))*/
             if (score > alpha)
