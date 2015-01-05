@@ -203,15 +203,17 @@ void Game::accept() {
             nextPlayer();
             static_cast<Goban*>(gui())->setPlaying(_currentPlayer->getColor());
 
-            // Annulation de la prévis prec & changement couleur IA
-            if (_helpStone.color() != Stone::NONE)
-                _map.removeHelpInDisplayMap(_helpStone);
-
-            // Recuperation pierre helpAI
-            _helpStone = _helpAI->helpMe(_currentPlayer->getColor());
-
-            // Mise dans la displayMap
-            _map.helpInDisplayMap(_helpStone);
+            if (_conf.help) {
+                // Annulation de la prévis prec & changement couleur IA
+                if (_helpStone.color() != Stone::NONE)
+                    _map.removeHelpInDisplayMap(_helpStone);
+    
+                // Recuperation pierre helpAI
+                _helpStone = _helpAI->helpMe(_currentPlayer->getColor());
+    
+                // Mise dans la displayMap
+                _map.helpInDisplayMap(_helpStone);
+            }
 
             gui()->drawAll();
             break;

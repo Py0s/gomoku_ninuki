@@ -33,19 +33,21 @@ Menu::Menu(sf::RenderWindow& mainWindow, std::string const& title)
     timeV.push_back(50);
     timeV.push_back(60);
 
+    _options.push_back(new Options("Continue ?", _mainWindow, &_font, selected_boolean(_config.continue_game)));
+    _options[0]->addValues<bool>(boolV);
     _options.push_back(new Options("Player1 (Black)", _mainWindow, &_font, selected_boolean(_config.human_player_1)));
-    _options[0]->addValues<std::string>(playerV);
-    _options.push_back(new Options("Player2 (White)", _mainWindow, &_font, selected_boolean(_config.human_player_2)));
     _options[1]->addValues<std::string>(playerV);
-    _options.push_back(new Options("Five-Break", _mainWindow, &_font, selected_boolean(_config.fivebreak_rule)));
-    _options[2]->addValues<bool>(boolV);
-    _options.push_back(new Options("Double-Three", _mainWindow, &_font, selected_boolean(_config.doublethree_rule)));
-    _options[3]->addValues<bool>(boolV);
+    _options.push_back(new Options("Player2 (White)", _mainWindow, &_font, selected_boolean(_config.human_player_2)));
+    _options[2]->addValues<std::string>(playerV);
     int pos = find(timeV.begin(), timeV.end(), _config.ai_time) - timeV.begin();
     _options.push_back(new Options("AI Time", _mainWindow, &_font, pos + 1));
-    _options[4]->addValues<float>(timeV);
-    _options.push_back(new Options("Continue ?", _mainWindow, &_font, selected_boolean(_config.continue_game)));
+    _options[3]->addValues<float>(timeV);
+    _options.push_back(new Options("Five-Break", _mainWindow, &_font, selected_boolean(_config.fivebreak_rule)));
+    _options[4]->addValues<bool>(boolV);
+    _options.push_back(new Options("Double-Three", _mainWindow, &_font, selected_boolean(_config.doublethree_rule)));
     _options[5]->addValues<bool>(boolV);
+    _options.push_back(new Options("Help", _mainWindow, &_font, selected_boolean(_config.help)));
+    _options[6]->addValues<bool>(boolV);
 
     //if debug : push + d'options
 
@@ -194,13 +196,14 @@ Options*     Menu::selectedOption() const {
 }
 void Menu::saveConfig()
 {
-    assert(_options.size() == 6);
-    _config.human_player_1 = (_options[0]->validatedValue<std::string>() == "HUMAN");
-    _config.human_player_2 = (_options[1]->validatedValue<std::string>() == "HUMAN");
-    _config.fivebreak_rule = _options[2]->validatedValue<bool>();
-    _config.doublethree_rule = _options[3]->validatedValue<bool>();
-    _config.ai_time = _options[4]->validatedValue<float>();
-    _config.continue_game = _options[5]->validatedValue<bool>();
+    assert(_options.size() == 7);
+    _config.continue_game = _options[0]->validatedValue<bool>();
+    _config.human_player_1 = (_options[1]->validatedValue<std::string>() == "HUMAN");
+    _config.human_player_2 = (_options[2]->validatedValue<std::string>() == "HUMAN");
+    _config.ai_time = _options[3]->validatedValue<float>();
+    _config.fivebreak_rule = _options[4]->validatedValue<bool>();
+    _config.doublethree_rule = _options[5]->validatedValue<bool>();
+    _config.help = _options[6]->validatedValue<bool>();
 }
 
 bool Menu::handleKeys(const sf::Event& current, EventManager& events) {
